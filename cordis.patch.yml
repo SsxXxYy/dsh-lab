@@ -1,0 +1,8 @@
+# dsh-lab plugin: instrument control
+# 开发模式加载：
+#   pnpm dsh web --patch ./cordis.patch.yml
+- insert:
+    - id: dsh-lab
+      name: 'dsh-lab'
+      # name: file:///D:/Dsh/deepseek-harness/dsh-lab/dist/index.js
+
