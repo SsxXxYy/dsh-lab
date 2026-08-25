@@ -445,25 +445,33 @@ export function apply(ctx: Context) {
   │    │    │    → Service 构造函数
   │    │    │    → ctx.reflect.provide('lab', self)   ← 服务注册到 store
   │    │    │    → notify(['lab'])                     ← 通知所有依赖者
-  │    │    │    → tools/context/commands 消费者 fiber._refresh()
+  │    │    │    → verify 消费者 fiber._refresh()
   │    │    │    → 依赖满足 → 自动执行 apply()
-  │    │    │    → 工具注册、提示词注入、命令注册
-  │    │    │    → ctx.remote.commands.list 自动包含新命令
-  │    │    │    → Client UI 自动渲染仪器面板
   │    │    │
   │    │    └─ true → ctx.registry.delete(LabLocal)
   │    │         → dispose LabLocal 的 fiber
   │    │         → fiber.effect cleanup
   │    │         → delete store['lab']                  ← 服务从 store 删除
   │    │         → notify(['lab'])                       ← 通知所有依赖者
-  │    │         → tools/context/commands 消费者 fiber._refresh()
+  │    │         → verify 消费者 fiber._refresh()
   │    │         → 依赖断开 → 自动 dispose()
-  │    │         → 工具注销、提示词卸载、命令注销
-  │    │         → Client UI 自动隐藏仪器面板
   │    │
   │    └─ 返回 { kind: "success", text: "实验模式已启用/关闭" }
   │
   ├─ Client: 显示执行结果
+  │
+  ├─ command/done 事件提交
+  │    │
+  │    ▼
+  │  SessionProjectionRegistry.drive(session, event)
+  │    │  apply(state, {type:'command/done', data:{commandId, kind, text}})
+  │    │  → 读取 registry 实际状态：ctx.root.registry.has(LabLocal)
+  │    │
+  │    ▼
+  │  Object.is(next, state)? → 变化 → onChanged → broadcast
+  │    │
+  │    ▼（WebSocket）
+  │  Client: face.subscribe 回调 → face.getSnapshot() → update(active)
   │
   └─ 后续对话中（如果开启了）：
        ├─ ctx.systemPrompt.section 的 text() 被调用
@@ -479,8 +487,8 @@ export function apply(ctx: Context) {
 | | v3（布尔标志 + @Remote） | v4（动态注册 + Projection） |
 |---|---|---|
 | **状态存储** | `LabLocal.labModeSessions` Set | Session Projection（`{ active: boolean }`） |
-| **开启方式** | `labModeSessions.add(sessionId)` | `ctx.plugin(LabLocal)` + projection 翻转 |
-| **关闭方式** | `labModeSessions.delete(sessionId)` | `ctx.registry.delete(LabLocal)` + projection 翻转 |
+| **开启方式** | `labModeSessions.add(sessionId)` | `ctx.plugin(LabLocal)` + projection 读取 registry |
+| **关闭方式** | `labModeSessions.delete(sessionId)` | `ctx.registry.delete(LabLocal)` + projection 读取 registry |
 | **消费者检查** | `if (!ctx.lab.isEnabled(id)) return ''` | 无（`inject = ['lab']` 保证） |
 | **工具可用性** | 工具始终可调用（遗漏检查） | 服务注销后工具自动消失 |
 | **新增消费者** | 必须记得写 `isEnabled()` 检查 | 只需声明 `inject = ['lab']` |
@@ -489,6 +497,7 @@ export function apply(ctx: Context) {
 | **Remote 依赖** | `TypertRemoteService` + `@Remote` | 无（纯抽象类） |
 | **Client 同步** | `ctx.remote.lab.isEnabledByClient()` | Projection push → CSS 注入 |
 | **Client 依赖** | `inject = ['remote', 'remote.lab', 'slots']` | `inject = ['slots', 'sessions']` |
+| **状态持久化** | 不持久化（Set 内存） | 非持久化（启动时清理残留注册） |
 
 ---
 
@@ -500,7 +509,7 @@ export function apply(ctx: Context) {
 - **服务名冲突**：`LabService` 注册名为 `'lab'`，不可与其他插件服务名冲突
 - **Fiber 生命周期**：服务注册后，fiber 的生命周期由 Cordis 管理；`ctx.registry.delete()` 会 dispose 所有关联 fiber
 - **Projection 可见性**：client-visible projection 必须提供 `wire: { viewSchema, view }` 块
-- **Projection 时序**：`apply` 不检查 registry，基于状态翻转（事件提交先于命令处理器）
-- **Projection 初始值**：`init` 始终返回 `false`，避免跨会话污染
+- **`command/done` 事件无 `name` 字段**：DSH 事件结构为 `{ commandId, kind, text }`，`apply` 不能按命令名过滤，响应所有 `command/done` 事件后读取 registry
+- **启动时状态重置**：`index.ts` 在插件加载时一次性清理残留注册，确保重启后 `active` 默认为 `false`（非持久化）
 - **会话隔离**：服务注册是全局的，但侧边栏状态（projection）是每会话的
 - **`face.subscribe` 回调**：不传参数，必须 `face.getSnapshot()` 读取当前值

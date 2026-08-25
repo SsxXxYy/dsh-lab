@@ -407,11 +407,15 @@ export function apply(ctx: Context) {
 > 详细实现见 [IMPLEMENTATION.md](IMPLEMENTATION.md)
 
 Projection key: `'dsh-lab:state'`，状态 `{ active: boolean }`：
-- `init`: 始终返回 `{ active: false }`（新会话默认关闭）
-- `apply`: 遇到 `command/run` 且 `name === 'lab'` 时翻转 `active`
+- `init`: 读取实际 registry 状态（新会话初始化时）
+- `apply`: 遇到任意 `command/done` 事件时，读取实际 registry 状态（而非翻转）。注意：DSH 事件结构 `{ commandId, kind, text }` 中**没有 `name` 字段**，无法按命令名过滤
 - `wire.view`: 状态直接作为 wire 值推送给 Client
 
 Client 订阅 projection 后根据 `active` 注入/移除 CSS 控制侧边栏。
+
+### 6.3 启动时状态重置（非持久化）
+
+`src/index.ts` 在插件加载时（`apply` 仅执行一次）清理残留的 `LabLocal` 注册，确保 DSH 重启后 `active` 默认为 `false`。使用模块级 `startupCleaned` 标志避免重复执行。
 
 ---
 
@@ -445,14 +449,14 @@ Host: /lab handler 检查 ctx.root.registry.has(LabLocal)
               → 自动 dispose
               → 返回 "实验模式已关闭"
 
-command/run 事件写入 session log
+command/done 事件写入 session log
   │
   ▼
 SessionProjectionRegistry.drive(session, event)
   │
   ▼
-projection.apply(state, {type:'command/run', data:{name:'lab'}})
-  │  翻转 active: !state.active
+projection.apply(state, {type:'command/done', data:{commandId, kind, text}})
+  │  读取实际 registry 状态：ctx.root.registry.has(LabLocal)
   │
   ▼
 Object.is(next, state)? → 状态变化
@@ -471,8 +475,9 @@ update(state.active)
 
 **关键设计**：
 - 服务注册是进程全局的（`ctx.root.plugin`），但侧边栏状态是每会话的（projection）
-- projection `init` 始终返回 `{ active: false }` — 新会话默认侧边栏可见
-- projection `apply` 翻转状态，不检查 registry（避免时序问题）
+- 启动时一次性清理残留注册（`index.ts`），确保重启后默认关闭（非持久化）
+- projection `init` 读取实际 registry 状态
+- projection `apply` 在任意 `command/done` 后读取 registry 实际状态（事件结构无 `name` 字段，无法按名称过滤）
 
 ### 7.2 执行工作流（LLM 驱动）
 
@@ -674,8 +679,8 @@ dsh plugin --profile web remove dsh-lab
 - **动态注册**：`/lab` 依赖 Cordis 的 `ctx.plugin()` 运行时注册能力，需框架版本 ≥ 4.0.1
 - **上下文层级**：`/lab` 需注册到 root context（`ctx.root.plugin()`）以确保全局可见
 - **Projection 可见性**：client-visible projection 必须提供 `wire: { viewSchema, view }` 块
-- **Projection 时序**：`apply` 不检查 registry，基于状态翻转（事件提交先于命令处理器）
-- **Projection 初始值**：`init` 始终返回 `false`，避免跨会话污染
+- **`command/done` 事件无 `name` 字段**：DSH 事件结构为 `{ commandId, kind, text }`，`apply` 不能按命令名过滤，响应所有 `command/done` 事件后读取 registry
+- **启动时状态重置**：`index.ts` 在插件加载时一次性清理残留注册，确保重启后 `active` 默认为 `false`（非持久化）
 - **会话隔离**：服务注册是全局的，但侧边栏状态（projection）是每会话的
 - **`face.subscribe` 回调**：不传参数，必须 `face.getSnapshot()` 读取当前值
 
@@ -725,18 +730,18 @@ dsh plugin --profile web remove dsh-lab
 
 **修复**：添加 `wire: { viewSchema: LabStateSchema, view: (state) => state }`。
 
-### 14.5 `apply` 不能依赖 registry 状态（时序问题）
+### 14.5 `command/done` 事件无 `name` 字段
 
-**现象**：`/lab` 命令执行后，projection `apply` 中检查 `ctx.root.registry.has(LabLocal)` 返回错误值。
+**现象**：`apply` 中用 `event.data.name === 'lab'` 过滤 `/lab` 命令事件，但条件永远不成立，状态不更新。
 
-**原因**：`command/run` 事件在命令处理器运行**之前**就被提交给 projection。此时 `ctx.root.plugin(LabLocal)` 尚未执行。
+**原因**：DSH 的 `command/done` 事件结构为 `{ commandId, kind, text }`，没有 `name` 字段。
 
-**修复**：`apply` 不检查 registry，基于当前 projection 状态翻转：`{ active: !(state?.active ?? false) }`。
+**修复**：去掉 `name` 判断，任意 `command/done` 事件后都读取 registry 实际状态。
 
-### 14.6 `init` 不能检查 registry（跨会话污染）
+### 14.6 启动时状态重置（非持久化）
 
-**现象**：新对话创建时，projection `init` 检查 registry 返回 `true`（因为上一个会话注册过），导致新会话错误地以 lab 模式开启。
+**现象**：重启 DSH 后，上一个会话注册的 `LabLocal` 仍留在 registry 中，导致新会话默认以 lab 模式开启。
 
-**原因**：`LabLocal` 注册在 root context，跨会话持久存在。
+**原因**：服务注册跨重启持久存在。
 
-**修复**：`init` 始终返回 `{ active: false }`。
+**修复**：`src/index.ts` 在插件加载时（`apply` 仅执行一次）清理残留注册，使用模块级 `startupCleaned` 标志避免重复执行。

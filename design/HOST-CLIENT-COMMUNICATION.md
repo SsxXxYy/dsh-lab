@@ -128,12 +128,12 @@ Host: ctx.root.plugin(LabLocal)  ← 动态注册 Service（进程全局）
     │  → 返回 "实验模式已启用"
     │
     ▼
-command/run 事件写入 session log
+command/done 事件写入 session log
     │
     ▼
 SessionProjectionRegistry.drive(session, event)
-    │  apply(state, {type:'command/run', data:{name:'lab'}})
-    │  → { active: !state.active }   ← 翻转状态（不检查 registry）
+    │  apply(state, {type:'command/done', data:{commandId, kind, text}})
+    │  → 读取实际 registry 状态：ctx.root.registry.has(LabLocal)
     │
     ▼
 Object.is(next, state)? → 变化 → onChanged → broadcast
@@ -150,8 +150,9 @@ update(active)
 
 **设计决策**：
 - 服务注册是全局的（`ctx.root.plugin`），但侧边栏状态是每会话的（projection）
-- Projection `init` 始终返回 `{ active: false }`，新会话默认侧边栏可见
-- Projection `apply` 翻转状态，不检查 registry（避免时序问题：事件提交先于命令处理器）
+- 启动时一次性清理残留注册（`index.ts`），确保重启后默认关闭（非持久化）
+- Projection `init` 读取实际 registry 状态
+- Projection `apply` 在任意 `command/done` 后读取 registry 实际状态（事件结构无 `name` 字段，无法按名称过滤）
 - Projection 必须提供 `wire: { viewSchema, view }` 块才能对客户端可见
 - 使用 `ctx.effect` + `face.subscribe()` 管理订阅生命周期，监听 `sessions.list` 变化以在会话切换时重新订阅
 
