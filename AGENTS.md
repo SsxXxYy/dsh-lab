@@ -63,7 +63,7 @@ dsh-lab/
 │   ├── SLASH-COMMANDS.md            # 斜杠命令实现方案（v4）
 │   └── TOOLS.md                     # 工具集文档（v4）
 ├── src/                             # Host 端 TypeScript 源码
-│   ├── index.ts                     # 插件入口：注册 meta + verify + projection
+│   ├── index.ts                     # 插件入口：启动时清理残留注册 + 注册 meta + verify + projection
 │   ├── service.ts                   # Service Definition：LabService 抽象类
 │   ├── lab-agent-local.ts           # Service Provider：LabLocal 实现
 │   ├── commands.ts                  # Consumer（元命令）：/lab 命令
@@ -120,8 +120,12 @@ Host /lab command → session append command/done → projection drive → WebSo
 ```
 
 - `init`: 读取实际 registry 状态（新会话初始化时）
-- `apply`: 遇到 `command/done` 且 `name === 'lab'` 时，读取实际 registry 状态（而非翻转）
+- `apply`: 遇到任意 `command/done` 事件时，读取实际 registry 状态（而非翻转）。注意：DSH 事件结构 `{ commandId, kind, text }` 中**没有 `name` 字段**，无法按命令名过滤
 - `wire`: 必须提供 `viewSchema` + `view` 块才能对客户端可见
+
+### 5.5 启动时状态重置（非持久化）
+
+`src/index.ts` 在插件加载时（`apply` 仅执行一次）清理残留的 `LabLocal` 注册，确保 DSH 重启后 `active` 默认为 `false`。使用模块级 `startupCleaned` 标志避免重复执行。
 
 ### 5.4 Client 侧渲染策略
 
@@ -167,7 +171,8 @@ export function apply(ctx: Context) {
 | 纯副作用 client 组件不需要 React | 没有全局 `React` 变量 | 用原生 DOM API 操作，不引入 React |
 | Projection 必须提供 `wire` 块 | 没有 `wire` 块则注册为 host-only | 添加 `wire: { viewSchema, view }` |
 | `apply` 不能依赖 registry 状态 | `command/run` 事件在命令处理器之前提交 | `apply` 读取实际 registry 状态（使用 `command/done` 事件） |
-| `init` 不能检查 registry | 服务注册跨会话持久存在 | `init` 读取实际 registry 状态（新会话默认关闭） |
+| `command/done` 事件无 `name` 字段 | DSH 事件结构为 `{ commandId, kind, text }` | `apply` 不能按命令名过滤，响应所有 `command/done` 事件后读取 registry |
+| `init` 不能检查 registry | 服务注册跨会话持久存在 | 启动时一次性清理（`index.ts`），`init` 读取实际 registry 状态 |
 | `face.subscribe` 回调不传参数 | ProjectionValueStore 的 notifier 设计 | 回调内必须手动 `face.getSnapshot()` 读取 |
 
 ## 8. 调试指南
@@ -175,25 +180,36 @@ export function apply(ctx: Context) {
 ### Host 端 console（过滤 `[dsh-lab:projection]`）
 
 - `init: active = false` — 新会话初始化
-- `/lab done: actual registry state = true` — 事件驱动状态更新
-- `★ push: {"key":"dsh-lab:state","value":{"active":true},"seq":N}` — 推送触发
+- `★ HOP2: command/done, actual registry state = true` — 事件驱动状态更新
+- `★ HOP3: push to client: {"key":"dsh-lab:state","value":{"active":true},"seq":N}` — 推送触发
 
 ### Client 端 console（过滤 `[dsh-lab:client]`）
 
-- `initial: {"active":false}` — 初始快照
-- `★ projection push: {"active":true}` — 收到推送
+- `★ HOP4: initial snapshot: {"active":false}` — 初始快照
+- `★ HOP4: projection push received: {"active":true}` — 收到推送
+- `★ HOP5: update(true) tag exists: false` — 准备注入 CSS
 - `✓ sidebar hidden` — CSS 已注入
 - `✓ sidebar restored` — CSS 已移除
 
 ### 排查链路（按出现顺序检查 5 跳日志）
 
-| 跳 | 日志 | 含义 |
+| 跳 | 日志标识 | 含义 |
 |---|---|---|
-| 1 | `[dsh-lab:cmd] enable: registered = true` | 命令是否成功注册服务 |
-| 2 | `[dsh-lab:projection] /lab done: actual registry state = true` | projection 是否更新状态 |
-| 3 | `[dsh-lab:projection] ★ push: {...}` | onChanged 推送是否触发 |
-| 4 | `[dsh-lab:client] ★ projection push: {"active":true}` | 客户端是否收到推送 |
-| 5 | `[dsh-lab:client] ✓ sidebar hidden` | CSS 是否注入 |
+| HOP1 | `[dsh-lab:cmd] ★ HOP1` | 命令是否执行、注册/注销是否成功 |
+| HOP2 | `[dsh-lab:projection] ★ HOP2` | 是否收到 `command/done` 事件、registry 实际状态 |
+| HOP3 | `[dsh-lab:projection] ★ HOP3` | onChanged 推送是否触发（状态是否变化） |
+| HOP4 | `[dsh-lab:client] ★ HOP4` | 客户端是否收到推送、snapshot 值 |
+| HOP5 | `[dsh-lab:client] ★ HOP5` | 是否注入/移除 CSS |
+
+### 常见故障模式
+
+| 故障 | 缺失的跳 | 排查方向 |
+|---|---|---|
+| 输入 `/lab` 无反应 | 无 HOP1 | 命令未注册或未触发 |
+| 侧边栏不变化 | 有 HOP1 无 HOP2 | `command/done` 事件未提交 |
+| 侧边栏不变化 | 有 HOP2 无 HOP3 | `apply` 返回值与之前相同（状态未变） |
+| 侧边栏不变化 | 有 HOP3 无 HOP4 | WebSocket 推送失败或客户端未订阅 |
+| 侧边栏不变化 | 有 HOP4 无 HOP5 | `state.active` 为 `undefined`/`null` |
 
 ## 9. 依赖说明
 
@@ -208,6 +224,7 @@ export function apply(ctx: Context) {
 
 | 依赖 | 用途 |
 |---|---|
+| `@types/node` ^26.3.0 | Node.js 类型定义（tsc 编译需要） |
 | `tsdown` ^0.22.14 | Client bundle 构建 |
 | `typescript` ^5.6.0 | Host 端 TypeScript 编译 |
 | `zod` ^3.24.0 | Schema 校验 |
