@@ -567,6 +567,124 @@ html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !im
 
 `client/InstrumentPanel.tsx` 当前为占位组件，未来用于显示仪器控制面板。
 
+### 8.4 添加新 UI 或面板指南
+
+Client 端加 UI 有两种方式，按复杂度选择：
+
+#### 方式一：纯 CSS/DOM 操作（无需 React）
+
+适合：显示/隐藏元素、注入样式、简单副作用。
+
+**做法**：在 `client/client.ts` 的 `update()` 函数里扩展，通过 `face.subscribe()` 响应 projection 变化：
+
+```ts
+// client/client.ts — 扩展示例
+let tag: HTMLStyleElement | null = null
+
+function update(active: boolean) {
+  if (active && !tag) {
+    tag = document.createElement('style')
+    tag.dataset.pluginCss = 'dsh-lab/hide-sidebar'
+    tag.textContent = 'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}'
+    document.head.appendChild(tag)
+  } else if (!active && tag) {
+    tag.remove()
+    tag = null
+  }
+}
+
+// 订阅 projection 变化
+unsubscribeProjection = face.subscribe(function () {
+  const state = face.getSnapshot()
+  update(state ? state.active : false)
+})
+```
+
+**要点**：
+- 不依赖 React，直接用 `document.createElement` / `querySelector`
+- `face.subscribe` 回调不传参数，必须手动 `face.getSnapshot()` 读取
+- 轻量，适合简单 UI 控制
+
+#### 方式二：React 组件面板
+
+适合：仪器面板、工作流面板等复杂交互 UI。
+
+**做法**：使用 `ctx.slots.inject()` + `__ModuleLoader__` 模式。
+
+**步骤**：
+
+1. **创建 React 组件**（如 `client/InstrumentPanel.tsx`）
+
+```tsx
+// client/InstrumentPanel.tsx
+import type { ReactElement } from 'react'
+
+export function InstrumentPanel(): ReactElement {
+  return <div className="lab-instrument-panel">Lab Instrument Panel</div>
+}
+```
+
+2. **在 `client/client.ts` 中注册到 slot**
+
+```ts
+// client/client.ts
+import type { Context } from '@deepseek-ai/cordis'
+
+export const name = 'dsh-lab-client'
+export const inject = ['slots', 'sessions']
+
+export function apply(ctx: Context) {
+  // 注入 React 组件到 shell.overlay slot
+  ctx.slots.inject('shell.overlay', function () {
+    return ctx.slots.register(
+      { name: 'shell.overlay', id: 'lab-instrument-panel' },
+      function () {
+        const { InstrumentPanel } = require('./InstrumentPanel')
+        return InstrumentPanel()
+      }
+    )
+  })
+}
+```
+
+3. **在 `tsdown.config.ts` 中确保 React 是 external**
+
+```ts
+// tsdown.config.ts
+const externals = [
+  'react', 'react/jsx-runtime', 'react-dom', 'react-dom/client',
+  // ...
+]
+```
+
+React 会从 DSH 客户端共享的 `require('react')` 获取，不需要打包进 bundle。
+
+#### 如果需要更多状态
+
+当前 projection schema 只有 `{ active: boolean }`。如果新 UI 需要更多状态（如设备列表、工作流数据），扩展 projection schema：
+
+```ts
+// src/projection-types.ts
+export const LabStateSchema = z.object({
+  active: z.boolean(),
+  devices: z.array(z.object({...})),  // 新增
+})
+```
+
+Host 端 `apply()` 推送新状态，Client 端 `face.getSnapshot()` 读取。
+
+#### 决策树
+
+```
+要加什么 UI？
+  │
+  ├─ 纯 CSS 变化（隐藏/显示/改样式）
+  │   └─ 方式一：扩展 client/client.ts 的 update()
+  │
+  └─ 需要 React 组件（面板/卡片/交互）
+      └─ 方式二：ctx.slots.inject() + require('./Component')
+```
+
 ---
 
 ## 10. 依赖
