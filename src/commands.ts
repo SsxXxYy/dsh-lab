@@ -11,11 +11,12 @@ export function apply(ctx: Context) {
     description: '切换实验模式（启用/关闭仪器控制插件）',
     handler: async () => {
       const wasRegistered = ctx.root.registry.has(LabLocal)
+      console.log('[dsh-lab:cmd] ★ HOP1: /lab handler called, wasRegistered =', wasRegistered)
 
       if (!wasRegistered) {
         ctx.root.plugin(LabLocal)
         const nowRegistered = ctx.root.registry.has(LabLocal)
-        console.log('[dsh-lab:cmd] enable: registered =', nowRegistered)
+        console.log('[dsh-lab:cmd] ★ HOP1: enable done, registered =', nowRegistered)
         if (!nowRegistered) {
           console.error('[dsh-lab:cmd] ✗ enable FAILED')
           return { kind: 'error', text: '实验模式启用失败：服务注册异常。' }
@@ -24,7 +25,7 @@ export function apply(ctx: Context) {
       } else {
         ctx.root.registry.delete(LabLocal)
         const nowRegistered = ctx.root.registry.has(LabLocal)
-        console.log('[dsh-lab:cmd] disable: still registered =', nowRegistered)
+        console.log('[dsh-lab:cmd] ★ HOP1: disable done, still registered =', nowRegistered)
         if (nowRegistered) {
           console.error('[dsh-lab:cmd] ✗ disable FAILED')
           return { kind: 'error', text: '实验模式关闭失败：服务注销异常。' }

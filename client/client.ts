@@ -12,7 +12,7 @@ export function apply(ctx: Context) {
   let tag: HTMLStyleElement | null = null
 
   function update(active: boolean) {
-    console.log('[dsh-lab:client] update(', active, ') tag:', !!tag)
+    console.log('[dsh-lab:client] ★ HOP5: update(', active, ') tag exists:', !!tag)
     if (active && !tag) {
       if (typeof document === 'undefined') {
         console.warn('[dsh-lab:client] skip: document undefined (SSR?)')
@@ -65,12 +65,12 @@ export function apply(ctx: Context) {
 
       unsubscribeProjection = face.subscribe(function () {
         const state = face.getSnapshot()
-        console.log('[dsh-lab:client] ★ projection push:', JSON.stringify(state))
+        console.log('[dsh-lab:client] ★ HOP4: projection push received:', JSON.stringify(state))
         update(state ? state.active : false)
       })
 
       const initial = face.getSnapshot()
-      console.log('[dsh-lab:client] initial:', JSON.stringify(initial))
+      console.log('[dsh-lab:client] ★ HOP4: initial snapshot:', JSON.stringify(initial))
       if (initial) update(initial.active)
     }
 
