@@ -766,7 +766,8 @@ dsh plugin --profile web remove dsh-lab
 | **P0** | `/lab` 元命令（服务注册/注销） | Cordis 动态注册 API |
 | **P0** | Service Provider（`LabLocal`：Python 执行引擎） | PyVISA |
 | **P0** | Service Definition（`LabService` 抽象类） | — |
-| **P0** | 核心工具（scan / read_document / read_workflow / send_scpi） | PyVISA |
+| **P0** | 文件操作工具（read_document / read_workflow / create_workflow / update_workflow / delete_workflow） | TypeScript 直接处理 |
+| **P0** | 硬件工具（scan / send_scpi） | PyVISA |
 | **P0** | System Prompt 上下文注入（仪器/文档/工作流索引） | 文件系统 |
 | **P1** | 工作流 CRUD 工具 | 文件系统 |
 | **P1** | ASG 工具（send_asg） | asglib |

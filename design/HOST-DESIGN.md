@@ -134,6 +134,8 @@ DSH Agent 看到结果 → 决定下一步
 
 ## 3. Python 执行引擎设计
 
+> **职责边界**：Python 只负责**硬件通信**（需要 PyVISA / asglib）。文件 I/O、JSON 解析、YAML frontmatter 等在 TypeScript 中直接处理。
+
 ### 3.1 一次性脚本入口 (dsh_lab/__main__.py)
 
 ```python
@@ -149,29 +151,14 @@ def main():
     module = sys.argv[1]
     args = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
 
-    # 路由到对应模块
+    # 路由到对应模块（仅硬件操作）
     if module == "scan":
-        from dsh_lab.inventory import scan_instruments
+        from dsh_lab.scan import scan_instruments
         result = scan_instruments()
-    elif module == "read_doc":
-        from dsh_lab.docs import read_document
-        result = read_document(args["filename"], args.get("lines", ""), args.get("section", ""))
-    elif module == "read_workflow":
-        from dsh_lab.workflow import read_workflow
-        result = read_workflow(args["name"])
-    elif module == "create_workflow":
-        from dsh_lab.workflow import create_workflow
-        result = create_workflow(args["folder_name"], args.get("name", ""), args.get("description", ""))
-    elif module == "update_workflow":
-        from dsh_lab.workflow import update_workflow
-        result = update_workflow(**args)
-    elif module == "delete_workflow":
-        from dsh_lab.workflow import delete_workflow
-        result = delete_workflow(args["name"])
-    elif module == "send_scpi":
+    elif module == "scpi":
         from dsh_lab.scpi import scpi_write
         result = scpi_write(args["address"], args["command"], args.get("delay", 0))
-    elif module == "send_asg":
+    elif module == "asg":
         from dsh_lab.asg import asg_call
         result = asg_call(args["func"], args.get("args", []), args.get("kwargs", {}), args.get("delay", 0))
     else:
@@ -183,6 +170,12 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+
+**已移除的路由**（TypeScript 直接处理）：
+- `read_doc` → TypeScript 读文件 + 按行切片
+- `read_workflow` → TypeScript 读文件
+- `create_workflow` / `update_workflow` / `delete_workflow` → TypeScript 文件 CRUD
+- `rename_device` → TypeScript 读写 JSON
 
 ### 3.2 SCPI 引擎 (dsh_lab/scpi.py)
 
@@ -248,102 +241,10 @@ def asg_call(func: str, args: list, kwargs: dict, delay: float = 0) -> dict:
         return {"status": "error", "error": f"{type(e).__name__}: {e}"}
 ```
 
-### 3.4 工作流文件 CRUD (dsh_lab/workflow.py)
+### 3.4 设备扫描 (dsh_lab/scan.py)
 
 ```python
-"""工作流文件操作"""
-import re
-import yaml
-from pathlib import Path
-
-WORKFLOW_DIR = Path(__file__).parent.parent / "workflows"
-
-def list_workflows() -> list[dict]:
-    """列出所有工作流"""
-    workflows = []
-    for item in sorted(WORKFLOW_DIR.iterdir()):
-        if item.is_dir():
-            md_file = item / f"{item.name}.md"
-            if md_file.exists():
-                content = md_file.read_text(encoding="utf-8")
-                fm = parse_frontmatter(content)
-                workflows.append({"name": item.name, **fm})
-    return workflows
-
-def read_workflow(name: str) -> str:
-    """读取工作流文件内容"""
-    safe = _safe_folder_name(name)
-    md_path = WORKFLOW_DIR / safe / f"{safe}.md"
-    if not md_path.exists():
-        return f"错误：找不到工作流 {safe}"
-    return md_path.read_text(encoding="utf-8")
-
-def create_workflow(folder_name: str, name: str = "", description: str = "") -> str:
-    """新建工作流"""
-    safe = _safe_folder_name(folder_name)
-    target_dir = WORKFLOW_DIR / safe
-    if target_dir.exists():
-        return f"错误：{safe} 已存在"
-    target_dir.mkdir(parents=True, exist_ok=True)
-    fm = {"name": name or safe, "description": description}
-    yaml_block = yaml.dump(fm, allow_unicode=True, sort_keys=False).strip()
-    md_path = target_dir / f"{safe}.md"
-    md_path.write_text(f"---\n{yaml_block}\n---\n\n", encoding="utf-8")
-    return f"已创建工作流：{safe}"
-
-def update_workflow(name: str, **kwargs) -> str:
-    """修改工作流"""
-    safe = _safe_folder_name(name)
-    md_path = WORKFLOW_DIR / safe / f"{safe}.md"
-    if not md_path.exists():
-        return f"错误：找不到工作流 {safe}"
-    content = md_path.read_text(encoding="utf-8")
-    yaml_text, body = _parse_frontmatter(content)
-    if "frontmatter" in kwargs:
-        fm = yaml.safe_load(yaml_text) if yaml_text else {}
-        fm.update(kwargs["frontmatter"])
-        yaml_text = yaml.dump(fm, allow_unicode=True, sort_keys=False).strip()
-    if "section_title" in kwargs and "section_content" in kwargs:
-        body = _replace_section(body, kwargs["section_title"], kwargs["section_content"])
-    if "append" in kwargs:
-        body = body.rstrip() + f"\n{kwargs['append']}\n"
-    new_content = f"---\n{yaml_text}\n---\n\n{body}".strip() + "\n"
-    md_path.write_text(new_content, encoding="utf-8")
-    return f"已更新工作流：{safe}"
-
-def delete_workflow(name: str) -> str:
-    """删除工作流"""
-    import shutil
-    safe = _safe_folder_name(name)
-    target_dir = WORKFLOW_DIR / safe
-    if not target_dir.exists():
-        return f"错误：找不到工作流 {safe}"
-    shutil.rmtree(target_dir)
-    return f"已删除工作流：{safe}"
-
-def _safe_folder_name(name: str) -> str:
-    return re.sub(r"[^\w\-一-鿿]", "_", name.strip())
-
-def _parse_frontmatter(content: str) -> tuple[str, str]:
-    m = re.match(r"^---\s*\n(.*?)\n---", content, re.DOTALL)
-    if m:
-        return m.group(1), content[m.end():]
-    return "", content
-
-def _replace_section(body: str, section_title: str, new_content: str) -> str:
-    pattern = re.compile(
-        r"(^" + re.escape(section_title.strip()) + r"\n)(.*?)(?=\n## |\Z)",
-        re.MULTILINE | re.DOTALL,
-    )
-    if pattern.search(body):
-        return pattern.sub(rf"\g<1>{new_content}\n", body)
-    return body.rstrip() + f"\n\n{section_title.strip()}\n{new_content}\n"
-```
-
-### 3.5 设备库存管理 (dsh_lab/inventory.py)
-
-```python
-"""设备库存管理"""
+"""设备库存管理 — 需要 PyVISA + asglib"""
 import json
 import time
 import pyvisa
@@ -352,8 +253,8 @@ from asglib import ASG_Init, ASG_GetDevicesList, ASG_Release
 
 INVENTORY_PATH = Path(__file__).parent.parent / "devices" / "devices_inventory.json"
 
-def scan_instruments() -> str:
-    """扫描 VISA + ASG 设备"""
+def scan_instruments() -> dict:
+    """扫描 VISA + ASG 设备，返回结构化结果"""
     rm = pyvisa.ResourceManager("@py")
     resources = rm.list_resources()
 
@@ -364,7 +265,7 @@ def scan_instruments() -> str:
         if prefix not in seen_prefix or len(addr) < len(seen_prefix[prefix]):
             seen_prefix[prefix] = addr
 
-    # 读取旧库存
+    # 读取旧库存（保留用户命名）
     old_inventory = {}
     try:
         old_inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
@@ -389,6 +290,7 @@ def scan_instruments() -> str:
         online_devices.append({
             "model": model, "serial": serial, "address": addr,
             "name": old_inventory.get(serial, {}).get("name", ""),
+            "kind": "visa",
         })
         idn_map[addr] = idn
 
@@ -408,12 +310,13 @@ def scan_instruments() -> str:
                         "local_ip": item.get("asgDev_localIP", ""),
                         "local_mac": item.get("asgDev_localMAC", ""),
                         "name": old_inventory.get(dev_id, {}).get("name", ""),
+                        "kind": "asg",
                     })
             ASG_Release()
     except Exception:
         pass
 
-    # 更新库存
+    # 增量合并：新设备 + 离线设备（保留 name）
     new_inventory = {}
     for d in online_devices:
         new_inventory[d["serial"]] = {
@@ -423,64 +326,30 @@ def scan_instruments() -> str:
             "local_mac": d.get("local_mac", ""),
             "idn": idn_map.get(d.get("address", ""), ""),
             "name": d["name"],
+            "kind": d.get("kind", "visa"),
         }
-    # 保留离线设备
     for serial, info in old_inventory.items():
         if serial not in new_inventory:
-            new_inventory[serial] = {**info, "address": "", "local_ip": "", "local_mac": "", "idn": ""}
+            new_inventory[serial] = {
+                **info, "address": "", "local_ip": "", "local_mac": "", "idn": "",
+            }
 
     INVENTORY_PATH.parent.mkdir(exist_ok=True)
     INVENTORY_PATH.write_text(json.dumps(new_inventory, ensure_ascii=False, indent=2), encoding="utf-8")
 
     if not online_devices:
-        return "当前没有检测到任何已连接的仪器设备。"
+        return {"devices": [], "text": "当前没有检测到任何已连接的仪器设备。"}
     lines = [f"当前共 {len(online_devices)} 个设备在线："]
     for i, d in enumerate(online_devices, 1):
         label = d["name"] if d["name"] else d["model"]
         lines.append(f"  {i}. {label}")
-    return "\n".join(lines)
+    return {"devices": online_devices, "text": "\n".join(lines)}
 ```
 
-### 3.6 文档读取 (dsh_lab/docs.py)
-
-```python
-"""仪器文档读取"""
-from pathlib import Path
-
-DOCS_DIR = Path(__file__).parent.parent / "Documents"
-
-def read_document(filename: str, lines: str = "", section: str = "") -> str:
-    """按行区间或章节读取仪器文档"""
-    path = DOCS_DIR / filename.strip()
-    if not path.is_file():
-        return f"错误：文件不存在：{filename}"
-
-    all_lines = path.read_text(encoding="utf-8").splitlines()
-
-    if lines:
-        # 按行区间读取
-        try:
-            s, e = lines.split("-")
-            s, e = int(s), int(e)
-        except ValueError:
-            return "错误：行区间格式错误，应为 23-36"
-        s = max(1, s)
-        e = min(len(all_lines), e)
-        return f"[{filename}:{s}-{e}]\n" + "\n".join(all_lines[s - 1 : e])
-
-    if section:
-        # 按章节名读取
-        for i, line in enumerate(all_lines):
-            if section.lower() in line.lower():
-                # 找到章节头，读到下一个 ## 或文件结束
-                end = i + 1
-                while end < len(all_lines) and not all_lines[end].startswith("## "):
-                    end += 1
-                return f"[{filename}:{section}]\n" + "\n".join(all_lines[i:end])
-
-    # 无参数返回索引
-    return f"[{filename}]\n" + "\n".join(all_lines[:20]) + "\n...(使用 lines 或 section 参数读取具体内容)"
-```
+**说明**：
+- `scan.py` 是唯一需要 Python 的文件操作（因为要访问硬件）
+- 工作流 CRUD 和文档读取已移至 TypeScript（`src/lab-local.ts` 直接处理）
+- 设备清单 JSON 的读写在 TypeScript 中完成，`scan.py` 返回结构化数据
 
 ---
 
