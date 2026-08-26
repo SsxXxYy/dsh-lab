@@ -1,6 +1,6 @@
 // lib/commands.ts — Consumer 角色（元命令）
 import type { Context } from '@deepseek-ai/cordis'
-import { LabLocal } from './lab-agent-local.js'
+import { LabLocal } from './lab-local.js'
 
 export const name = 'dsh-lab-meta'
 export const inject = ['commands']

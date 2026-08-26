@@ -72,7 +72,7 @@ dsh-lab/
 ├── src/                         # Host 半 TypeScript 源码
 │   ├── index.ts                 # 插件入口：启动时清理残留注册 + 注册 meta + projection
 │   ├── service.ts               # Service Definition：LabService 抽象类（extends TypertRemoteService）
-│   ├── lab-agent-local.ts       # Service Provider：LabLocal 实现（extends LabService, @Remote ping）
+│   ├── lab-local.ts       # Service Provider：LabLocal 实现（extends LabService, @Remote ping）
 │   ├── commands.ts              # Consumer（元命令）：/lab 命令（注册/注销服务）
 │   ├── projection.ts            # Host 端 Session Projection：追踪 lab 状态并推送给 Client
 │   ├── projection-types.ts      # Projection schema（LabState + LabStateSchema）
@@ -85,7 +85,7 @@ dsh-lab/
 │   ├── index.js                 # Host 入口（package.json main 指向此）
 │   ├── commands.js
 │   ├── service.js
-│   ├── lab-agent-local.js
+│   ├── lab-local.js
 
 │   ├── projection.js
 │   ├── projection-types.js
@@ -101,7 +101,7 @@ dsh-lab/
 | 文件 | 角色 | 职责 |
 |---|---|---|
 | `src/service.ts` | Service Definition | 定义 `LabService` 抽象类，继承 `TypertRemoteService`，注册服务名 `'lab'` |
-| `src/lab-agent-local.ts` | Service Provider | 实现 `LabLocal`，继承 `LabService`，提供 `@Remote ping()` |
+| `src/lab-local.ts` | Service Provider | 实现 `LabLocal`，继承 `LabService`，提供 `@Remote ping()` |
 | `src/commands.ts` | Consumer（元命令） | 注册 `/lab` 命令控制服务生命周期 |
 | `src/projection.ts` | Projection | Host 端 Session Projection，追踪 lab 状态并推送给 Client |
 | `src/projection-types.ts` | Schema | LabState 类型和 Zod schema |
@@ -113,7 +113,7 @@ dsh-lab/
                   src/index.ts
                        │
                        ▼
-              src/commands.ts ─────→ src/service.ts ←───── src/lab-agent-local.ts
+              src/commands.ts ─────→ src/service.ts ←───── src/lab-local.ts
                                            ▲                      │
                                            │                      │
                                            │                      │
@@ -279,7 +279,7 @@ Consumer（工具）    = tools.ts 里的 send_scpi 工具
 | 角色 | 职责 | 对应代码 |
 |---|---|---|
 | **Service Definition** | 定义 `LabService` 抽象类（`sendScpi()`、`scanInstruments()`...） | `src/service.ts` |
-| **Service Provider** | 实现具体逻辑：调用 Python 执行 SCPI/ASG | `src/lab-agent-local.ts` |
+| **Service Provider** | 实现具体逻辑：调用 Python 执行 SCPI/ASG | `src/lab-local.ts` |
 | **Consumer（工具）** | 注册工具（`send_scpi`），声明 `inject = ['tools', 'lab']` | `src/tools.ts` |
 | **Consumer（上下文）** | 注入 system prompt section，声明 `inject = ['systemPrompt', 'lab']` | `src/context.ts` |
 | **Consumer（元命令）** | 注册 `/lab` 命令，控制服务注册/注销 | `src/commands.ts` |

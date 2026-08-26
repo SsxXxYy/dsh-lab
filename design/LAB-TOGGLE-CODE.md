@@ -18,7 +18,7 @@
 | 角色 | 文件 | 职责（与 /lab 相关） |
 |---|---|---|
 | **Service Definition** | `src/service.ts` | 定义 `LabService` 抽象类 |
-| **Service Provider** | `src/lab-agent-local.ts` | `LabLocal` 实现：**构造函数注册服务，dispose 自动注销** |
+| **Service Provider** | `src/lab-local.ts` | `LabLocal` 实现：**构造函数注册服务，dispose 自动注销** |
 | **Consumer（元命令）** | `src/commands.ts` | 注册 `/lab` 命令，调用 `ctx.plugin(LabLocal)` / `ctx.registry.delete(LabLocal)` + projection 翻转 |
 | **Consumer（工具）** | `src/tools.ts` | 声明 `inject = ['tools', 'lab']`，服务注册后自动激活 |
 | **Consumer（上下文）** | `src/context.ts` | 声明 `inject = ['systemPrompt', 'lab']`，服务注册后自动激活 |
@@ -88,10 +88,10 @@ export abstract class LabService extends Service {
 
 ---
 
-## 4. Service Provider：`src/lab-agent-local.ts`
+## 4. Service Provider：`src/lab-local.ts`
 
 ```ts
-// src/lab-agent-local.ts — Service Provider 角色
+// src/lab-local.ts — Service Provider 角色
 import type { Context } from '@deepseek-ai/cordis'
 import { LabService } from './service'
 import type { ScanInstrumentsResult, SendScpiResult, SendAsgResult } from './service'
@@ -158,7 +158,7 @@ export function apply(ctx: Context) {
 ```ts
 // src/commands.ts — Consumer 角色（/lab 部分）
 import type { Context } from '@deepseek-ai/cordis'
-import { LabLocal } from './lab-agent-local'
+import { LabLocal } from './lab-local'
 
 export const name = 'dsh-lab-meta'
 export const inject = ['commands']   // 只依赖命令运行时，始终可用

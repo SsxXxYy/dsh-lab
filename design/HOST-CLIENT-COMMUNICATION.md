@@ -1098,7 +1098,7 @@ export abstract class LabService extends TypertRemoteService {
   }
 }
 
-// src/lab-agent-local.ts
+// src/lab-local.ts
 import { Remote } from '@deepseek-ai/dsh-typert-protocol'
 
 export class LabLocal extends LabService {
@@ -1270,7 +1270,7 @@ ctx.remote.$on('lab/config-updated', (config) => {
 | 文件 | 职责 |
 |---|---|
 | `src/service.ts` | `LabService` 抽象基类（Service Definition 角色） |
-| `src/lab-agent-local.ts` | `LabLocal` 实现（Service Provider 角色），`@Remote` 标记方法 |
+| `src/lab-local.ts` | `LabLocal` 实现（Service Provider 角色），`@Remote` 标记方法 |
 | `src/commands.ts` | `dsh-lab` slash command（Consumer 角色），动态注册/注销 `LabLocal` |
 
 | `src/index.ts` | 插件入口 |

@@ -108,7 +108,7 @@ export function apply(ctx: Context) {
 ```ts
 // src/index.ts — 入口注册（只注册元命令）
 import type { Context } from '@deepseek-ai/cordis'
-import { LabLocal } from './lab-agent-local'
+import { LabLocal } from './lab-local'
 import * as meta from './commands'
 
 export const name = 'dsh-lab'
@@ -122,7 +122,7 @@ export function apply(ctx: Context) {
 ```ts
 // src/commands.ts — /lab 元命令（始终可用）
 import type { Context } from '@deepseek-ai/cordis'
-import { LabLocal } from './lab-agent-local'
+import { LabLocal } from './lab-local'
 
 export const name = 'dsh-lab-meta'
 export const inject = ['commands']   // 只依赖命令运行时
@@ -203,10 +203,10 @@ export function apply(ctx: Context) {
 
 ---
 
-## 4. 服务注册侧：`src/lab-agent-local.ts`
+## 4. 服务注册侧：`src/lab-local.ts`
 
 ```ts
-// src/lab-agent-local.ts — Service Provider 角色
+// src/lab-local.ts — Service Provider 角色
 import type { Context } from '@deepseek-ai/cordis'
 import { LabService, type ScanInstrumentsResult } from './service'
 
@@ -315,7 +315,7 @@ export function apply(ctx: Context) {
 ```ts
 // src/commands.ts — Consumer 角色（完整）
 import type { Context } from '@deepseek-ai/cordis'
-import { LabLocal } from './lab-agent-local'
+import { LabLocal } from './lab-local'
 
 export const name = 'dsh-lab-meta'
 export const inject = ['commands']
@@ -419,7 +419,7 @@ export function apply(ctx: Context) {
 4. **支持参数命令**：通过 `input.hint` 提供参数提示，`rawInput` 获取用户输入参数。
 5. **生命周期日志**：命令执行自动记录 `command/run` 与 `command/done` 事件，持久化到会话日志。
 6. **服务注册即开关**：`/lab` 通过 `ctx.plugin(LabLocal)` 注册服务，消费者通过 `inject = ['lab']` 自动激活。无需 `isEnabled()` 检查。
-7. **命令是 Consumer**：状态与 Python 执行都归 Service Provider（`src/lab-agent-local.ts`），命令只调 `ctx.lab` 接口，替换 Provider 时命令代码不变。
+7. **命令是 Consumer**：状态与 Python 执行都归 Service Provider（`src/lab-local.ts`），命令只调 `ctx.lab` 接口，替换 Provider 时命令代码不变。
 8. **动态注册防重复**：`ctx.registry.has(LabLocal)` 检查是否已注册，防止重复 `ctx.plugin()` 调用。
 
 ---

@@ -19,7 +19,7 @@ Service Definition  →  Service Provider  →  Consumer
 | 角色 | 对应代码 | 职责 |
 |---|---|---|
 | **Service Definition** | `src/service.ts` | 定义 `LabService` 抽象类 + 全部 Request/Result 类型 |
-| **Service Provider** | `src/lab-agent-local.ts` | 实现 `LabLocal`：调用 Python 执行 SCPI/ASG |
+| **Service Provider** | `src/lab-local.ts` | 实现 `LabLocal`：调用 Python 执行 SCPI/ASG |
 | **Consumer（工具）** | `src/tools.ts` | 把服务方法暴露为工具，声明 `inject = ['tools', 'lab']` |
 | **Consumer（上下文）** | `src/context.ts` | 注入 system prompt section，声明 `inject = ['systemPrompt', 'lab']` |
 | **Consumer（元命令）** | `src/commands.ts` | 注册 `/lab` 命令，控制服务注册/注销 |
@@ -225,7 +225,7 @@ Agent: 请扫描当前连接的仪器
 - ASG SDK 未安装 → 跳过 ASG 扫描，仅返回 VISA 设备
 - 超时 → 返回超时提示
 
-**Provider 实现要点**（`src/lab-agent-local.ts`）：内部通过 `ctx.shell.run(ctx.shell.resolve({ command: 'python -m dsh_lab.scan', timeoutMs: 30000 }))` 执行，解析 stdout 为 `ScanInstrumentsResult`。
+**Provider 实现要点**（`src/lab-local.ts`）：内部通过 `ctx.shell.run(ctx.shell.resolve({ command: 'python -m dsh_lab.scan', timeoutMs: 30000 }))` 执行，解析 stdout 为 `ScanInstrumentsResult`。
 
 ---
 
@@ -682,4 +682,4 @@ const toolParameters = {
 | `FILE_NOT_FOUND` | Python | 文件不存在 | 检查文件名 |
 | `SANDBOX_DENIED` | DSH | 沙箱拒绝写操作 | 提示用户授权升级 |
 
-**归属说明**：错误码的识别与包装发生在 **Service Provider**（`src/lab-agent-local.ts`）内，工具（Consumer）只透传 `SendScpiResult.text` / `SendAsgResult.text` 中的可读信息。
+**归属说明**：错误码的识别与包装发生在 **Service Provider**（`src/lab-local.ts`）内，工具（Consumer）只透传 `SendScpiResult.text` / `SendAsgResult.text` 中的可读信息。

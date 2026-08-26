@@ -486,7 +486,7 @@ def read_document(filename: str, lines: str = "", section: str = "") -> str:
 
 ## 4. 工具注册完整代码（Consumer 角色）
 
-> **v3 修正**：工具是 Consumer，只依赖 `LabService` 接口（`ctx.lab.*`），不再直接调用 Python 子进程。Python 执行下沉到 Service Provider（`src/lab-agent-local.ts`）。
+> **v3 修正**：工具是 Consumer，只依赖 `LabService` 接口（`ctx.lab.*`），不再直接调用 Python 子进程。Python 执行下沉到 Service Provider（`src/lab-local.ts`）。
 
 ### 4.1 src/tools.ts — Consumer：工具注册
 

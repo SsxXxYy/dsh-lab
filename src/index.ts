@@ -2,7 +2,7 @@
 import type { Context } from '@deepseek-ai/cordis'
 import * as meta from './commands.js'
 import * as projection from './projection.js'
-import { LabLocal } from './lab-agent-local.js'
+import { LabLocal } from './lab-local.js'
 
 // 启动时一次性清理残留注册，确保重启后状态非持久化
 let startupCleaned = false

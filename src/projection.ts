@@ -5,7 +5,7 @@
 import type { Context } from '@deepseek-ai/cordis'
 import type { LabState } from './projection-types.js'
 import { LabStateSchema } from './projection-types.js'
-import { LabLocal } from './lab-agent-local.js'
+import { LabLocal } from './lab-local.js'
 
 export const name = 'dsh-lab-projection'
 export const inject = ['sessionProjections']

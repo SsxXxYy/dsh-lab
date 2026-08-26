@@ -1,4 +1,4 @@
-// lib/lab-agent-local.ts — Service Provider 角色
+// lib/lab-local.ts — Service Provider 角色
 import type { Context } from '@deepseek-ai/cordis'
 import { LabService } from './service.js'
 
