@@ -613,7 +613,7 @@ export function apply(ctx: Context) {
 // src/index.ts — 插件入口
 import type { Context } from '@deepseek-ai/cordis'
 import * as meta from './commands.js'
-import * as verify from './verify.js'
+
 import * as projection from './projection.js'
 
 export const name = 'dsh-lab'
@@ -621,12 +621,11 @@ export const inject = ['commands']
 
 export function apply(ctx: Context) {
   ctx.plugin(meta)        // /lab 元命令
-  ctx.plugin(verify)      // 验证消费者（注入 lab 服务）
   ctx.plugin(projection)  // Session Projection：追踪 lab 状态并推送给 Client
 }
 ```
 
-> 每个消费者文件自带 `inject` 声明：`commands.ts` 依赖 `['commands']`，`verify.ts` 依赖 `['lab']`，`projection.ts` 依赖 `['sessionProjections']`。Cordis 保证依赖就绪后才执行对应 `apply`。
+> 每个消费者文件自带 `inject` 声明：`commands.ts` 依赖 `['commands']`，`projection.ts` 依赖 `['sessionProjections']`。Cordis 保证依赖就绪后才执行对应 `apply`。
 
 ---
 

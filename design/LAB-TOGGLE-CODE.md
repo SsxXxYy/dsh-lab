@@ -445,7 +445,6 @@ export function apply(ctx: Context) {
   │    │    │    → Service 构造函数
   │    │    │    → ctx.reflect.provide('lab', self)   ← 服务注册到 store
   │    │    │    → notify(['lab'])                     ← 通知所有依赖者
-  │    │    │    → verify 消费者 fiber._refresh()
   │    │    │    → 依赖满足 → 自动执行 apply()
   │    │    │
   │    │    └─ true → ctx.registry.delete(LabLocal)
@@ -453,7 +452,6 @@ export function apply(ctx: Context) {
   │    │         → fiber.effect cleanup
   │    │         → delete store['lab']                  ← 服务从 store 删除
   │    │         → notify(['lab'])                       ← 通知所有依赖者
-  │    │         → verify 消费者 fiber._refresh()
   │    │         → 依赖断开 → 自动 dispose()
   │    │
   │    └─ 返回 { kind: "success", text: "实验模式已启用/关闭" }

@@ -67,7 +67,6 @@ dsh-lab/
 │   ├── service.ts                   # Service Definition：LabService 抽象类
 │   ├── lab-agent-local.ts           # Service Provider：LabLocal 实现
 │   ├── commands.ts                  # Consumer（元命令）：/lab 命令
-│   ├── verify.ts                    # Consumer（验证）：注入 lab 服务
 │   ├── projection.ts                # Host 端 Session Projection
 │   ├── projection-types.ts          # Projection schema（LabState）
 │   └── context-augment.d.ts         # Context 声明合并 + SessionProjectionMap 类型注入
@@ -95,7 +94,6 @@ Service Definition  →  Service Provider  →  Consumer
 | **Service Definition** | `src/service.ts` | 定义 `LabService` 抽象类，继承 `TypertRemoteService`，注册服务名 `'lab'` |
 | **Service Provider** | `src/lab-agent-local.ts` | 实现 `LabLocal`，提供 `@Remote ping()`，未来扩展 SCPI/ASG 方法 |
 | **Consumer（元命令）** | `src/commands.ts` | 注册 `/lab` 命令，控制服务注册/注销 |
-| **Consumer（验证）** | `src/verify.ts` | 声明 `inject = ['lab']`，验证服务解析成功 |
 | **Consumer（Projection）** | `src/projection.ts` | 声明 `inject = ['sessionProjections']`，推送状态到 Client |
 
 依赖方向：`Consumer → Service Definition ← Service Provider`，Consumer 与 Provider **互不依赖**。

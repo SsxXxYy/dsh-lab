@@ -279,7 +279,7 @@ export function apply(ctx: Context) {
 // src/index.ts — 插件入口
 import type { Context } from '@deepseek-ai/cordis'
 import * as meta from './commands.js'
-import * as verify from './verify.js'
+
 import * as projection from './projection.js'
 
 export const name = 'dsh-lab'
@@ -287,12 +287,11 @@ export const inject = ['commands']
 
 export function apply(ctx: Context) {
   ctx.plugin(meta)        // /lab 元命令
-  ctx.plugin(verify)      // 验证消费者（注入 lab 服务）
   ctx.plugin(projection)  // Session Projection：追踪 lab 服务状态并推送给 Client
 }
 ```
 
-**变更点**：入口注册三个插件：meta（命令）、verify（验证）、projection（状态推送）。
+**变更点**：入口注册两个插件：meta（命令）、projection（状态推送）。
 
 ### 4.7 `tsdown.config.ts` — Client 构建配置
 

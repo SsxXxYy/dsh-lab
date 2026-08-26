@@ -1,7 +1,6 @@
 // src/context-augment.d.ts — 声明合并：补充 DSH 框架插件注入的 Context 属性
 // 独立 tsc 编译时这些属性由 DSH 运行时通过声明合并提供，此处声明避免报 TS2339
 import type { Context, Plugin } from '@deepseek-ai/cordis'
-import type { ZodType } from 'zod'
 
 // Typert Registry 变化事件（服务存在性检测链路）
 interface TypertRegistryChange {
@@ -44,19 +43,17 @@ declare module '@deepseek-ai/dsh-session-projection' {
 // 本地使用的类型别名
 export type LabState = { active: boolean }
 
-export interface ProjectionDefinition<K extends string, S> {
-  key: K
-  schema: ZodType<unknown>
-  init(): S
-  apply(state: S, event: { type: string; data: { name?: string } }): S
-  wire?: {
-    viewSchema: ZodType<unknown>
-    view(state: S): unknown
-  }
-  stateVersion: number
-}
-
 export declare class SessionProjectionRegistry {
-  register<K extends string, S>(definition: ProjectionDefinition<K, S>): () => void
+  register<K extends string, S>(definition: {
+    key: K
+    schema: unknown
+    init(): S
+    apply(state: S, event: { type: string; data?: { name?: string } }): S
+    wire?: {
+      viewSchema: unknown
+      view(state: S): unknown
+    }
+    stateVersion: number
+  }): () => void
   onChanged(listener: (session: { id: string }, key: string, value: unknown, seq: number) => void): () => void
 }

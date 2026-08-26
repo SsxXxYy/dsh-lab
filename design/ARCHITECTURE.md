@@ -64,31 +64,29 @@ dsh-lab/
 │   ├── ARCHITECTURE.md          # 本文档：总体架构设计
 │   ├── HOST-DESIGN.md           # Host 半设计（Node.js 侧 + Python 引擎）
 │   ├── HOST-CLIENT-COMMUNICATION.md  # Host ↔ Client 通讯体系
-│   ├── TOOLS.md                 # 工具集文档
+│   ├── TOOLS.md                 # 工具集文档sw
 │   ├── SLASH-COMMANDS.md        # 斜杠命令实现
 │   ├── LAB-TOGGLE-CODE.md       # /lab 切换机制代码详解
 │   └── IMPLEMENTATION.md        # 实现清单
 │
 ├── src/                         # Host 半 TypeScript 源码
-│   ├── index.ts                 # 插件入口：注册 meta + verify + projection
+│   ├── index.ts                 # 插件入口：启动时清理残留注册 + 注册 meta + projection
 │   ├── service.ts               # Service Definition：LabService 抽象类（extends TypertRemoteService）
 │   ├── lab-agent-local.ts       # Service Provider：LabLocal 实现（extends LabService, @Remote ping）
 │   ├── commands.ts              # Consumer（元命令）：/lab 命令（注册/注销服务）
-│   ├── verify.ts                # Consumer（验证）：注入 lab 服务，验证解析
 │   ├── projection.ts            # Host 端 Session Projection：追踪 lab 状态并推送给 Client
 │   ├── projection-types.ts      # Projection schema（LabState + LabStateSchema）
 │   └── context-augment.d.ts     # Context 声明合并 + SessionProjectionMap 类型注入
 │
 ├── client/                      # Client 半 TypeScript 源码
-│   ├── client.ts                # 侧边栏显示/隐藏控制（订阅 Projection 注入 CSS）
-│   └── InstrumentPanel.tsx      # [占位] 仪器面板组件
+│   └── client.ts                # 侧边栏显示/隐藏控制（订阅 Projection 注入 CSS）
 │
 ├── dist/                        # 构建产物
 │   ├── index.js                 # Host 入口（package.json main 指向此）
 │   ├── commands.js
 │   ├── service.js
 │   ├── lab-agent-local.js
-│   ├── verify.js
+
 │   ├── projection.js
 │   ├── projection-types.js
 │   └── client.js                # Client bundle（浏览器加载）
@@ -105,7 +103,6 @@ dsh-lab/
 | `src/service.ts` | Service Definition | 定义 `LabService` 抽象类，继承 `TypertRemoteService`，注册服务名 `'lab'` |
 | `src/lab-agent-local.ts` | Service Provider | 实现 `LabLocal`，继承 `LabService`，提供 `@Remote ping()` |
 | `src/commands.ts` | Consumer（元命令） | 注册 `/lab` 命令控制服务生命周期 |
-| `src/verify.ts` | Consumer（验证） | 注入 `lab` 服务，验证服务解析成功 |
 | `src/projection.ts` | Projection | Host 端 Session Projection，追踪 lab 状态并推送给 Client |
 | `src/projection-types.ts` | Schema | LabState 类型和 Zod schema |
 | `client/client.ts` | Client | 订阅 Projection，注入/移除 CSS 控制侧边栏 |
@@ -117,16 +114,13 @@ dsh-lab/
                        │
                        ▼
               src/commands.ts ─────→ src/service.ts ←───── src/lab-agent-local.ts
-                       │                   ▲                      │
-                      (uses)                │                      │
-                       │                   │                @Remote ping
-                       ▼                   │                      │
-              src/verify.ts ────────────────┘                Typert Gateway
-                       │
-                       │ inject=['lab']
-                       │
-              src/projection.ts ──── Session Projection ───→ client/client.ts
-                                                              (subscribe → CSS)
+                                           ▲                      │
+                                           │                      │
+                                           │                      │
+              src/projection.ts ────────────┼──────────────────────┘
+                       │                   │
+                       │                   │
+              client/client.ts ──── Session Projection ───→ (subscribe → CSS)
 ```
 
 ### 构建流程
@@ -150,7 +144,7 @@ npm run build
 │                                                                        │
 │  ┌───────────────────── DSH Web UI ─────────────────────┐              │
 │  │  conversation (对话) │ shell.overlay (浮动面板)       │              │
-│  │                      │  └── 仪器面板 (InstrumentPanel) │              │
+│  │                      │  └── 仪器面板（未来）             │              │
 │  │                      │  └── 命令输出卡片               │              │
 │  │                      │ settings.section               │              │
 │  │                      │  └── 工作流管理 (WorkflowPanel) │              │
@@ -387,7 +381,7 @@ export function apply(ctx: Context) {
 // src/index.ts — 插件入口
 import type { Context } from '@deepseek-ai/cordis'
 import * as meta from './commands.js'
-import * as verify from './verify.js'
+
 import * as projection from './projection.js'
 
 export const name = 'dsh-lab'
@@ -395,12 +389,11 @@ export const inject = ['commands']
 
 export function apply(ctx: Context) {
   ctx.plugin(meta)        // /lab 元命令
-  ctx.plugin(verify)      // 验证消费者（注入 lab 服务）
   ctx.plugin(projection)  // Session Projection：追踪 lab 状态并推送给 Client
 }
 ```
 
-> `src/commands.ts` 注册 `/lab` 元命令，`src/verify.ts` 声明 `inject = ['lab']` 验证服务解析，`src/projection.ts` 声明 `inject = ['sessionProjections']` 推送状态到 Client。
+> `src/commands.ts` 注册 `/lab` 元命令，`src/projection.ts` 声明 `inject = ['sessionProjections']` 推送状态到 Client。
 
 ### 6.2 Session Projection 状态推送
 
@@ -438,14 +431,14 @@ Host: /lab handler 检查 ctx.root.registry.has(LabLocal)
   ├─ 未注册 → ctx.root.plugin(LabLocal)
   │           → LabLocal 构造函数调用 ctx.reflect.provide('lab', self)
   │           → 服务注册到 store → notify(['lab'])
-  │           → verify 消费者 fiber 检测到 'lab' 可用
+  │           → projection 消费者 fiber 检测到 'lab' 可用
   │           → 自动执行 apply() → 验证服务就绪
   │           → 返回 "实验模式已启用"
   │
   └─ 已注册 → ctx.root.registry.delete(LabLocal)
               → dispose LabLocal 的 fiber
               → fiber.effect cleanup → delete store['lab'] → notify(['lab'])
-              → verify 消费者 fiber 检测到 'lab' 消失
+              → projection 消费者 fiber 检测到 'lab' 消失
               → 自动 dispose
               → 返回 "实验模式已关闭"
 
@@ -563,11 +556,7 @@ html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !im
 
 通过 DOM API 动态创建/移除 `<style>` 标签，不依赖 React。
 
-### 8.3 InstrumentPanel（占位）
-
-`client/InstrumentPanel.tsx` 当前为占位组件，未来用于显示仪器控制面板。
-
-### 8.4 添加新 UI 或面板指南
+### 8.3 添加新 UI 或面板指南
 
 Client 端加 UI 有两种方式，按复杂度选择：
 
@@ -613,14 +602,14 @@ unsubscribeProjection = face.subscribe(function () {
 
 **步骤**：
 
-1. **创建 React 组件**（如 `client/InstrumentPanel.tsx`）
+1. **创建 React 组件**（如 `client/WorkflowPanel.tsx`）
 
 ```tsx
-// client/InstrumentPanel.tsx
+// client/WorkflowPanel.tsx
 import type { ReactElement } from 'react'
 
-export function InstrumentPanel(): ReactElement {
-  return <div className="lab-instrument-panel">Lab Instrument Panel</div>
+export function WorkflowPanel(): ReactElement {
+  return <div className="lab-workflow-panel">Workflow Panel</div>
 }
 ```
 
@@ -637,10 +626,10 @@ export function apply(ctx: Context) {
   // 注入 React 组件到 shell.overlay slot
   ctx.slots.inject('shell.overlay', function () {
     return ctx.slots.register(
-      { name: 'shell.overlay', id: 'lab-instrument-panel' },
+      { name: 'shell.overlay', id: 'lab-workflow-panel' },
       function () {
-        const { InstrumentPanel } = require('./InstrumentPanel')
-        return InstrumentPanel()
+        const { WorkflowPanel } = require('./WorkflowPanel')
+        return WorkflowPanel()
       }
     )
   })

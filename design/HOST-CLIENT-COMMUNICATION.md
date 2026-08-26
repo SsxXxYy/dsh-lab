@@ -124,7 +124,7 @@ Host ↔ Client 之间有三个**物理隔离**的通道：
     │
     ▼
 Host: ctx.root.plugin(LabLocal)  ← 动态注册 Service（进程全局）
-    │  → verify 消费者检测到 'lab' 可用 → apply() 执行
+    │  → projection 消费者检测到 'lab' 可用 → apply() 执行
     │  → 返回 "实验模式已启用"
     │
     ▼
@@ -1272,7 +1272,7 @@ ctx.remote.$on('lab/config-updated', (config) => {
 | `src/service.ts` | `LabService` 抽象基类（Service Definition 角色） |
 | `src/lab-agent-local.ts` | `LabLocal` 实现（Service Provider 角色），`@Remote` 标记方法 |
 | `src/commands.ts` | `dsh-lab` slash command（Consumer 角色），动态注册/注销 `LabLocal` |
-| `src/verify.ts` | 验证插件（Consumer 角色），打印 lab 服务就绪信息 |
+
 | `src/index.ts` | 插件入口 |
 | `client/client.ts` | 浏览器端插件，根据 lab 服务存在性隐藏侧边栏 |
 
