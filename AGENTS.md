@@ -10,7 +10,7 @@ dsh-lab 是一个 DSH（DeepSeek Harness）bundle 插件，将实验室仪器控
 
 ### 当前实现状态
 
-- **已实现**：`/lab` 元命令（服务注册/注销）、Service Definition（`LabService` 抽象类）、Service Provider（`LabLocal`，含 `@Remote ping`）、Session Projection（host→client 状态推送）、Client 侧 CSS 注入控制侧边栏
+- **已实现**：`/lab` 元命令（服务注册/注销）、Service Definition（`LabService` 抽象类）、Service Provider（`LabLocal`）、Session Projection（host→client 状态推送）、Client 侧 CSS 注入控制侧边栏
 - **未实现**：工具注册（`src/tools.ts`）、System Prompt 上下文注入（`src/context.ts`）、Python 执行引擎（`dsh_lab/*`）、斜杠命令（`/devices`、`/new`、`/rename`）、仪器面板 UI
 
 ## 2. 技术栈
@@ -63,7 +63,7 @@ dsh-lab/
 │   ├── SLASH-COMMANDS.md            # 斜杠命令实现方案（v4）
 │   └── TOOLS.md                     # 工具集文档（v4）
 ├── src/                             # Host 端 TypeScript 源码
-│   ├── index.ts                     # 插件入口：启动时清理残留注册 + 注册 meta + verify + projection
+│   ├── index.ts                     # 插件入口：启动时清理残留注册 + 注册 meta + projection
 │   ├── service.ts                   # Service Definition：LabService 抽象类
 │   ├── lab-local.ts           # Service Provider：LabLocal 实现
 │   ├── commands.ts                  # Consumer（元命令）：/lab 命令
@@ -71,8 +71,7 @@ dsh-lab/
 │   ├── projection-types.ts          # Projection schema（LabState）
 │   └── context-augment.d.ts         # Context 声明合并 + SessionProjectionMap 类型注入
 ├── client/                          # Client 端 TypeScript 源码
-│   ├── client.ts                    # 侧边栏显示/隐藏控制（订阅 Projection）
-│   └── InstrumentPanel.tsx          # [占位] 仪器面板组件
+│   └── client.ts                    # 侧边栏显示/隐藏控制（订阅 Projection）
 ├── dist/                            # 构建产物
 ├── package.json                     # 包配置 + dsh 插件元数据
 ├── tsconfig.json                    # TypeScript 编译配置
@@ -92,7 +91,7 @@ Service Definition  →  Service Provider  →  Consumer
 | 角色 | 文件 | 职责 |
 |---|---|---|
 | **Service Definition** | `src/service.ts` | 定义 `LabService` 抽象类，继承 `TypertRemoteService`，注册服务名 `'lab'` |
-| **Service Provider** | `src/lab-local.ts` | 实现 `LabLocal`，提供 `@Remote ping()`，未来扩展 SCPI/ASG 方法 |
+| **Service Provider** | `src/lab-local.ts` | 实现 `LabLocal`，未来扩展 SCPI/ASG 方法 |
 | **Consumer（元命令）** | `src/commands.ts` | 注册 `/lab` 命令，控制服务注册/注销 |
 | **Consumer（Projection）** | `src/projection.ts` | 声明 `inject = ['sessionProjections']`，推送状态到 Client |
 
@@ -121,11 +120,11 @@ Host /lab command → session append command/done → projection drive → WebSo
 - `apply`: 遇到任意 `command/done` 事件时，读取实际 registry 状态（而非翻转）。注意：DSH 事件结构 `{ commandId, kind, text }` 中**没有 `name` 字段**，无法按命令名过滤
 - `wire`: 必须提供 `viewSchema` + `view` 块才能对客户端可见
 
-### 5.5 启动时状态重置（非持久化）
+### 5.4 启动时状态重置（非持久化）
 
 `src/index.ts` 在插件加载时（`apply` 仅执行一次）清理残留的 `LabLocal` 注册，确保 DSH 重启后 `active` 默认为 `false`。使用模块级 `startupCleaned` 标志避免重复执行。
 
-### 5.4 Client 侧渲染策略
+### 5.5 Client 侧渲染策略
 
 Client 通过 `ctx.effect` + `face.subscribe()` 订阅 Projection，根据 `active` 值注入/移除 CSS 隐藏侧边栏。纯 DOM 操作，不依赖 React。
 
@@ -223,12 +222,12 @@ export function apply(ctx: Context) {
 | 阶段 | 内容 | 状态 |
 |---|---|---|
 | **P0** | `/lab` 元命令（服务注册/注销） | ✅ 已实现 |
-| **P0** | Service Provider（`LabLocal`） | ✅ 基础实现（仅 `ping`） |
+| **P0** | Service Provider（`LabLocal`） | ✅ 已实现 |
 | **P0** | Service Definition（`LabService` 抽象类） | ✅ 已实现 |
 | **P0** | Session Projection 状态推送 | ✅ 已实现 |
 | **P0** | Client 侧 CSS 注入控制侧边栏 | ✅ 已实现 |
 | **P1** | 核心工具（scan / read_document / read_workflow / send_scpi） | ❌ 未实现 |
 | **P1** | System Prompt 上下文注入 | ❌ 未实现 |
 | **P1** | 斜杠命令（`/devices`、`/new`、`/rename`） | ❌ 未实现 |
-| **P2** | Client 半仪器面板 | ❌ 未实现（占位） |
+| **P2** | Client 半仪器面板 | ❌ 未实现 |
 | **P2** | Python 执行引擎（`dsh_lab/*`） | ❌ 未实现 |
