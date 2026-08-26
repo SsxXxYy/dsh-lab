@@ -175,39 +175,25 @@ export function apply(ctx: Context) {
 
 ## 8. 调试指南
 
-### Host 端 console（过滤 `[dsh-lab:projection]`）
+### 排查链路（按出现顺序检查 5 跳）
 
-- `init: active = false` — 新会话初始化
-- `★ HOP2: command/done, actual registry state = true` — 事件驱动状态更新
-- `★ HOP3: push to client: {"key":"dsh-lab:state","value":{"active":true},"seq":N}` — 推送触发
-
-### Client 端 console（过滤 `[dsh-lab:client]`）
-
-- `★ HOP4: initial snapshot: {"active":false}` — 初始快照
-- `★ HOP4: projection push received: {"active":true}` — 收到推送
-- `★ HOP5: update(true) tag exists: false` — 准备注入 CSS
-- `✓ sidebar hidden` — CSS 已注入
-- `✓ sidebar restored` — CSS 已移除
-
-### 排查链路（按出现顺序检查 5 跳日志）
-
-| 跳 | 日志标识 | 含义 |
+| 跳 | 位置 | 排查方法 |
 |---|---|---|
-| HOP1 | `[dsh-lab:cmd] ★ HOP1` | 命令是否执行、注册/注销是否成功 |
-| HOP2 | `[dsh-lab:projection] ★ HOP2` | 是否收到 `command/done` 事件、registry 实际状态 |
-| HOP3 | `[dsh-lab:projection] ★ HOP3` | onChanged 推送是否触发（状态是否变化） |
-| HOP4 | `[dsh-lab:client] ★ HOP4` | 客户端是否收到推送、snapshot 值 |
-| HOP5 | `[dsh-lab:client] ★ HOP5` | 是否注入/移除 CSS |
+| 1 | `commands.ts` 命令处理器 | 输入 `/lab` 后 registry 是否变化 |
+| 2 | `projection.ts` apply | `command/done` 事件是否触发，registry 实际状态 |
+| 3 | `projection.ts` onChanged | 状态是否变化（`Object.is` 比较） |
+| 4 | `client.ts` subscribe | WebSocket 推送是否到达，snapshot 值 |
+| 5 | `client.ts` update | CSS 是否注入/移除 |
 
 ### 常见故障模式
 
 | 故障 | 缺失的跳 | 排查方向 |
 |---|---|---|
-| 输入 `/lab` 无反应 | 无 HOP1 | 命令未注册或未触发 |
-| 侧边栏不变化 | 有 HOP1 无 HOP2 | `command/done` 事件未提交 |
-| 侧边栏不变化 | 有 HOP2 无 HOP3 | `apply` 返回值与之前相同（状态未变） |
-| 侧边栏不变化 | 有 HOP3 无 HOP4 | WebSocket 推送失败或客户端未订阅 |
-| 侧边栏不变化 | 有 HOP4 无 HOP5 | `state.active` 为 `undefined`/`null` |
+| 输入 `/lab` 无反应 | 1 | 命令未注册或未触发 |
+| 侧边栏不变化 | 2 | `command/done` 事件未提交 |
+| 侧边栏不变化 | 3 | `apply` 返回值与之前相同（状态未变） |
+| 侧边栏不变化 | 4 | WebSocket 推送失败或客户端未订阅 |
+| 侧边栏不变化 | 5 | `state.active` 为 `undefined`/`null` |
 
 ## 9. 依赖说明
 

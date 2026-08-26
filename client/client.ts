@@ -1,5 +1,5 @@
 // client/client.ts — 通过 Session Projection 感知 host 端 lab 服务状态
-// 链路：Host /lab command → session append command/run → projection drive → WebSocket push → Client subscribe → 更新 UI
+// 链路：Host /lab command → session append command/done → projection drive → WebSocket push → Client subscribe → 更新 UI
 import type { Context } from '@deepseek-ai/cordis'
 
 const STYLE_ID = 'dsh-lab/hide-sidebar'
@@ -12,7 +12,6 @@ export function apply(ctx: Context) {
   let tag: HTMLStyleElement | null = null
 
   function update(active: boolean) {
-    console.log('[dsh-lab:client] ★ HOP5: update(', active, ') tag exists:', !!tag)
     if (active && !tag) {
       if (typeof document === 'undefined') {
         console.warn('[dsh-lab:client] skip: document undefined (SSR?)')
@@ -27,11 +26,9 @@ export function apply(ctx: Context) {
       tag.dataset.pluginCss = STYLE_ID
       tag.textContent = HIDE_SIDEBAR_CSS
       document.head.appendChild(tag)
-      console.log('[dsh-lab:client] ✓ sidebar hidden')
     } else if (!active && tag) {
       tag.remove()
       tag = null
-      console.log('[dsh-lab:client] ✓ sidebar restored')
     }
   }
 
@@ -52,25 +49,17 @@ export function apply(ctx: Context) {
       currentSessionId = sessionId
 
       const binding = ctx.sessions.binding(sessionId)
-      if (!binding) {
-        console.log('[dsh-lab:client] binding not found for', sessionId)
-        return
-      }
+      if (!binding) return
 
       const face = binding.session.projections.faceOf('dsh-lab:state')
-      if (!face) {
-        console.log('[dsh-lab:client] face "dsh-lab:state" not found')
-        return
-      }
+      if (!face) return
 
       unsubscribeProjection = face.subscribe(function () {
         const state = face.getSnapshot()
-        console.log('[dsh-lab:client] ★ HOP4: projection push received:', JSON.stringify(state))
         update(state ? state.active : false)
       })
 
       const initial = face.getSnapshot()
-      console.log('[dsh-lab:client] ★ HOP4: initial snapshot:', JSON.stringify(initial))
       if (initial) update(initial.active)
     }
 

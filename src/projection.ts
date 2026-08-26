@@ -17,18 +17,15 @@ export function apply(ctx: Context) {
     init: (): LabState => {
       // 新会话初始化时，读取实际 registry 状态
       const active = ctx.root.registry.has(LabLocal)
-      console.log('[dsh-lab:projection] init: active =', active)
       return { active }
     },
     apply: (state: LabState | undefined, event: { type: string; data?: { name?: string } }): LabState => {
       // 使用 command/done 而非 command/run：
       // command/run 在命令处理器之前提交，此时 registry 未更新
       // command/done 在命令处理器之后提交，此时 registry 已反映操作结果
-      console.log('[dsh-lab:projection] ★ HOP2: apply called, event =', JSON.stringify(event), 'prev state =', JSON.stringify(state))
       if (event.type === 'command/done') {
         // 任意 command/done 后读取实际 registry 状态（事件结构中无 name 字段，无法按名称过滤）
         const actualActive = ctx.root.registry.has(LabLocal)
-        console.log('[dsh-lab:projection] ★ HOP2: command/done, actual registry state =', actualActive)
         return { active: actualActive }
       }
       return state ?? { active: ctx.root.registry.has(LabLocal) }
@@ -39,14 +36,4 @@ export function apply(ctx: Context) {
     },
     stateVersion: 1,
   })
-  console.log('[dsh-lab:projection] registered')
-
-  // 诊断：验证 onChanged 推送通道
-  try {
-    ctx.sessionProjections.onChanged((_session, key, value, seq) => {
-      console.log('[dsh-lab:projection] ★ HOP3: push to client:', JSON.stringify({ key, value, seq }))
-    })
-  } catch (e) {
-    console.error('[dsh-lab:projection] onChanged listener failed:', e)
-  }
 }

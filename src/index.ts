@@ -16,13 +16,9 @@ export function apply(ctx: Context) {
     startupCleaned = true
     if (ctx.root.registry.has(LabLocal)) {
       ctx.root.registry.delete(LabLocal)
-      console.log('[dsh-lab:index] startup: cleaned stale LabLocal registration')
-    } else {
-      console.log('[dsh-lab:index] startup: no stale registration found')
     }
   }
 
   ctx.plugin(meta)
   ctx.plugin(projection)  // Session Projection：追踪 lab 服务状态并推送给 Client
-  console.log('[dsh-lab:index] host plugins registered: meta, projection')
 }
