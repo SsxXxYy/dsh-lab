@@ -1,0 +1,2 @@
+name: Lab 实验模式
+description: 启用 dsh-lab 仪器控制插件，支持 /lab 切换、SCPI 命令、设备管理

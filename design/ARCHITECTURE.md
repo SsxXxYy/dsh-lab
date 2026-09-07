@@ -70,16 +70,19 @@ dsh-lab/
 │   └── IMPLEMENTATION.md        # 实现清单
 │
 ├── src/                         # Host 半 TypeScript 源码
-│   ├── index.ts                 # 插件入口：启动时清理残留注册 + 注册 meta + projection
+│   ├── index.ts                 # 插件入口：启动时清理残留注册 + 同步预设 + 注册 meta + projection
 │   ├── service.ts               # Service Definition：LabService 抽象类（extends TypertRemoteService）
-│   ├── lab-local.ts       # Service Provider：LabLocal 实现（extends LabService, @Remote ping）
+│   ├── lab-local.ts             # Service Provider：LabLocal 实现（extends LabService, @Remote ping）
 │   ├── commands.ts              # Consumer（元命令）：/lab 命令（注册/注销服务）
 │   ├── projection.ts            # Host 端 Session Projection：追踪 lab 状态并推送给 Client
 │   ├── projection-types.ts      # Projection schema（LabState + LabStateSchema）
+│   ├── sync.ts                  # 预设文件同步：包内 presets/ → ~/.dsh/.agent-presets/
+│   ├── dsh-home.ts              # DSH_HOME 路径解析
+│   ├── mount-once.ts            # Host 单例守卫
 │   └── context-augment.d.ts     # Context 声明合并 + SessionProjectionMap 类型注入
 │
 ├── client/                      # Client 半 TypeScript 源码
-│   └── client.ts                # 侧边栏显示/隐藏控制（订阅 Projection 注入 CSS）
+│   └── client.ts                # 侧边栏 + 顶栏显示/隐藏控制（订阅 Projection 注入 CSS）
 │
 ├── dist/                        # 构建产物
 │   ├── index.js                 # Host 入口（package.json main 指向此）
@@ -101,11 +104,14 @@ dsh-lab/
 | 文件 | 角色 | 职责 |
 |---|---|---|
 | `src/service.ts` | Service Definition | 定义 `LabService` 抽象类，继承 `TypertRemoteService`，注册服务名 `'lab'` |
-| `src/lab-local.ts` | Service Provider | 实现 `LabLocal`，继承 `LabService`，提供 `@Remote ping()` |
+| `src/lab-local.ts` | Service Provider | 实现 `LabLocal`，继承 `LabService`（空壳，服务的存在即开启） |
 | `src/commands.ts` | Consumer（元命令） | 注册 `/lab` 命令控制服务生命周期 |
 | `src/projection.ts` | Projection | Host 端 Session Projection，追踪 lab 状态并推送给 Client |
 | `src/projection-types.ts` | Schema | LabState 类型和 Zod schema |
-| `client/client.ts` | Client | 订阅 Projection，注入/移除 CSS 控制侧边栏 |
+| `src/sync.ts` | Preset Sync | 将包内 `presets/` 同步到 `~/.dsh/.agent-presets/` |
+| `src/dsh-home.ts` | Path Utility | DSH_HOME 路径解析 |
+| `src/mount-once.ts` | Singleton Guard | 确保 apply 只执行一次 |
+| `client/client.ts` | Client | 订阅 Projection，注入/移除 CSS 隐藏侧边栏 + 顶栏 |
 
 ### 依赖方向
 
@@ -462,8 +468,8 @@ WebSocket mux 流 → Client faceOf('dsh-lab:state').subscribe 回调
   │
   ▼
 update(state.active)
-  ├─ true  → 注入 <style> → 侧边栏隐藏
-  └─ false → 移除 <style> → 侧边栏恢复
+  ├─ true  → 注入 <style> → 侧边栏 + 顶栏隐藏
+  └─ false → 移除 <style> → 侧边栏 + 顶栏恢复
 ```
 
 **关键设计**：
@@ -543,18 +549,30 @@ DSH Agent (turn 4)
 ### 8.1 渲染策略
 
 Client 通过订阅 Session Projection 感知 lab 服务状态：
-- **projection `active: true`** → 注入 CSS 隐藏侧边栏
-- **projection `active: false`** → 移除 CSS 恢复侧边栏
+- **projection `active: true`** → 注入 CSS 隐藏侧边栏 + 顶栏
+- **projection `active: false`** → 移除 CSS 恢复侧边栏 + 顶栏
 
 使用 `ctx.effect` + `face.subscribe()` 实现响应式更新，监听 `ctx.sessions.list` 变化以在会话切换时重新订阅。
 
 ### 8.2 CSS 注入
 
 ```css
+/* 隐藏侧边栏：grid 左右两列设为 0 */
 html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}
+/* 隐藏顶栏：多选择器覆盖，display:none 不动 grid 布局 */
+[data-shell-header]{display:none!important}
+[data-shell-topbar]{display:none!important}
+[data-shell-header-bar]{display:none!important}
+[data-shell-toolbar]{display:none!important}
+[data-shell-nav]{display:none!important}
+[data-shell-appbar]{display:none!important}
+header{display:none!important}
+nav{display:none!important}
 ```
 
 通过 DOM API 动态创建/移除 `<style>` 标签，不依赖 React。
+
+> **注意**：使用 `display:none` 隐藏顶栏，而非 `grid-template-rows:0`。后者会压缩 grid 行高，导致聊天窗口消失。
 
 ### 8.3 添加新 UI 或面板指南
 
@@ -573,8 +591,18 @@ let tag: HTMLStyleElement | null = null
 function update(active: boolean) {
   if (active && !tag) {
     tag = document.createElement('style')
-    tag.dataset.pluginCss = 'dsh-lab/hide-sidebar'
-    tag.textContent = 'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}'
+    tag.dataset.pluginCss = 'dsh-lab/hide-chrome'
+    tag.textContent = [
+      'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}',
+      '[data-shell-header]{display:none!important}',
+      '[data-shell-topbar]{display:none!important}',
+      '[data-shell-header-bar]{display:none!important}',
+      '[data-shell-toolbar]{display:none!important}',
+      '[data-shell-nav]{display:none!important}',
+      '[data-shell-appbar]{display:none!important}',
+      'header{display:none!important}',
+      'nav{display:none!important}'
+    ].join('\n')
     document.head.appendChild(tag)
   } else if (!active && tag) {
     tag.remove()

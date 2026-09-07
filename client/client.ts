@@ -2,8 +2,20 @@
 // 链路：Host /lab command → session append command/done → projection drive → WebSocket push → Client subscribe → 更新 UI
 import type { Context } from '@deepseek-ai/cordis'
 
-const STYLE_ID = 'dsh-lab/hide-sidebar'
-const HIDE_SIDEBAR_CSS = 'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}'
+const STYLE_ID = 'dsh-lab/hide-chrome'
+const HIDE_CHROME_CSS = [
+  /* 隐藏侧边栏：grid 左右两列设为 0 */
+  'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}',
+  /* 隐藏顶栏：多选择器覆盖，display:none 不动 grid 布局 */
+  '[data-shell-header]{display:none!important}',
+  '[data-shell-topbar]{display:none!important}',
+  '[data-shell-header-bar]{display:none!important}',
+  '[data-shell-toolbar]{display:none!important}',
+  '[data-shell-nav]{display:none!important}',
+  '[data-shell-appbar]{display:none!important}',
+  'header{display:none!important}',
+  'nav{display:none!important}'
+].join('\n')
 
 export const name = 'dsh-lab-client'
 export const inject = ['slots', 'sessions']
@@ -24,7 +36,7 @@ export function apply(ctx: Context) {
       tag = document.createElement('style')
       tag.dataset.plugin = 'dsh-lab'
       tag.dataset.pluginCss = STYLE_ID
-      tag.textContent = HIDE_SIDEBAR_CSS
+      tag.textContent = HIDE_CHROME_CSS
       document.head.appendChild(tag)
     } else if (!active && tag) {
       tag.remove()

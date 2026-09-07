@@ -357,13 +357,13 @@ export function apply(ctx: Context) {
 
 ---
 
-## 9. Client 侧：订阅 Projection 控制侧边栏
+## 9. Client 侧：订阅 Projection 控制侧边栏 + 顶栏
 
 ### 9.1 渲染策略
 
 Client 通过订阅 Session Projection 感知 lab 服务状态：
-- **projection `active: true`** → 注入 CSS 隐藏侧边栏
-- **projection `active: false`** → 移除 CSS 恢复侧边栏
+- **projection `active: true`** → 注入 CSS 隐藏侧边栏 + 顶栏
+- **projection `active: false`** → 移除 CSS 恢复侧边栏 + 顶栏
 
 使用 `ctx.effect` + `face.subscribe()` 实现响应式更新。
 
@@ -371,8 +371,20 @@ Client 通过订阅 Session Projection 感知 lab 服务状态：
 // client/client.ts — Client 侧
 import type { Context } from '@deepseek-ai/cordis'
 
-const STYLE_ID = 'dsh-lab/hide-sidebar'
-const HIDE_SIDEBAR_CSS = 'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}'
+const STYLE_ID = 'dsh-lab/hide-chrome'
+const HIDE_CHROME_CSS = [
+  /* 隐藏侧边栏：grid 左右两列设为 0 */
+  'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}',
+  /* 隐藏顶栏：多选择器覆盖，display:none 不动 grid 布局 */
+  '[data-shell-header]{display:none!important}',
+  '[data-shell-topbar]{display:none!important}',
+  '[data-shell-header-bar]{display:none!important}',
+  '[data-shell-toolbar]{display:none!important}',
+  '[data-shell-nav]{display:none!important}',
+  '[data-shell-appbar]{display:none!important}',
+  'header{display:none!important}',
+  'nav{display:none!important}'
+].join('\n')
 
 export const name = 'dsh-lab-client'
 export const inject = ['slots', 'sessions']
@@ -386,7 +398,7 @@ export function apply(ctx: Context) {
       tag = document.createElement('style')
       tag.dataset.plugin = 'dsh-lab'
       tag.dataset.pluginCss = STYLE_ID
-      tag.textContent = HIDE_SIDEBAR_CSS
+      tag.textContent = HIDE_CHROME_CSS
       document.head.appendChild(tag)
     } else if (!active && tag) {
       tag.remove()
@@ -420,6 +432,7 @@ export function apply(ctx: Context) {
 - `face.subscribe(callback)` 回调不传参数，必须 `face.getSnapshot()` 读取
 - 纯 DOM 操作注入 CSS，不依赖 React
 - 监听 `ctx.sessions.list` 变化以在会话切换时重新订阅
+- 使用 `display:none` 隐藏顶栏，而非 `grid-template:rows 0`（后者会压缩 grid 行高导致聊天窗口消失）
 
 ---
 
@@ -511,3 +524,4 @@ export function apply(ctx: Context) {
 - **启动时状态重置**：`index.ts` 在插件加载时一次性清理残留注册，确保重启后 `active` 默认为 `false`（非持久化）
 - **会话隔离**：服务注册是全局的，但侧边栏状态（projection）是每会话的
 - **`face.subscribe` 回调**：不传参数，必须 `face.getSnapshot()` 读取当前值
+- **顶栏隐藏方式**：使用 `display:none` 隐藏顶栏元素，而非 `grid-template-rows:0`（后者会压缩 grid 行高导致聊天窗口消失）
