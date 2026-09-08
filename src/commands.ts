@@ -19,6 +19,7 @@ export function apply(ctx: Context) {
           console.error('[dsh-lab:cmd] ✗ enable FAILED')
           return { kind: 'error', text: '实验模式启用失败：服务注册异常。' }
         }
+        console.log('[dsh-lab:cmd] ✓ 实验模式已启用（上下文注入已激活）')
         return { kind: 'success', text: '实验模式已启用。' }
       } else {
         ctx.root.registry.delete(LabLocal)
@@ -27,6 +28,7 @@ export function apply(ctx: Context) {
           console.error('[dsh-lab:cmd] ✗ disable FAILED')
           return { kind: 'error', text: '实验模式关闭失败：服务注销异常。' }
         }
+        console.log('[dsh-lab:cmd] ✓ 实验模式已关闭（上下文注入已移除）')
         return { kind: 'success', text: '实验模式已关闭。' }
       }
     },

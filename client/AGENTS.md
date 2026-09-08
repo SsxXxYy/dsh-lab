@@ -1,6 +1,6 @@
 # dsh-lab Client 端指南
 
-> dsh-lab 浏览器侧插件：通过 Session Projection 感知 Host 端 lab 服务状态，控制侧边栏显示/隐藏。
+> dsh-lab 浏览器侧插件：通过 Session Projection 感知 Host 端 lab 服务状态，控制侧边栏 + 顶栏显示/隐藏。
 
 ---
 
@@ -17,7 +17,7 @@ Host 端                          Client 端（本目录）
   → Projection apply 翻转 active   
   → WebSocket push ─────────────→  face.subscribe 收到推送
                                    → CSS 注入/移除
-                                   → 侧边栏隐藏/显示
+                                   → 侧边栏 + 顶栏隐藏/显示
 ```
 
 ---
@@ -81,8 +81,8 @@ Client 无法直接感知 Host 侧 lab 服务的注册/注销状态变化。之�
 │    │                                                           │
 │    ▼                                                           │
 │  update(active)                                                │
-│    ├─ true  → 注入 <style> → 侧边栏隐藏                        │
-│    └─ false → 移除 <style> → 侧边栏恢复                        │
+│    ├─ true  → 注入 <style> → 侧边栏 + 顶栏隐藏                 │
+│    └─ false → 移除 <style> → 侧边栏 + 顶栏恢复                 │
 │                                                                │
 └────────────────────────────────────────────────────────────────┘
 ```
@@ -105,12 +105,22 @@ client/
 
 ```ts
 // client/client.ts — 通过 Session Projection 感知 host 端 lab 服务状态
-// 链路：Host /lab command → session append command/run → projection drive → WebSocket push → Client subscribe → 更新 UI
 import type { Context } from '@deepseek-ai/cordis'
 
-const STYLE_ID = 'dsh-lab/hide-sidebar'
-const HIDE_SIDEBAR_CSS =
-  'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}'
+const STYLE_ID = 'dsh-lab/hide-chrome'
+const HIDE_CHROME_CSS = [
+  /* 隐藏侧边栏：grid 左右两列设为 0 */
+  'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}',
+  /* 隐藏顶栏：多选择器覆盖，display:none 不动 grid 布局 */
+  '[data-shell-header]{display:none!important}',
+  '[data-shell-topbar]{display:none!important}',
+  '[data-shell-header-bar]{display:none!important}',
+  '[data-shell-toolbar]{display:none!important}',
+  '[data-shell-nav]{display:none!important}',
+  '[data-shell-appbar]{display:none!important}',
+  'header{display:none!important}',
+  'nav{display:none!important}'
+].join('\n')
 
 export const name = 'dsh-lab-client'
 export const inject = ['slots', 'sessions']
@@ -125,7 +135,7 @@ export function apply(ctx: Context) {
       tag = document.createElement('style')
       tag.dataset.plugin = 'dsh-lab'
       tag.dataset.pluginCss = STYLE_ID
-      tag.textContent = HIDE_SIDEBAR_CSS
+      tag.textContent = HIDE_CHROME_CSS
       document.head.appendChild(tag)
     } else if (!active && tag) {
       tag.remove()
@@ -190,27 +200,41 @@ export function apply(ctx: Context) {
 ### 4.2 CSS 注入逻辑
 
 ```ts
-const STYLE_ID = 'dsh-lab/hide-sidebar'
-const HIDE_SIDEBAR_CSS =
-  'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}'
+const STYLE_ID = 'dsh-lab/hide-chrome'
+const HIDE_CHROME_CSS = [
+  /* 隐藏侧边栏：grid 左右两列设为 0 */
+  'html div:has(> [data-shell-overlay]){grid-template-columns:0 minmax(0,1fr) 0 !important}',
+  /* 隐藏顶栏：多选择器覆盖，display:none 不动 grid 布局 */
+  '[data-shell-header]{display:none!important}',
+  '[data-shell-topbar]{display:none!important}',
+  '[data-shell-header-bar]{display:none!important}',
+  '[data-shell-toolbar]{display:none!important}',
+  '[data-shell-nav]{display:none!important}',
+  '[data-shell-appbar]{display:none!important}',
+  'header{display:none!important}',
+  'nav{display:none!important}'
+].join('\n')
 
 function update(active: boolean) {
   if (active && !tag) {
-    // 注入 <style> 隐藏侧边栏
+    // 注入 <style> 隐藏侧边栏 + 顶栏
     tag = document.createElement('style')
     tag.dataset.plugin = 'dsh-lab'
     tag.dataset.pluginCss = STYLE_ID
-    tag.textContent = HIDE_SIDEBAR_CSS
+    tag.textContent = HIDE_CHROME_CSS
     document.head.appendChild(tag)
   } else if (!active && tag) {
-    // 移除 <style> 恢复侧边栏
+    // 移除 <style> 恢复侧边栏 + 顶栏
     tag.remove()
     tag = null
   }
 }
 ```
 
-**原理**：通过 CSS 修改 `grid-template-columns`，将侧边栏宽度设为 0，实现隐藏效果。
+**原理**：
+- 侧边栏：通过 CSS 修改 `grid-template-columns`，将左右两列宽度设为 0
+- 顶栏：使用 `display:none` 隐藏顶栏元素（**不能用 `grid-template-rows:0`**，会压缩聊天窗口）
+- 8 个选择器覆盖不同 DOM 写法，总有一个命中
 
 ---
 
@@ -267,9 +291,9 @@ export default config
 ## 6. 验证清单
 
 - [x] `npm run build` 构建成功，产出 `dist/client.js`
-- [x] 新对话默认侧边栏可见（`init` 返回 `{ active: false }`）
-- [x] 输入 `/lab` → 侧边栏隐藏（`active: true`）
-- [x] 再次 `/lab` → 侧边栏恢复（`active: false`）
+- [x] 新对话默认侧边栏 + 顶栏可见（`init` 返回 `{ active: false }`）
+- [x] 输入 `/lab` → 侧边栏 + 顶栏隐藏（`active: true`）
+- [x] 再次 `/lab` → 侧边栏 + 顶栏恢复（`active: false`）
 - [x] 会话切换时 projection 自动重新订阅
 - [x] 冷启动后 projection 从 session log replay 恢复状态
 
@@ -287,8 +311,8 @@ Host 端 console（过滤 `[dsh-lab:projection]`）：
 Client 端 console（过滤 `[dsh-lab:client]`）：
 - `initial: {"active":false}` — 初始快照
 - `★ projection push: {"active":true}` — 收到推送
-- `✓ sidebar hidden` — CSS 已注入
-- `✓ sidebar restored` — CSS 已移除
+- `✓ chrome hidden` — CSS 已注入（侧边栏 + 顶栏隐藏）
+- `✓ chrome restored` — CSS 已移除（侧边栏 + 顶栏恢复）
 
 ### 7.2 排查链路
 
@@ -376,7 +400,7 @@ face.subscribe(function () {
 
 ## 10. 未来扩展
 
-当前 Client 端只控制侧边栏显示/隐藏。未来可扩展：
+当前 Client 端控制侧边栏 + 顶栏显示/隐藏。未来可扩展：
 
 - **仪器状态面板**：显示当前连接的仪器列表、状态
 - **工作流执行进度**：实时显示工作流执行步骤

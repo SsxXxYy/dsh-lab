@@ -19,6 +19,13 @@ declare module '@deepseek-ai/cordis' {
     }
     plugin<P extends Plugin>(plugin: P): void
     sessionProjections: SessionProjectionRegistry
+    systemPrompt: {
+      section(definition: {
+        name: string
+        order: number
+        text: (() => string) | (() => Promise<string>)
+      }): void
+    }
     // 服务存在性检测：Typert Registry 订阅
     typert: {
       remotes: {

@@ -105,7 +105,8 @@ dsh_lab/
 **需要补充**：
 - 8 个工具方法：`scanInstruments`、`readDocument`、`readWorkflow`、`createWorkflow`、`updateWorkflow`、`deleteWorkflow`、`sendScpi`、`sendAsg`
 - 1 个命令方法：`renameDevice`
-- 3 个上下文方法：`listWorkflows`
+- 3 个上下文数据方法：`listWorkflows`、`listDocuments`、`readInventory`
+- 1 个内容加载方法：`readMarkdown(filename)` — 加载 `content/` 目录下的 Markdown 文件（角色定位、提示词等）
 - 对应的 Request/Result 接口（如 `SendScpiRequest`、`SendScpiResult` 等）
 - 声明合并：让消费方可以写 `ctx.lab`
 
@@ -131,11 +132,15 @@ dsh_lab/
 | `sendAsg` | 调 Python：`python -m dsh_lab.asg` |
 | `renameDevice` | TypeScript 读写 JSON |
 | `listWorkflows` | TypeScript 读目录 + 解析 frontmatter |
+| `listDocuments` | TypeScript 读目录 + 解析 frontmatter |
+| `readInventory` | TypeScript 读 `devices/devices_inventory.json` |
+| `readMarkdown` | TypeScript 读 `content/*.md` 文件 |
 
 **关键点**：
 - 文件操作在 TypeScript 中直接完成，无需跨进程通信
 - Python 只负责硬件通信，通过 `ctx.shell.run()` 走 DSH 沙箱机制
 - 硬件调用参数通过 CLI 参数传递，结果通过 stdout JSON 返回
+- **内容与逻辑分离**：角色定位、提示词等静态文本存于 `content/*.md`，由 `readMarkdown` 加载
 
 ---
 
@@ -188,11 +193,13 @@ dsh_lab/
 
 ### 4.1 职责定位
 
-`src/context.ts` 是 Consumer 角色，负责在每轮 Agent Loop 中自动向 system prompt 注入四类上下文：
+`src/context.ts` 是 Consumer 角色，负责在每轮 Agent Loop 中自动向 system prompt 注入四类上下文。
+
+**内容文件化原则**：角色定位、工作流程、提示词等静态文本不硬编码在 TypeScript 代码里，而是存为 `content/*.md` Markdown 文件，通过 `ctx.lab.readMarkdown(filename)` 加载。改文案不用改代码，不用重新构建。
 
 | Section | order | 内容 | 刷新时机 | 数据来源 |
 |---|---|---|---|---|
-| `lab:role` | 100 | 角色定位 + 工具使用指南 | 固定 | 硬编码 |
+| `lab:role` | 100 | 角色定位 + 工具使用指南 | 固定 | `content/role.md`（通过 `readMarkdown` 加载） |
 | `lab:instruments` | 200 | 当前连接的仪器列表 + 状态 | 每步 | `devices/devices_inventory.json` 文件 |
 | `lab:documents` | 201 | 可用仪器文档索引 + 章节目录 | 每步 | `docs/*.md` 文件的 YAML frontmatter |
 | `lab:workflows` | 202 | 可用工作流列表 + frontmatter | 每步 | `workflows/*/*.md` 文件的 YAML frontmatter |
@@ -220,6 +227,7 @@ export const inject = ['systemPrompt', 'lab']
 
 ```typescript
 // src/service.ts — 上下文相关抽象方法
+abstract readMarkdown(filename: string): Promise<string>
 abstract listDocuments(): Promise<Array<{ filename: string; name: string; description: string; index: Array<{ title: string; line: number }> }>>
 abstract listWorkflows(): Promise<Array<{ name: string; description: string }>>
 abstract readInventory(): Promise<DevicesInventory>
@@ -227,6 +235,7 @@ abstract readInventory(): Promise<DevicesInventory>
 
 | 方法 | 返回值 | 用途 |
 |---|---|---|
+| `readMarkdown(filename)` | Markdown 文本 | 加载 `content/*.md` 文件（角色定位、提示词等） |
 | `readInventory()` | `DevicesInventory` | 读取设备清单 JSON，用于 `lab:instruments` |
 | `listDocuments()` | 文档元数据数组 | 遍历 docs 文件夹解析 frontmatter，用于 `lab:documents` |
 | `listWorkflows()` | 工作流元数据数组 | 遍历 workflows 文件夹解析 frontmatter，用于 `lab:workflows` |
@@ -259,33 +268,12 @@ export const inject = ['systemPrompt', 'lab']
 
 export function apply(ctx: Context) {
   // ── 角色定位（固定内容，order 100 最先渲染）──
-  // 告诉模型：你是实验助手，该怎么使用下面的上下文资源
+  // 从 content/role.md 加载，不硬编码在代码里
   ctx.systemPrompt.section({
     name: 'lab:role',
     order: 100,
-    text: () => {
-      return [
-        '## 角色定位',
-        '你是实验室仪器控制助手。当前实验模式已启用，你可以操作真实的仪器设备。',
-        '',
-        '### 工作流程',
-        '1. **查看可用工作流**：下方「可用工作流」列出了预定义的实验流程，用 `read_workflow(name)` 阅读步骤',
-        '2. **执行工作流**：阅读后按步骤调用 `send_scpi` / `send_asg` 控制仪器',
-        '3. **查阅文档**：如需确认命令语法，用 `read_document(filename, lines)` 按行号精确定位',
-        '4. **直接控制**：用户可以直接说"发 xxx 命令"，你查阅文档后执行',
-        '',
-        '### 工具使用时机',
-        '- `read_workflow(name)`：用户要求执行某个工作流时',
-        '- `read_document(filename, lines)`：需要确认 SCPI/ASG 命令语法时（利用下方文档章节行号）',
-        '- `send_scpi(address, command)`：向仪器发送单条 SCPI 命令',
-        '- `send_asg(func, args)`：调用 ASG 设备 SDK 函数',
-        '- `scan_instruments`：用户要求扫描/刷新仪器列表时（会更新下方仪器列表）',
-        '',
-        '### 注意事项',
-        '- 仪器有长有短，发送命令后必要时加 `delay` 参数等待',
-        '- 查询命令（以 `?` 结尾）会返回结果，写入命令不会',
-        '- 不确定命令格式时，先读文档再执行',
-      ].join('\n')
+    text: async () => {
+      return await ctx.lab.readMarkdown('role.md')
     },
   })
 
@@ -373,8 +361,9 @@ function formatDocuments(documents: Array<{ filename: string; name: string; desc
 #### `lab:role`（order: 100）
 
 - **最先渲染**：order 100 确保在仪器/文档/工作流列表之前出现，模型先知道"怎么用"，再看"有什么"
-- **固定内容**：角色定位不随状态变化，使用同步回调
-- **内容结构**：
+- **内容文件化**：角色定位文本存于 `content/role.md`，通过 `ctx.lab.readMarkdown('role.md')` 加载，不硬编码在代码里
+- **易维护**：改文案只需编辑 Markdown 文件，不用改 TypeScript、不用重新构建
+- **内容结构**（`content/role.md`）：
   1. 角色声明（"你是实验室仪器控制助手"）
   2. 工作流程（查看工作流 → 执行 → 查阅文档 → 直接控制）
   3. 工具使用时机（每个工具什么时候该用）
@@ -419,16 +408,23 @@ function formatDocuments(documents: Array<{ filename: string; name: string; desc
 
 ### 4.6 Service Provider 对应实现
 
-`src/lab-local.ts` 需要实现三个方法：
+`src/lab-local.ts` 需要实现以下方法：
 
 ```typescript
 // src/lab-local.ts — 上下文相关方法实现
 import { readdir, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
+const CONTENT_DIR = join(process.cwd(), 'content')
 const INVENTORY_PATH = join(process.cwd(), 'devices', 'devices_inventory.json')
 const DOCS_DIR = join(process.cwd(), 'docs')
 const WORKFLOW_DIR = join(process.cwd(), 'workflows')
+
+// ── 加载 content/ 目录下的 Markdown 文件 ──
+async readMarkdown(filename: string): Promise<string> {
+  const filePath = join(CONTENT_DIR, filename)
+  return readFile(filePath, 'utf-8')
+}
 
 // ── 读取设备清单 ──
 async readInventory(): Promise<DevicesInventory> {
@@ -621,6 +617,40 @@ DSH Agent Loop (每步)
 使用 read_workflow 阅读，然后逐步执行
 ```
 
+### 4.10 content/role.md 示例
+
+```markdown
+## 角色定位
+你是实验室仪器控制助手。当前实验模式已启用，你可以操作真实的仪器设备。
+
+### 工作流程
+1. **查看可用工作流**：下方「可用工作流」列出了预定义的实验流程，用 `read_workflow(name)` 阅读步骤
+2. **执行工作流**：阅读后按步骤调用 `send_scpi` / `send_asg` 控制仪器
+3. **查阅文档**：如需确认命令语法，用 `read_document(filename, lines)` 按行号精确定位
+4. **直接控制**：用户可以直接说"发 xxx 命令"，你查阅文档后执行
+
+### 工具使用时机
+- `read_workflow(name)`：用户要求执行某个工作流时
+- `read_document(filename, lines)`：需要确认 SCPI/ASG 命令语法时（利用下方文档章节行号）
+- `send_scpi(address, command)`：向仪器发送单条 SCPI 命令
+- `send_asg(func, args)`：调用 ASG 设备 SDK 函数
+- `scan_instruments`：用户要求扫描/刷新仪器列表时（会更新下方仪器列表）
+
+### 注意事项
+- 仪器有长有短，发送命令后必要时加 `delay` 参数等待
+- 查询命令（以 `?` 结尾）会返回结果，写入命令不会
+- 不确定命令格式时，先读文档再执行
+```
+
+**文件位置**：`content/role.md`
+
+**加载方式**：`ctx.lab.readMarkdown('role.md')`
+
+**好处**：
+- 改文案只需编辑 Markdown，不用改代码、不用重新构建
+- 非技术人员也能编辑角色提示词
+- 可轻松支持多语言（`content/role.zh.md`、`content/role.en.md`）
+
 ### 4.9 测试验证
 
 | 验证项 | 方法 | 预期 |
@@ -628,6 +658,7 @@ DSH Agent Loop (每步)
 | 服务未注册时无 section | 不输入 `/lab`，观察 system prompt | 无 lab 相关 section |
 | 服务注册后 section 出现 | 输入 `/lab`，观察 system prompt | 四个 section 自动出现 |
 | 角色定位最先出现 | 观察 section 顺序 | `lab:role` 在仪器/文档/工作流之前 |
+| 角色内容从文件加载 | 修改 `content/role.md` 后输入 `/lab` | system prompt 显示修改后的内容 |
 | 模型知道怎么用 | 观察 LLM 行为 | 看到工作流名称后主动调用 `read_workflow` |
 | 仪器列表来自 JSON | 调用 scan_instruments 后观察 section | 设备列表与 JSON 文件一致 |
 | 在线/离线区分 | 断开设备后调用 scan_instruments | 离线设备显示 `[离线]` 标记 |

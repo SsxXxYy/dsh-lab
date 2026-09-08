@@ -17,6 +17,7 @@ export function apply(ctx: Context) {
     init: (): LabState => {
       // 新会话初始化时，读取实际 registry 状态
       const active = ctx.root.registry.has(LabLocal)
+      console.log('[dsh-lab:projection] init active =', active)
       return { active }
     },
     apply: (state: LabState | undefined, event: { type: string; data?: { name?: string } }): LabState => {
@@ -26,6 +27,9 @@ export function apply(ctx: Context) {
       if (event.type === 'command/done') {
         // 任意 command/done 后读取实际 registry 状态（事件结构中无 name 字段，无法按名称过滤）
         const actualActive = ctx.root.registry.has(LabLocal)
+        if (actualActive !== state?.active) {
+          console.log('[dsh-lab:projection] state changed:', state?.active, '->', actualActive)
+        }
         return { active: actualActive }
       }
       return state ?? { active: ctx.root.registry.has(LabLocal) }

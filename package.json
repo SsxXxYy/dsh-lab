@@ -34,8 +34,7 @@
     ".": "./dist/index.js",
     "./client": "./dist/client.js",
     "./cordis.patch.yml": "./cordis.patch.yml",
-    "./package.json": "./package.json",
-    "./presets/*": "./presets/*"
+    "./package.json": "./package.json"
   },
   "files": [
     "dist/**/*.js",
@@ -43,7 +42,10 @@
     "dist/**/*.d.ts",
     "dist/**/*.d.ts.map",
     "src",
-    "presets",
+    "content",
+    "docs",
+    "devices",
+    "workflows",
     "cordis.patch.yml",
     "README.md",
     "LICENSE"
