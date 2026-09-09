@@ -10,9 +10,9 @@ dsh-lab 是一个 DSH bundle 插件，将实验室仪器控制功能移植为 DS
 
 ### 当前实现状态
 
-- **已实现**：`/lab` 元命令、Service Definition/Provider、Session Projection、Client CSS 注入（侧边栏 + 顶栏）、System Prompt 上下文注入
-- **设计完成**：工具集（8 个）、斜杠命令（`/devices` `/new` `/rename`）、Python 执行引擎
-- **未实现**：工具集代码、Python 引擎、斜杠命令代码
+- **已实现**：`/lab` 元命令、Service Definition/Provider、Session Projection、Client CSS 注入（侧边栏 + 顶栏）、System Prompt 上下文注入、工具集代码（8 个）、Python 执行引擎
+- **设计完成**：斜杠命令（`/devices` `/new` `/rename`）
+- **未实现**：斜杠命令代码
 
 ## 2. 技术栈
 
@@ -54,19 +54,32 @@ dsh-lab/
 │   ├── index.ts                     # 插件入口
 │   ├── service.ts                   # Service Definition
 │   ├── lab-local.ts                 # Service Provider
+│   ├── tools.ts                     # Consumer（工具注册，8 个工具）
 │   ├── commands.ts                  # Consumer（元命令 /lab）
 │   ├── context.ts                   # Consumer（上下文注入）
 │   ├── projection.ts                # Consumer（投影）
-│   └── ...                          # 详见 src/AGENTS.md
+│   └── types/                       # 本地类型声明
+│       ├── dsh-tools.d.ts           # ctx.tools 模块合并
+│       └── dsh-tools-module.d.ts    # @deepseek-ai/dsh-tools 模块声明
+├── py/                              # Python 执行引擎
+│   ├── __init__.py                  # 包标识
+│   ├── __main__.py                  # 入口路由（python -m py <module>）
+│   ├── scan.py                      # 设备扫描（PyVISA + asglib）
+│   ├── scpi.py                      # SCPI 通信（PyVISA，批次处理）
+│   └── asg.py                       # ASG SDK 调用（asglib，批次处理）
 ├── client/                          # Client 端
 │   ├── client.ts                    # 侧边栏 + 顶栏 CSS 控制
 │   └── AGENTS.md                    # Client 端开发指南
 ├── content/                         # Markdown 内容文件
 │   └── role.md                      # 角色定位提示词
+├── devices/                         # 设备清单 JSON
+├── docs/                            # 仪器文档
+├── workflows/                       # 工作流
 ├── dist/                            # 构建产物
 ├── package.json
 ├── tsconfig.json
-└── tsdown.config.ts
+├── tsdown.config.ts
+└── requirements.txt                 # Python 依赖
 ```
 
 **详细开发指南**：
@@ -80,7 +93,8 @@ dsh-lab/
 | 角色 | 文件 | 职责 |
 |---|---|---|
 | **Service Definition** | `src/service.ts` | 定义 `LabService` 抽象类 + 类型 |
-| **Service Provider** | `src/lab-local.ts` | 实现 `LabLocal`（文件操作 + 预设内容加载） |
+| **Service Provider** | `src/lab-local.ts` | 实现 `LabLocal`（文件操作 + Python 调用） |
+| **Consumer（工具）** | `src/tools.ts` | 注册 8 个 DSH 工具 |
 | **Consumer（元命令）** | `src/commands.ts` | 注册 `/lab`，控制服务注册/注销 |
 | **Consumer（上下文）** | `src/context.ts` | 注册 4 个 system prompt section |
 | **Consumer（投影）** | `src/projection.ts` | 推送状态到 Client |
@@ -115,18 +129,18 @@ dsh-lab/
 
 > 详细开发指南见 [src/AGENTS.md](src/AGENTS.md)
 
-## 7. 工具集（设计中）
+## 7. 工具集（已实现）
 
-| 工具 | 类型 | 说明 |
-|---|---|---|
-| `scan_instruments` | exclusive | 扫描 VISA + ASG 设备 |
-| `read_document` | parallel | 按行区间/章节读文档 |
-| `read_workflow` | parallel | 读工作流文件 |
-| `create_workflow` | exclusive | 新建工作流 |
-| `update_workflow` | exclusive | 修改工作流 |
-| `delete_workflow` | exclusive | 删除工作流 |
-| `send_scpi` | exclusive | 发单条 SCPI 命令 |
-| `send_asg` | exclusive | 发单条 ASG SDK 调用 |
+| 工具 | 类型 | 实现方式 | 说明 |
+|---|---|---|---|
+| `scan_instruments` | exclusive | Python | 扫描 VISA + ASG 设备 |
+| `read_document` | parallel | TypeScript | 按行区间/章节读文档 |
+| `read_workflow` | parallel | TypeScript | 读工作流文件 |
+| `create_workflow` | exclusive | TypeScript | 新建工作流 |
+| `update_workflow` | exclusive | TypeScript | 修改工作流 |
+| `delete_workflow` | exclusive | TypeScript | 删除工作流 |
+| `send_scpi` | exclusive | Python（批次） | 发多条 SCPI 命令，按顺序执行 |
+| `send_asg` | exclusive | Python（批次） | 发多条 ASG SDK 调用，按顺序执行 |
 
 > 详见 [design/TOOLS.md](design/TOOLS.md)
 
@@ -188,6 +202,10 @@ dsh-lab/
 | `node_modules` 下不能暴露 `.ts` 入口 | 分发时入口必须是预编译的 `.js` |
 | 顶栏隐藏用 `display:none` | 不能用 `grid-template-rows:0`（会压缩聊天窗口） |
 | `inject` 声明即检查 | 不需要手动 `isEnabled()` 判断 |
+| `@deepseek-ai/dsh-tools` 类型缺失 | 在 `src/types/` 添加本地声明文件 |
+| SCPI/ASG 批次超时 | 超时按命令数量线性计算：`30000 * commands.length` |
+| `continueOnError` 策略 | 默认出错即停；设为 true 可继续执行后续命令/调用 |
+| Python 命令格式 | `python -m py <module>`（空格非点），运行 `py/__main__.py` 并传入模块名 |
 
 > 详细边界见 [src/AGENTS.md §7](src/AGENTS.md)
 

@@ -3,6 +3,7 @@ import type { Context } from '@deepseek-ai/cordis'
 import * as meta from './commands.js'
 import * as projection from './projection.js'
 import * as context from './context.js'
+import * as tools from './tools.js'
 import { LabLocal } from './lab-local.js'
 
 // 启动时一次性清理残留注册，确保重启后状态非持久化
@@ -23,4 +24,5 @@ export function apply(ctx: Context) {
   ctx.plugin(meta)       // /lab 元命令
   ctx.plugin(projection) // Session Projection：追踪 lab 服务状态并推送给 Client
   ctx.plugin(context)    // System Prompt 上下文注入
+  ctx.plugin(tools)      // 工具注册（8 个工具）
 }

@@ -1,0 +1,11 @@
+# dsh-lab Python 引擎依赖
+# 安装方式: pip install -r requirements.txt
+
+# PyVISA — VISA 仪器通信
+pyvisa>=1.13.0
+
+# pyvisa-py — 纯 Python 后端（不依赖 NI-VISA 驱动）
+pyvisa-py>=0.7.0
+
+# asglib — ASG 设备 SDK（需单独安装，由设备厂商提供）
+# asglib

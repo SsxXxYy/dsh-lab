@@ -296,6 +296,8 @@ export default config
 - [x] 再次 `/lab` → 侧边栏 + 顶栏恢复（`active: false`）
 - [x] 会话切换时 projection 自动重新订阅
 - [x] 冷启动后 projection 从 session log replay 恢复状态
+- [x] `/lab` 开启后 8 个工具注册成功（`scan_instruments`、`read_document` 等）
+- [x] `/lab` 关闭后 8 个工具自动注销
 
 ---
 

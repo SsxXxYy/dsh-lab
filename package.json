@@ -42,11 +42,13 @@
     "dist/**/*.d.ts",
     "dist/**/*.d.ts.map",
     "src",
+    "py",
     "content",
     "docs",
     "devices",
     "workflows",
     "cordis.patch.yml",
+    "requirements.txt",
     "README.md",
     "LICENSE"
   ]
