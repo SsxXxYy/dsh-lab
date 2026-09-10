@@ -61,8 +61,7 @@ export function apply(ctx: Context) {
         let line = `- ${doc.filename}（${doc.name || doc.filename}）`
         if (doc.description) line += ` — ${doc.description}`
         if (doc.index.length) {
-          line += `\n    章节：${doc.index.slice(0, 5).map((i) => `${i.title}(${i.line}行)`).join('、')}`
-          if (doc.index.length > 5) line += ` 等${doc.index.length}个章节`
+          line += `\n    章节：${doc.index.map((i) => `${i.title}(${i.line}行)`).join('、')}`
         }
         lines.push(line)
       })
