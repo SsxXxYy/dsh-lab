@@ -382,15 +382,18 @@ export class LabLocal extends LabService {
     }
 
     try {
-      // 一次提交整批调用给 Python，循环在 Python 里处理
+      // 一次提交整批调用给 Python，Init/Connect/Disconnect/Release 由 Python 硬编码
       const args = JSON.stringify({
+        device_name: request.device_name,
+        local_ip: request.local_ip,
+        local_mac: request.local_mac,
         calls: request.calls,
         continueOnError: request.continueOnError ?? false,
       })
 
       const result = await shell.run({
         command: `python -m py asg '${args}'`,
-        timeoutMs: 30000 * request.calls.length,  // 每条调用最多 30s
+        timeoutMs: 30000 + 30000 * request.calls.length,  // Init 30s + 每条调用最多 30s
         sandboxPolicy: this._getSandboxPolicy(),
         workdir: PROJECT_ROOT,
       })

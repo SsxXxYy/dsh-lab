@@ -155,11 +155,26 @@ export function apply(ctx: Context) {
 
   ctx.tools.register(defineTool({
     name: 'send_asg',
-    description: '向 ASG 设备发送一条或多条 SDK 调用，按顺序执行。',
+    description: '向 ASG 设备发送 SDK 调用，自动处理 Init/Connect/Disconnect/Release 生命周期。',
     parameters: {
+      device_name: {
+        type: 'string',
+        description: '设备名（如 ASG241002324070090）',
+        required: true,
+      },
+      local_ip: {
+        type: 'string',
+        description: '上位机 IP 地址',
+        required: true,
+      },
+      local_mac: {
+        type: 'string',
+        description: '上位机 MAC 地址',
+        required: true,
+      },
       calls: {
         type: 'array',
-        description: 'ASG 调用列表',
+        description: 'ASG 核心操作列表（不含 Init/Connect/Disconnect/Release）',
         required: true,
         items: {
           type: 'object',

@@ -23,10 +23,7 @@ def main():
             )
         elif module == "asg":
             from py.asg import asg_execute_batch
-            result = asg_execute_batch(
-                args.get("calls", []),
-                args.get("continueOnError", False)
-            )
+            result = asg_execute_batch(args)
         else:
             result = {"status": "error", "error": f"未知模块: {module}"}
     except Exception as e:

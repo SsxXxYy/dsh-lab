@@ -60,25 +60,23 @@
 - `command`：SCPI 命令文本
 - `delay`：执行后等待时间（毫秒），默认 0
 
-## ASG 指令格式
+## ASG 调用格式
 
-每条调用用 JSON 字典表示：
+`send_asg` 自动处理 Init/Connect/Disconnect/Release 生命周期，LLM 只需传入核心操作：
 
 ```json
-{"func": "ASG_Init", "args": [], "delay": 3000}
+{
+  "device_name": "ASG241002324070090",
+  "local_ip": "192.168.1.100",
+  "local_mac": "AA-BB-CC-DD-EE-FF",
+  "calls": [
+    {"func": "ASG_SetParamInt", "args": ["/Waveform/CompileMode", 1]},
+    {"func": "ASG_DownloadWaveformCode", "args": ["w1 = Seq_Gen(H,100,L,4,Loop=10)\ns1 = ASG_SEQ([w1(10)])\nASG_OUT[1] = s1\n"]}
+  ]
+}
 ```
 
-- `func`：SDK 函数名
-- `args`：参数列表
-- `delay`：执行后等待时间（毫秒），默认 0
-
-## ASG 操作规范
-
-ASG 必须包含固定三段：
-
-1. **前段**：`ASG_Init`(delay=3000) + `ASG_ConnectDevice`(设备名, 上位机IP, 上位机MAC)
-2. **中段**：实际操作函数
-3. **后段**：`ASG_DisConnectDevice` + `ASG_Release`
+工具内部自动执行：`Init → Connect → calls 中的操作 → Disconnect → Release`
 
 ## 注意事项
 

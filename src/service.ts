@@ -87,6 +87,13 @@ export interface SendScpiResult {
 
 /** ASG 批次请求：一次工具调用发送多条调用 */
 export interface SendAsgRequest {
+  /** 设备名（如 ASG241002324070090） */
+  device_name: string
+  /** 上位机 IP */
+  local_ip: string
+  /** 上位机 MAC */
+  local_mac: string
+  /** 核心操作列表（不含 Init/Connect/Disconnect/Release） */
   calls: Array<{
     func: string
     args?: unknown[]
