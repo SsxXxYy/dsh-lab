@@ -67,17 +67,33 @@ export class LabLocal extends LabService {
         const content = readFileSync(filePath, 'utf-8')
         const match = content.match(/^---\n([\s\S]*?)\n---/)
         if (!match) return { filename, name: '', description: '', index: [] }
-        const frontmatter = this.parseDocumentFrontmatter(match[1])
+        const yamlText = match[1]
         return {
           filename,
-          name: frontmatter.name || '',
-          description: frontmatter.description || '',
-          index: frontmatter.index || [],
+          name: this._extractYamlValue(yamlText, 'name') || '',
+          description: this._extractYamlValue(yamlText, 'description') || '',
+          index: this._parseYamlSections(yamlText),
         }
       } catch {
         return { filename, name: '', description: '', index: [] }
       }
     })
+  }
+
+  private _extractYamlValue(yamlText: string, key: string): string {
+    const match = yamlText.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))
+    return match?.[1]?.trim() || ''
+  }
+
+  private _parseYamlSections(yamlText: string): Array<{ title: string; line: number }> {
+    const sectionsMatch = yamlText.match(/^sections:\n([\s\S]*?)(?=\n\w+:|$)/m)
+    if (!sectionsMatch) return []
+    const items: Array<{ title: string; line: number }> = []
+    for (const line of sectionsMatch[1].split('\n')) {
+      const m = line.match(/^\s+'([^']+)':\s*(\d+)\s*$/)
+      if (m) items.push({ title: m[1], line: Number(m[2]) })
+    }
+    return items
   }
 
   listWorkflows(): WorkflowMeta[] {
@@ -451,34 +467,6 @@ export class LabLocal extends LabService {
       mode: 'workspace-write',
       workspaceRoot: process.cwd(),
     }
-  }
-
-  private parseDocumentFrontmatter(text: string): { name?: string; description?: string; index?: Array<{ title: string; line: number }> } {
-    const result: { name?: string; description?: string; index?: Array<{ title: string; line: number }> } = {}
-    const lines = text.split('\n')
-    const indexItems: Array<{ title: string; line: number }> = []
-
-    for (const line of lines) {
-      const simpleMatch = line.match(/^(\w+):\s*(.*)$/)
-      if (simpleMatch && simpleMatch[1] !== 'index') {
-        const key = simpleMatch[1]
-        if (key === 'name') result.name = simpleMatch[2].trim()
-        else if (key === 'description') result.description = simpleMatch[2].trim()
-        continue
-      }
-      const indexTitleMatch = line.match(/^\s+-\s+title:\s*"?([^"]+)"?$/)
-      if (indexTitleMatch) {
-        indexItems.push({ title: indexTitleMatch[1], line: 0 })
-        continue
-      }
-      const indexLineMatch = line.match(/^\s+line:\s*(\d+)$/)
-      if (indexLineMatch && indexItems.length) {
-        indexItems[indexItems.length - 1].line = Number(indexLineMatch[1])
-      }
-    }
-
-    if (indexItems.length) result.index = indexItems
-    return result
   }
 
   private parseWorkflowFrontmatter(text: string): { name?: string; description?: string } {
