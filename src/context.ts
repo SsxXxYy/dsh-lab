@@ -27,10 +27,23 @@ export function apply(ctx: Context) {
       const devices = Object.entries(inventory)
       if (!devices.length) return ''
 
+      // 区分在线/离线：VISA 看 address，ASG 看 local_ip
+      const online = devices.filter(([, d]) => d.address || d.local_ip)
+      const offline = devices.filter(([, d]) => !d.address && !d.local_ip)
+
       const lines: string[] = ['## 当前连接的仪器']
-      devices.forEach(([serial, d], i) => {
-        lines.push(`  ${i + 1}. ${d.name || d.model} (${serial})`)
-      })
+      if (online.length) {
+        lines.push('在线设备：')
+        online.forEach(([serial, d], i) => {
+          lines.push(`  ${i + 1}. ${d.name || d.model} (${serial})`)
+        })
+      }
+      if (offline.length) {
+        lines.push('离线设备：')
+        offline.forEach(([serial, d], i) => {
+          lines.push(`  ${i + 1}. ${d.name || d.model} (${serial}) [离线]`)
+        })
+      }
       return lines.join('\n')
     },
   })

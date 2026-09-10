@@ -11,6 +11,8 @@ export interface DeviceInfo {
   address: string
   name: string
   kind: 'visa' | 'asg'
+  local_ip?: string
+  local_mac?: string
 }
 
 export type DevicesInventory = Record<string, DeviceInfo>
