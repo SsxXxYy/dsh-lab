@@ -19,9 +19,7 @@ export type DevicesInventory = Record<string, DeviceInfo>
 
 export interface DocumentMeta {
   filename: string
-  name: string
-  description: string
-  index: Array<{ title: string; line: number }>
+  raw_frontmatter: string
 }
 
 export interface WorkflowMeta {

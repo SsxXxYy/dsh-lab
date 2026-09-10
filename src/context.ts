@@ -56,17 +56,13 @@ export function apply(ctx: Context) {
       const documents = ctx.lab.listDocuments()
       if (!documents.length) return ''
 
-      const lines: string[] = ['## 可用仪器文档']
+      const parts: string[] = ['## 可用仪器文档']
       documents.forEach((doc) => {
-        let line = `- ${doc.filename}（${doc.name || doc.filename}）`
-        if (doc.description) line += ` — ${doc.description}`
-        if (doc.index.length) {
-          line += `\n    章节：${doc.index.map((i) => `${i.title}(${i.line}行)`).join('、')}`
-        }
-        lines.push(line)
+        parts.push(`=== ${doc.filename} ===`)
+        parts.push(doc.raw_frontmatter || '（无 frontmatter）')
       })
-      lines.push('使用 read_document 查阅')
-      return lines.join('\n')
+      parts.push('使用 read_document 查阅')
+      return parts.join('\n')
     },
   })
 

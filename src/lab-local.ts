@@ -65,35 +65,15 @@ export class LabLocal extends LabService {
       const filePath = join(DOCS_DIR, filename)
       try {
         const content = readFileSync(filePath, 'utf-8')
-        const match = content.match(/^---\n([\s\S]*?)\n---/)
-        if (!match) return { filename, name: '', description: '', index: [] }
-        const yamlText = match[1]
+        const match = content.match(/^---\s*\n([\s\S]*?)\n---/)
         return {
           filename,
-          name: this._extractYamlValue(yamlText, 'name') || '',
-          description: this._extractYamlValue(yamlText, 'description') || '',
-          index: this._parseYamlSections(yamlText),
+          raw_frontmatter: match?.[1]?.trim() || '',
         }
       } catch {
-        return { filename, name: '', description: '', index: [] }
+        return { filename, raw_frontmatter: '' }
       }
     })
-  }
-
-  private _extractYamlValue(yamlText: string, key: string): string {
-    const match = yamlText.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))
-    return match?.[1]?.trim() || ''
-  }
-
-  private _parseYamlSections(yamlText: string): Array<{ title: string; line: number }> {
-    const sectionsMatch = yamlText.match(/^sections:\n([\s\S]*?)(?=\n\w+:|$)/m)
-    if (!sectionsMatch) return []
-    const items: Array<{ title: string; line: number }> = []
-    for (const line of sectionsMatch[1].split('\n')) {
-      const m = line.match(/^\s+'([^']+)':\s*(\d+)\s*$/)
-      if (m) items.push({ title: m[1], line: Number(m[2]) })
-    }
-    return items
   }
 
   listWorkflows(): WorkflowMeta[] {
