@@ -1,5 +1,28 @@
 """asglib ASG SDK 引擎 — 批次处理，生命周期硬编码"""
 import time
+import os
+import shutil
+
+_ASGPARSER_DIR = os.path.join(os.path.dirname(__file__), 'asgparser')
+_SCRIPT_SRC = os.path.join(_ASGPARSER_DIR, 'script-main.exe')
+_SCRIPT_DST_DIR = os.path.join(os.environ.get('APPDATA', ''), 'asg24100parser')
+_SCRIPT_DST = os.path.join(_SCRIPT_DST_DIR, 'script-main.exe')
+
+
+def _ensure_asgparser_initialized():
+    """确保 script-main.exe 已复制到 APPDATA（只执行一次）"""
+    if os.path.exists(_SCRIPT_DST):
+        return  # 已初始化
+    
+    if not os.path.exists(_SCRIPT_SRC):
+        return  # 源文件不存在，跳过
+    
+    try:
+        os.makedirs(_SCRIPT_DST_DIR, exist_ok=True)
+        shutil.copy2(_SCRIPT_SRC, _SCRIPT_DST)
+    except Exception as e:
+        # 记录错误但不阻塞后续操作
+        print(f"asgparser 初始化失败: {e}")
 
 
 def asg_execute_batch(call_request: dict, continue_on_error: bool = False) -> dict:
@@ -22,6 +45,9 @@ def asg_execute_batch(call_request: dict, continue_on_error: bool = False) -> di
         {"status": "ok", "result": {"results": [...]}}
         {"status": "error", "error": "...", "result": {"results": [...]}}
     """
+    # 首次使用时确保 asgparser 已初始化
+    _ensure_asgparser_initialized()
+
     device_name = call_request.get("device_name", "")
     local_ip = call_request.get("local_ip", "")
     local_mac = call_request.get("local_mac", "")
