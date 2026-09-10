@@ -209,7 +209,23 @@ dsh-lab/
 
 > 详细边界见 [src/AGENTS.md §7](src/AGENTS.md)
 
-## 11. 设计文档索引
+## 11. Git 推送流程
+
+```sh
+# 1. 查看远程仓库和分支状态
+git remote -v
+git branch -vv
+git status -sb
+
+# 2. 推送到 GitHub
+git push origin master
+```
+
+**远程仓库**：`https://github.com/SsxXxYy/dsh-lab.git`
+
+> 推送时若出现 `unable to get credential storage lock` 警告，不影响推送结果，是 Git 凭据管理器的锁竞争问题。
+
+## 12. 设计文档索引
 
 | 文档 | 内容 | 受众 |
 |---|---|---|
