@@ -3,11 +3,10 @@ import json
 import time
 from pathlib import Path
 
-# 设备清单路径（相对于项目根目录）
-INVENTORY_PATH = Path(__file__).parent.parent / "devices" / "devices_inventory.json"
 
-
-def scan_instruments() -> dict:
+def scan_instruments(workspace_root: str = "") -> dict:
+    # 设备清单路径：workspace 根目录（由 TypeScript 传入）
+    inventory_path = Path(workspace_root) / "dev" / "devices_inventory.json" if workspace_root else Path.cwd() / "dev" / "devices_inventory.json"
     """
     扫描 VISA (PyVISA) 与 ASG (asglib) 设备，更新库存文件。
 
@@ -26,8 +25,8 @@ def scan_instruments() -> dict:
     # ── 1. 读取旧库存（保留用户命名）──
     old_inventory = {}
     try:
-        if INVENTORY_PATH.exists():
-            old_inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
+        if inventory_path.exists():
+            old_inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
     except Exception:
         pass
 
@@ -124,13 +123,16 @@ def scan_instruments() -> dict:
 
     # ── 5. 写入库存文件 ──
     try:
-        INVENTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
-        INVENTORY_PATH.write_text(
+        inventory_path.parent.mkdir(parents=True, exist_ok=True)
+        inventory_path.write_text(
             json.dumps(new_inventory, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
-    except Exception:
-        pass  # 文件写入失败不影响扫描结果返回
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": f"扫描成功但写入设备清单失败：{e}（路径：{inventory_path}）",
+        }
 
     # ── 6. 构建返回文本 ──
     if not online_devices:

@@ -1,5 +1,7 @@
 // lib/context.ts — Consumer 角色：System Prompt 上下文注入
 import type { Context } from '@deepseek-ai/cordis'
+import type { DevicesInventory } from './service.js'
+import { DOCS_DIR } from './lab-local.js'
 
 export const name = 'dsh-lab-context'
 export const inject = ['systemPrompt', 'lab']
@@ -24,25 +26,28 @@ export function apply(ctx: Context) {
     order: 200,
     text: () => {
       const inventory = ctx.lab.readInventory()
-      const devices = Object.entries(inventory)
-      if (!devices.length) return ''
+      if (Object.keys(inventory).length === 0) return ''
 
       // 区分在线/离线：VISA 看 address，ASG 看 local_ip
-      const online = devices.filter(([, d]) => d.address || d.local_ip)
-      const offline = devices.filter(([, d]) => !d.address && !d.local_ip)
+      const online: DevicesInventory = {}
+      const offline: DevicesInventory = {}
+      for (const [serial, d] of Object.entries(inventory)) {
+        if (d.address || d.local_ip) online[serial] = d
+        else offline[serial] = d
+      }
 
       const lines: string[] = ['## 当前连接的仪器']
-      if (online.length) {
+      if (Object.keys(online).length) {
         lines.push('在线设备：')
-        online.forEach(([serial, d], i) => {
-          lines.push(`  ${i + 1}. ${d.name || d.model} (${serial})`)
-        })
+        lines.push('```json')
+        lines.push(JSON.stringify(online, null, 2))
+        lines.push('```')
       }
-      if (offline.length) {
+      if (Object.keys(offline).length) {
         lines.push('离线设备：')
-        offline.forEach(([serial, d], i) => {
-          lines.push(`  ${i + 1}. ${d.name || d.model} (${serial}) [离线]`)
-        })
+        lines.push('```json')
+        lines.push(JSON.stringify(offline, null, 2))
+        lines.push('```')
       }
       return lines.join('\n')
     },
@@ -56,12 +61,12 @@ export function apply(ctx: Context) {
       const documents = ctx.lab.listDocuments()
       if (!documents.length) return ''
 
-      const parts: string[] = ['## 可用仪器文档']
+      const parts: string[] = ['## 可用仪器文档', `文档目录：\`${DOCS_DIR}\``, '']
       documents.forEach((doc) => {
         parts.push(`=== ${doc.filename} ===`)
         parts.push(doc.raw_frontmatter || '（无 frontmatter）')
+        parts.push('')
       })
-      parts.push('使用 read_document 查阅')
       return parts.join('\n')
     },
   })

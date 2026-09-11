@@ -38,18 +38,9 @@
   },
   "files": [
     "dist/**/*.js",
-    "dist/**/*.js.map",
-    "dist/**/*.d.ts",
-    "dist/**/*.d.ts.map",
-    "src",
     "py",
     "content",
     "docs",
-    "devices",
-    "workflows",
-    "cordis.patch.yml",
-    "requirements.txt",
-    "README.md",
-    "LICENSE"
+    "cordis.patch.yml"
   ]
 }

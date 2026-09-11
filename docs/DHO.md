@@ -1,36 +1,36 @@
----
+﻿---
 name: DHO800/DHO900 SCPI 命令参考
 sections:
-  '## 1 根命令系统': 41
-  '## 2 波形自动设置命令子系统': 100
-  '## 3 采样命令子系统': 206
-  '## 4 总线命令子系统': 316
-  '## 5 伯德图命令子系统': 1066
-  '## 6 通道命令子系统': 1230
-  '## 7 频率计命令子系统': 1480
-  '## 8 光标命令子系统': 1591
-  '## 9 显示命令子系统': 1870
-  '## 10 电压表命令子系统': 2037
-  '## 11 直方图命令子系统': 2094
-  '## 12 IEEE488.2 通用命令': 2275
-  '## 13 数字通道命令子系统': 2455
-  '## 14 局域网命令子系统': 2625
-  '## 15 通过/失败测试命令子系统': 2857
-  '## 16 数学运算命令子系统': 3035
-  '## 17 测量命令子系统': 3831
-  '## 18 快捷操作命令子系统': 4464
-  '## 19 波形录制命令子系统': 4489
-  '## 20 参考波形命令子系统': 4832
-  '## 21 存储功能命令子系统': 5003
-  '## 22 搜索命令子系统': 5292
-  '## 23 导航命令子系统': 5515
-  '## 24 辅助命令子系统': 5803
-  '## 25 函数/任意波形发生器命令子系统': 6008
-  '## 26 时基命令子系统': 6334
-  '## 27 触发命令子系统': 6639
-  '## 28 波形读取命令子系统': 8412
+  '1 根命令系统': 41
+  '2 波形自动设置命令子系统': 100
+  '3 采样命令子系统': 206
+  '4 总线命令子系统': 316
+  '5 伯德图命令子系统': 1066
+  '6 通道命令子系统': 1230
+  '7 频率计命令子系统': 1480
+  '8 光标命令子系统': 1591
+  '9 显示命令子系统': 1870
+  '10 电压表命令子系统': 2037
+  '11 直方图命令子系统': 2094
+  '12 IEEE488.2 通用命令': 2275
+  '13 数字通道命令子系统': 2455
+  '14 局域网命令子系统': 2625
+  '15 通过/失败测试命令子系统': 2857
+  '16 数学运算命令子系统': 3035
+  '17 测量命令子系统': 3831
+  '18 快捷操作命令子系统': 4464
+  '19 波形录制命令子系统': 4489
+  '20 参考波形命令子系统': 4832
+  '21 存储功能命令子系统': 5003
+  '22 搜索命令子系统': 5292
+  '23 导航命令子系统': 5515
+  '24 辅助命令子系统': 5803
+  '25 函数/任意波形发生器命令子系统': 6008
+  '26 时基命令子系统': 6334
+  '27 触发命令子系统': 6639
+  '28 波形读取命令子系统': 8412
 通用说明:
-- 符号约定：{{}} 参数可省略、| 多选一、[] 可省略、<> 必填
+- 符号约定：{} 参数可省略、| 多选一、[] 可省略、<> 必填
 - 参数类型：Bool(ON/OFF)、Discrete(列举)、Integer、Real、ASCII 字符串
 - 单位：mV=毫伏、ms=毫秒、MHz=兆赫兹（不区分大小写）
 ---
@@ -38,9 +38,9 @@ sections:
 
 
 
-## 1 根命令系统
+# 1 根命令系统
 根命令没有下一级关键字，执行仪器常用的基本操作。
-### 1.1:CLEar
+## 1.1:CLEar
 
 **语法**: `:CLEar`
 **描述**: 清除屏幕上所有的波形。该命令功能等同于按前面板按键。
@@ -51,7 +51,7 @@ sections:
 
 ---
 
-### 1.2:RUN
+## 1.2:RUN
 
 **语法**: `:RUN`
 **描述**: :RUN 命令使示波器开始运行。该命令功能等同于点击屏幕上方右侧的图标或按前面板按钮。
@@ -62,7 +62,7 @@ sections:
 
 ---
 
-### 1.3:STOP
+## 1.3:STOP
 
 **语法**: `:STOP`
 **描述**: :STOP 命令使示波器停止运行。该命令功能等同于点击屏幕上方右侧的图标，或按前面板按键。
@@ -73,7 +73,7 @@ sections:
 
 ---
 
-### 1.4:SINGle
+## 1.4:SINGle
 
 **语法**: `:SINGle`
 **描述**: 单次触发操作。将示波器设置为单次触发方式。该命令功能等同于发送:TRIGger:SWEep SINGle 命令。该命令功能还等同于按前面板按键。
@@ -86,7 +86,7 @@ sections:
 
 ---
 
-### 1.5:TFORce
+## 1.5:TFORce
 
 **语法**: `:TFORce`
 **描述**: 强制产生一个触发信号。适用于普通和单次触发方式，请参考:TRIGger:SWEep 命令。该命令功能等同于按前面板触发控制区按键。
@@ -97,9 +97,9 @@ sections:
 
 ---
 
-## 2 波形自动设置命令子系统
+# 2 波形自动设置命令子系统
 波形自动设置命令用于执行波形自动设置相关功能和操作。
-### 2.1:AUToset
+## 2.1:AUToset
 
 **语法**: `:AUToset`
 **描述**: 启用波形自动设置功能。示波器将根据输入信号自动调整垂直档位、水平时基以及触发方式，使波形显示达到最佳状态。该命令功能等同于按前面板按键。
@@ -112,7 +112,7 @@ sections:
 
 ---
 
-### 2.2:AUToset:PEAK
+## 2.2:AUToset:PEAK
 
 **语法**: `:AUToset:PEAK <bool>
 :AUToset:PEAK?`
@@ -128,7 +128,7 @@ sections:
 
 ---
 
-### 2.3:AUToset:OPENch
+## 2.3:AUToset:OPENch
 
 **语法**: `:AUToset:OPENch <bool>
 :AUToset:OPENch?`
@@ -145,7 +145,7 @@ sections:
 
 ---
 
-### 2.4:AUToset:OVERlap
+## 2.4:AUToset:OVERlap
 
 **语法**: `:AUToset:OVERlap <bool>
 :AUToset:OVERlap?`
@@ -162,7 +162,7 @@ sections:
 
 ---
 
-### 2.5:AUToset:KEEPcoup
+## 2.5:AUToset:KEEPcoup
 
 **语法**: `:AUToset:KEEPcoup <bool>
 :AUToset:KEEPcoup?`
@@ -179,7 +179,7 @@ sections:
 
 ---
 
-### 2.6:AUToset:LOCK
+## 2.6:AUToset:LOCK
 
 **语法**: `:AUToset:LOCK <bool>
 :AUToset:LOCK?`
@@ -196,17 +196,17 @@ sections:
 
 ---
 
-### 2.7:AUToset:ENAble
+## 2.7:AUToset:ENAble
 
 **语法**: `:AUToset:ENAble <bool>
 :AUToset:ENAble?`
 
 ---
 
-## 3 采样命令子系统
+# 3 采样命令子系统
 采样命令用于设置和查询示波器的存储深度、采样的获取方式和平均次数以及查询当前的采样
 率。
-### 3.1:ACQuire:AVERages
+## 3.1:ACQuire:AVERages
 
 **语法**: `:ACQuire:AVERages <count>
 :ACQuire:AVERages?`
@@ -224,7 +224,7 @@ sections:
 
 ---
 
-### 3.2:ACQuire:MDEPth
+## 3.2:ACQuire:MDEPth
 
 **语法**: `:ACQuire:MDEPth <mdep>
 :ACQuire:MDEPth?`
@@ -249,7 +249,7 @@ sections:
 
 ---
 
-### 3.3:ACQuire:TYPE
+## 3.3:ACQuire:TYPE
 
 **语法**: `:ACQuire:TYPE <type>
 :ACQuire:TYPE?`
@@ -269,7 +269,7 @@ ULTRa} NORMal
 
 ---
 
-### 3.4:ACQuire:SRATe?
+## 3.4:ACQuire:SRATe?
 
 **语法**: `:ACQuire:SRATe?`
 **描述**: 查询当前的采样率，默认单位为 Sa/s。
@@ -281,7 +281,7 @@ ULTRa} NORMal
 
 ---
 
-### 3.5:ACQuire:ULTRa:MODE
+## 3.5:ACQuire:ULTRa:MODE
 
 **语法**: `:ACQuire:ULTRa:MODE <mode>
 :ACQuire:ULTRa:MODE?`
@@ -302,7 +302,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 3.6:ACQuire:ULTRa:TIMeout
+## 3.6:ACQuire:ULTRa:TIMeout
 
 **语法**: `:ACQuire:ULTRa:TIMeout <tmo>
 :ACQuire:ULTRa:TIMeout?`
@@ -313,8 +313,8 @@ PERSpective|MOSaic} -
 
 ---
 
-## 4 总线命令子系统
-### 3.7:ACQuire:ULTRa:MAXFrame
+# 4 总线命令子系统
+## 3.7:ACQuire:ULTRa:MAXFrame
 
 **语法**: `:ACQuire:ULTRa:MAXFrame <frame>
 :ACQuire:ULTRa:MAXFrame?`
@@ -332,7 +332,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 4.1:BUS<n>:MODE
+## 4.1:BUS<n>:MODE
 
 **语法**: `:BUS<n>:MODE <mode>
 :BUS<n>:MODE?`
@@ -349,7 +349,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 4.2:BUS<n>:DISPlay
+## 4.2:BUS<n>:DISPlay
 
 **语法**: `:BUS<n>:DISPlay <bool>
 :BUS<n>:DISPlay?`
@@ -366,7 +366,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 4.3:BUS<n>:FORMat
+## 4.3:BUS<n>:FORMat
 
 **语法**: `:BUS<n>:FORMat <format>
 :BUS<n>:FORMat?`
@@ -386,7 +386,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 4.4:BUS<n>:EVENt
+## 4.4:BUS<n>:EVENt
 
 **语法**: `:BUS<n>:EVENt <bool>
 :BUS<n>:EVENt?`
@@ -403,7 +403,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 4.5:BUS<n>:LABel
+## 4.5:BUS<n>:LABel
 
 **语法**: `:BUS<n>:LABel <bool>
 :BUS<n>:LABel?`
@@ -420,7 +420,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 4.6:BUS<n>:DATA?
+## 4.6:BUS<n>:DATA?
 
 **语法**: `:BUS<n>:DATA?`
 **描述**: 读取指定解码总线的事件表数据。
@@ -449,7 +449,7 @@ Time,Data,
 
 ---
 
-### 4.7:BUS<n>:EEXPort
+## 4.7:BUS<n>:EEXPort
 
 **语法**: `:BUS<n>:EEXPort <path>`
 **描述**: 将指定解码总线事件表中的解码信息以 CSV 格式导出。
@@ -466,7 +466,7 @@ Time,Data,
 
 ---
 
-### 4.8:BUS<n>:POSition
+## 4.8:BUS<n>:POSition
 
 **语法**: `:BUS<n>:POSition <pos>
 :BUS<n>:POSition?`
@@ -483,7 +483,7 @@ Time,Data,
 
 ---
 
-### 4.9:BUS<n>:THReshold
+## 4.9:BUS<n>:THReshold
 
 **语法**: `:BUS<n>:THReshold <value>,<type>
 :BUS<n>:THReshold? <type>`
@@ -519,7 +519,7 @@ CH1|CH2|CH3|CH4}
 
 ---
 
-### 4.10:BUS<n>:PARallel
+## 4.10:BUS<n>:PARallel
 
 **语法**: `:BUS<n>:PARallel:BUS <source>
 :BUS<n>:PARallel:BUS?
@@ -601,31 +601,31 @@ D14、D15、CHAN1、CHAN2、CHAN3 或 CHAN4。
 
 **举例**: :BUS1:PARallel:BUS CHANnel1   /* 设置并行解码数据总线的通道源为 CHANnel1*/
 :BUS1:PARallel:BUS?          /* 查询返回 CHAN1*/
-### 4.10.2:BUS<n>:PARallel:CLK
+## 4.10.2:BUS<n>:PARallel:CLK
 :BUS1:PARallel:CLK CHANnel2    /* 设置并行解码的时钟源为 CHANnel2*/
 :BUS1:PARallel:CLK?           /* 查询返回 CHAN2*/
-### 4.10.3:BUS<n>:PARallel:SLOPe
+## 4.10.3:BUS<n>:PARallel:SLOPe
 :BUS1:PARallel:SLOPe BOTH    /* 设置并行解码在时钟通道的任意沿处采样*/
 :BUS1:PARallel:SLOPe?         /* 查询返回 BOTH*/
-### 4.10.4:BUS<n>:PARallel:WIDTh
+## 4.10.4:BUS<n>:PARallel:WIDTh
 :BUS1:PARallel:WIDTh 4    /* 设置并行解码的数据宽度为 4*/
 :BUS1:PARallel:WIDTh?      /* 查询返回 4*/
-### 4.10.5:BUS<n>:PARallel:BITX
+## 4.10.5:BUS<n>:PARallel:BITX
 :BUS1:PARallel:BITX 2    /* 设置当前数据位为 2*/
 :BUS1:PARallel:BITX?     /* 查询返回 2*/
-### 4.10.6:BUS<n>:PARallel:SOURce
+## 4.10.6:BUS<n>:PARallel:SOURce
 :BUS1:PARallel:SOURce CHANnel2    /* 设置当前位的通道源为 CHANnel2*/
 :BUS1:PARallel:SOURce?             /* 查询返回 CHAN2*/
-### 4.10.7:BUS<n>:PARallel:ENDian
+## 4.10.7:BUS<n>:PARallel:ENDian
 :BUS1:PARallel:ENDian LSB /* 设置并行解码的位序为 LSB*/
 :BUS1:PARallel:ENDian? /* 查询返回 LSB*/
-### 4.10.8:BUS<n>:PARallel:POLarity
+## 4.10.8:BUS<n>:PARallel:POLarity
 :BUS1:PARallel:POLarity NEGative    /* 设置并行解码的数据极性为负极性*/
 :BUS1:PARallel:POLarity?            /* 查询返回 NEG*/
 
 ---
 
-### 4.11:BUS<n>:RS232
+## 4.11:BUS<n>:RS232
 
 **语法**: `:BUS<n>:RS232:TX <source>
 :BUS<n>:RS232:TX?
@@ -709,31 +709,31 @@ D14、D15、CHAN1、CHAN2、CHAN3、CHAN4 或 OFF。
 
 **举例**: :BUS1:RS232:TX CHANnel2   /* 设置 RS232 解码时的 TX 通道源为 CHANnel2*/
 :BUS1:RS232:TX?      /* 查询返回 CHAN2*/
-### 4.11.2:BUS<n>:RS232:RX
+## 4.11.2:BUS<n>:RS232:RX
 :BUS1:RS232:RX CHANnel2    /* 设置 RS232 解码时的 RX 通道源为 CHANnel2*/
 :BUS1:RS232:RX?      /* 查询返回 CHAN2*/
-### 4.11.3:BUS<n>:RS232:POLarity
+## 4.11.3:BUS<n>:RS232:POLarity
 :BUS1:RS232:POLarity POSitive     /* 设置 RS232解码时的极性为 POSitive*/
 :BUS1:RS232:POLarity?            /* 查询返回 POS*/
-### 4.11.4:BUS<n>:RS232:PARity
+## 4.11.4:BUS<n>:RS232:PARity
 :BUS1:RS232:PARity ODD /* 设置 RS232 解码时数据传输的奇偶校验方式为奇校验*/
 :BUS1:RS232:PARity?     /* 查询返回 ODD*/
-### 4.11.5:BUS<n>:RS232:ENDian
+## 4.11.5:BUS<n>:RS232:ENDian
 :BUS1:RS232:ENDian MSB        /* 设置 RS232 解码时数据高位先传输*/
 :BUS1:RS232:ENDian?            /* 查询返回 MSB*/
-### 4.11.6:BUS<n>:RS232:BAUD
+## 4.11.6:BUS<n>:RS232:BAUD
 :BUS1:RS232:BAUD 4800    /* 设置 RS232 解码时数据传输的波特率为 4800bps*/
 :BUS1:RS232:BAUD?        /* 查询返回 4800*/
-### 4.11.7:BUS<n>:RS232:DBITs
+## 4.11.7:BUS<n>:RS232:DBITs
 :BUS1:RS232:DBITs 7      /* 设置 RS232 解码时的数据位宽为 7*/
 :BUS1:RS232:DBITs?      /* 查询返回 7*/
-### 4.11.8:BUS<n>:RS232:SBITs
+## 4.11.8:BUS<n>:RS232:SBITs
 :BUS1:RS232:SBITs 2      /* 设置 RS232 解码时的停止位数为 2*/
 :BUS1:RS232:SBITs?      /* 查询返回 2*/
 
 ---
 
-### 4.12:BUS<n>:IIC
+## 4.12:BUS<n>:IIC
 
 **语法**: `:BUS<n>:IIC:SCLK:SOURce <source>
 :BUS<n>:IIC:SCLK:SOURce?
@@ -782,19 +782,19 @@ D14、D15、CHAN1、CHAN2、CHAN3 或 CHAN4。
 **举例**: :BUS1:IIC:SCLK:SOURce CHANnel2    /* 设置 I2C解码的时钟源为 CHANnel2*/
 :BUS1:IIC:SCLK:SOURce?      /* 查询返回 CHAN2*/
 
-### 4.12.2:BUS<n>:IIC:SDA:SOURce
+## 4.12.2:BUS<n>:IIC:SDA:SOURce
 :BUS1:IIC:SDA:SOURce CHANnel2    /* 设置 I2C 解码的数据源为 CHANnel2*/
 :BUS1:IIC:SDA:SOURce?            /* 查询返回 CHAN2*/
-### 4.12.3:BUS<n>:IIC:EXCHange
+## 4.12.3:BUS<n>:IIC:EXCHange
 :BUS1:IIC:EXCHange ON /* 设置时钟源和数据源进行交换*/
 :BUS1:IIC:EXCHange? /* 查询返回 1*/
-### 4.12.4:BUS<n>:IIC:ADDRess
+## 4.12.4:BUS<n>:IIC:ADDRess
 :BUS1:IIC:ADDRess RW    /* 设置 I2C 解码的地址包含 R/W 位*/
 :BUS1:IIC:ADDRess?       /* 查询返回 RW*/
 
 ---
 
-### 4.13:BUS<n>:SPI
+## 4.13:BUS<n>:SPI
 
 **语法**: `:BUS<n>:SPI:SCLK:SOURce <source>
 :BUS<n>:SPI:SCLK:SOURce?
@@ -923,50 +923,50 @@ D14、D15、CHAN1、CHAN2、CHAN3 或 CHAN4。
 **举例**: :BUS1:SPI:SCLK:SOURce CHANnel2    /* 设置 SPI解码的时钟源为 CHANnel2*/
 :BUS1:SPI:SCLK:SOURce?       /* 查询返回 CHAN2*/
 
-### 4.13.2:BUS<n>:SPI:SCLK:SLOPe
+## 4.13.2:BUS<n>:SPI:SCLK:SLOPe
 :BUS1:SPI:SCLK:SLOPe NEGative    /* 设置 SPI 解码的时钟边沿类型为下降沿*/
 :BUS1:SPI:SCLK:SLOPe?             /* 查询返回 NEG*/
-### 4.13.3:BUS<n>:SPI:MISO:SOURce
+## 4.13.3:BUS<n>:SPI:MISO:SOURce
 :BUS1:SPI:MISO:SOURce CHANnel2    /* 设置 SPI 解码的 MISO 数据源为
 CHANnel2*/
 :BUS1:SPI:MISO:SOURce?      /* 查询返回 CHAN2*/
-### 4.13.4:BUS<n>:SPI:MOSI:SOURce
+## 4.13.4:BUS<n>:SPI:MOSI:SOURce
 :BUS1:SPI:MOSI:SOURce CHANnel2     /* 设置 SPI 解码的 MOSI 数据源为
 CHANnel2*/
 :BUS1:SPI:MOSI:SOURce?       /* 查询返回 CHAN2*/
 
-### 4.13.5:BUS<n>:SPI:POLarity
+## 4.13.5:BUS<n>:SPI:POLarity
 :BUS1:SPI:POLarity HIGH    /* 设置 SPI 数据解码时的极性为 HIGH*/
 :BUS1:SPI:POLarity?        /* 查询返回 HIGH*/
-### 4.13.6:BUS<n>:SPI:MISO:POLarity
+## 4.13.6:BUS<n>:SPI:MISO:POLarity
 :BUS1:SPI:MISO:POLarity HIGH      /* 设置 MISO 数据线的极性为 HIGH*/
 :BUS1:SPI:MISO:POLarity?          /* 查询返回 HIGH*/
-### 4.13.7:BUS<n>:SPI:MOSI:POLarity
+## 4.13.7:BUS<n>:SPI:MOSI:POLarity
 :BUS1:SPI:MOSI:POLarity HIGH       /* 设置 MOSI 数据线的极性为 HIGH*/
 :BUS1:SPI:MOSI:POLarity?            /* 查询返回 HIGH*/
 
-### 4.13.8:BUS<n>:SPI:DBITs
+## 4.13.8:BUS<n>:SPI:DBITs
 :BUS1:SPI:DBITs 10         /* 设置解码总线 SPI 解码的数据位宽为 10*/
 :BUS1:SPI:DBITs?           /* 查询返回 10*/
-### 4.13.9:BUS<n>:SPI:ENDian
+## 4.13.9:BUS<n>:SPI:ENDian
 :BUS1:SPI:ENDian LSB       /* 设置 SPI 解码数据传输的位序为低位先传输*/
 :BUS1:SPI:ENDian?          /* 查询返回 LSB*/
-### 4.13.10:BUS<n>:SPI:MODE
+## 4.13.10:BUS<n>:SPI:MODE
 :BUS1:SPI:MODE CS      /* 设置 SPI 的解码模式为 CS*/
 :BUS1:SPI:MODE?        /* 查询返回 CS*/
-### 4.13.11:BUS<n>:SPI:TIMeout:TIME
+## 4.13.11:BUS<n>:SPI:TIMeout:TIME
 :BUS1:SPI:TIMeout:TIME 0.000005    /* 设置超时时间为 5μs*/
 :BUS1:SPI:TIMeout:TIME?            /* 查询返回 5.000000E-6*/
-### 4.13.12:BUS<n>:SPI:SS:SOURce
+## 4.13.12:BUS<n>:SPI:SS:SOURce
 :BUS1:SPI:SS:SOURce CHANnel2 /* 设置 SPI 解码片选线的通道源为 CHANnel2*/
 :BUS1:SPI:SS:SOURce?   /* 查询返回 CHAN2*/
-### 4.13.13:BUS<n>:SPI:SS:POLarity
+## 4.13.13:BUS<n>:SPI:SS:POLarity
 :BUS1:SPI:SS:POLarity HIGH    /* 设置 SPI 解码片选线的极性为 HIGH*/
 :BUS1:SPI:SS:POLarity?        /* 查询返回 HIGH*/
 
 ---
 
-### 4.14:BUS<n>:CAN
+## 4.14:BUS<n>:CAN
 
 **语法**: `:BUS<n>:CAN:SOURce <source>
 :BUS<n>:CAN:SOURce?
@@ -1010,20 +1010,20 @@ CHANnel1
 
 **举例**: :BUS1:CAN:SOURce CHANnel2      /* 设置 CAN 解码时的通道源为 CHANnel2*/
 :BUS1:CAN:SOURce?           /* 查询返回 CHAN2*/
-### 4.14.2:BUS<n>:CAN:STYPe
+## 4.14.2:BUS<n>:CAN:STYPe
 :BUS1:CAN:STYPe TX        /* 设置 CAN 解码时的信号类型为 TX*/
 :BUS1:CAN:STYPe?          /* 查询返回 TX*/
 
-### 4.14.3:BUS<n>:CAN:BAUD
+## 4.14.3:BUS<n>:CAN:BAUD
 :BUS1:CAN:BAUD 120000        /* 设置 CAN 解码的信号速率为 120000bps*/
 :BUS1:CAN:BAUD?              /* 查询返回 120000*/
-### 4.14.4:BUS<n>:CAN:SPOint
+## 4.14.4:BUS<n>:CAN:SPOint
 :BUS1:CAN:SPOint 70        /* 设置 CAN 解码的采样点位置为 70%*/
 :BUS1:CAN:SPOint?          /* 查询返回 70*/
 
 ---
 
-### 4.15:BUS<n>:LIN
+## 4.15:BUS<n>:LIN
 
 **语法**: `:BUS<n>:LIN:PARity <bool>
 :BUS<n>:LIN:PARity?
@@ -1048,7 +1048,7 @@ CHANnel1
 <n> 离散型 {1|2|3|4} -
 
 **说明**: 仅 DHO900 系列支持:BUS<n>:LIN 命令。
-### 4.15.1:BUS<n>:LIN:PARity
+## 4.15.1:BUS<n>:LIN:PARity
 • 1|ON： 包含校验位。
 • 0|OFF： 不包含校验位。参数 D0~D15 数字通道仅 DHO900 系列支持。
 查询返回 0 或 1。查询返回 D0、D1、D2、D3、D4、D5、D6、D7、D8、D9、D10、D11、D12、D13、 D14、D15、CHAN1、CHAN2、CHAN3 或 CHAN4。
@@ -1056,14 +1056,14 @@ CHANnel1
 **举例**: :BUS1:LIN:PARity ON            /* 设置 LIN 解码包含校验位*/
 :BUS1:LIN:PARity?                /* 查询返回 1*/
 
-### 4.15.2:BUS<n>:LIN:SOURce
+## 4.15.2:BUS<n>:LIN:SOURce
 :BUS1:LIN:SOURce CHANnel2      /* 设置 LIN 信号源为 CHANnel2*/
 :BUS1:LIN:SOURce?            /* 查询返回 CHAN2*/
-### 4.15.3:BUS<n>:LIN:STANdard
+## 4.15.3:BUS<n>:LIN:STANdard
 
 ---
 
-## 5 伯德图命令子系统
+# 5 伯德图命令子系统
 :BODeplot 命令系统用于伯德图功能的相关设置。
 伯德图是系统频率响应的一种图示方法。通过伯德图可以分析出系统的增益裕度和相位裕度，
 以判定系统的稳定性。
@@ -1071,7 +1071,7 @@ CHANnel1
 源电路的注入点，示波器测试注入端和输出端在不同频率下的相位差变化的曲线和增益变化的
 曲线绘制出伯德图。
 仅 DHO914S 和 DHO924S 型号支持此命令。
-### 5.1:BODeplot:ENABle
+## 5.1:BODeplot:ENABle
 
 **语法**: `:BODeplot:ENABle <bool>
 :BODeplot:ENABle?`
@@ -1087,7 +1087,7 @@ CHANnel1
 
 ---
 
-### 5.2:BODeplot:RUNStop
+## 5.2:BODeplot:RUNStop
 
 **语法**: `:BODeplot:RUNStop <bool>
 :BODeplot:RUNStop?`
@@ -1103,7 +1103,7 @@ CHANnel1
 
 ---
 
-### 5.3:BODeplot:SWEeptype
+## 5.3:BODeplot:SWEeptype
 
 **语法**: `:BODeplot:SWEeptype <type>
 :BODeplot:SWEeptype?`
@@ -1120,7 +1120,7 @@ CHANnel1
 
 ---
 
-### 5.4:BODeplot:REF:IN
+## 5.4:BODeplot:REF:IN
 
 **语法**: `:BODeplot:REF:IN <source>
 :BODeplot:REF:IN?`
@@ -1137,7 +1137,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 5.5:BODeplot:REF:OUT
+## 5.5:BODeplot:REF:OUT
 
 **语法**: `:BODeplot:REF:OUT <source>
 :BODeplot:REF:OUT?`
@@ -1154,7 +1154,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 5.6:BODeplot:STARt
+## 5.6:BODeplot:STARt
 
 **语法**: `:BODeplot:STARt <freq>
 :BODeplot:STARt?`
@@ -1170,7 +1170,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 5.7:BODeplot:STOP
+## 5.7:BODeplot:STOP
 
 **语法**: `:BODeplot:STOP <freq>
 :BODeplot:STOP?`
@@ -1186,7 +1186,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 5.8:BODeplot:POINts
+## 5.8:BODeplot:POINts
 
 **语法**: `:BODeplot:POINts <num>
 :BODeplot:POINts?`
@@ -1202,7 +1202,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 5.9:BODeplot:VOLTage
+## 5.9:BODeplot:VOLTage
 
 **语法**: `:BODeplot:VOLTage <range>,<amp>
 :BODeplot:VOLTage? <range>`
@@ -1227,14 +1227,14 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-## 6 通道命令子系统
+# 6 通道命令子系统
 通道命令用于设置或查询模拟通道的带宽限制、耦合、垂直档位以及垂直偏移等垂直系统参
 数。
 • 设置带宽限制可以减少显示波形中的噪声。例如：被测信号是一个含有高频振荡的脉冲信号，当关闭带宽限制时，被测信号含有的高频分量可以通过；当打开带宽限制时，被测信号中含有的大于带宽限制的高频分量被衰减。
 • 设置耦合方式可以滤除不需要的信号。例如：被测信号是一个含有直流偏置的方波信号，设置耦合方式为交流可以阻隔直流分量。
 • 使用示波器进行实际测量时，因为器件的温漂特性或者外界环境干扰造成通道的零点电压出现小幅度偏移，影响垂直参数的测量结果。本系列示波器支持用户设定一个消零电压（偏置）以校正对应通道的零点，从而提高测量结果的准确性。
 • 打开微调，将在较小范围内进一步调整垂直档位，以改善垂直分辨率，利于观察信号细节。
-### 6.1:CHANnel<n>:BWLimit
+## 6.1:CHANnel<n>:BWLimit
 
 **语法**: `:CHANnel<n>:BWLimit <val>
 :CHANnel<n>:BWLimit?`
@@ -1251,7 +1251,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.2:CHANnel<n>:COUPling
+## 6.2:CHANnel<n>:COUPling
 
 **语法**: `:CHANnel<n>:COUPling <coupling>
 :CHANnel<n>:COUPling?`
@@ -1270,7 +1270,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.3:CHANnel<n>:DISPlay
+## 6.3:CHANnel<n>:DISPlay
 
 **语法**: `:CHANnel<n>:DISPlay <bool>
 :CHANnel<n>:DISPlay?`
@@ -1287,7 +1287,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.4:CHANnel<n>:INVert
+## 6.4:CHANnel<n>:INVert
 
 **语法**: `:CHANnel<n>:INVert <bool>
 :CHANnel<n>:INVert?`
@@ -1304,7 +1304,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.5:CHANnel<n>:OFFSet
+## 6.5:CHANnel<n>:OFFSet
 
 **语法**: `:CHANnel<n>:OFFSet <offset>
 :CHANnel<n>:OFFSet?`
@@ -1326,7 +1326,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.6:CHANnel<n>:TCALibrate
+## 6.6:CHANnel<n>:TCALibrate
 
 **语法**: `:CHANnel<n>:TCALibrate <val>
 :CHANnel<n>:TCALibrate?`
@@ -1343,7 +1343,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.7:CHANnel<n>:SCALe
+## 6.7:CHANnel<n>:SCALe
 
 **语法**: `:CHANnel<n>:SCALe <scale>
 :CHANnel<n>:SCALe?`
@@ -1362,7 +1362,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.8:CHANnel<n>:PROBe
+## 6.8:CHANnel<n>:PROBe
 
 **语法**: `:CHANnel<n>:PROBe <atten>
 :CHANnel<n>:PROBe?`
@@ -1385,7 +1385,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.9:CHANnel<n>:LABel:SHOW
+## 6.9:CHANnel<n>:LABel:SHOW
 
 **语法**: `:CHANnel<n>:LABel:SHOW <bool>
 :CHANnel<n>:LABel:SHOW?`
@@ -1402,7 +1402,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.10:CHANnel<n>:LABel:CONTent
+## 6.10:CHANnel<n>:LABel:CONTent
 
 **语法**: `:CHANnel<n>:LABel:CONTent <str>
 :CHANnel<n>:LABel:CONTent?`
@@ -1420,7 +1420,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 6.11:CHANnel<n>:UNITs
+## 6.11:CHANnel<n>:UNITs
 
 **语法**: `:CHANnel<n>:UNITs <units>
 :CHANnel<n>:UNITs?`
@@ -1438,7 +1438,7 @@ UNKNown} VOLTage
 
 ---
 
-### 6.12:CHANnel<n>:VERNier
+## 6.12:CHANnel<n>:VERNier
 
 **语法**: `:CHANnel<n>:VERNier <bool>
 :CHANnel<n>:VERNier?`
@@ -1457,7 +1457,7 @@ UNKNown} VOLTage
 
 ---
 
-### 6.13:CHANnel<n>:POSition
+## 6.13:CHANnel<n>:POSition
 
 **语法**: `:CHANnel<n>:POSition <offset>
 :CHANnel<n>:POSition?`
@@ -1477,10 +1477,10 @@ UNKNown} VOLTage
 
 ---
 
-## 7 频率计命令子系统
+# 7 频率计命令子系统
 频率计命令用于设置或查询频率计测量、统计等参数。
 频率计分析功能可在任何模拟通道上提供频率、周期或边沿事件的计数测量。
-### 7.1:COUNter:CURRent?
+## 7.1:COUNter:CURRent?
 
 **语法**: `:COUNter:CURRent?`
 **描述**: 查询频率计测量值。
@@ -1491,7 +1491,7 @@ UNKNown} VOLTage
 
 ---
 
-### 7.2:COUNter:ENABle
+## 7.2:COUNter:ENABle
 
 **语法**: `:COUNter:ENABle <bool>
 :COUNter:ENABle?`
@@ -1507,7 +1507,7 @@ UNKNown} VOLTage
 
 ---
 
-### 7.3:COUNter:SOURce
+## 7.3:COUNter:SOURce
 
 **语法**: `:COUNter:SOURce <source>
 :COUNter:SOURce?`
@@ -1529,7 +1529,7 @@ CHANnel1
 
 ---
 
-### 7.4:COUNter:MODE
+## 7.4:COUNter:MODE
 
 **语法**: `:COUNter:MODE <mode>
 :COUNter:MODE?`
@@ -1547,7 +1547,7 @@ CHANnel1
 
 ---
 
-### 7.5:COUNter:NDIGits
+## 7.5:COUNter:NDIGits
 
 **语法**: `:COUNter:NDIGits <val>
 :COUNter:NDIGits?`
@@ -1563,7 +1563,7 @@ CHANnel1
 
 ---
 
-### 7.6:COUNter:TOTalize:ENABle
+## 7.6:COUNter:TOTalize:ENABle
 
 **语法**: `:COUNter:TOTalize:ENABle <bool>
 :COUNter:TOTalize:ENABle?`
@@ -1579,7 +1579,7 @@ CHANnel1
 
 ---
 
-### 7.7:COUNter:TOTalize:CLEar
+## 7.7:COUNter:TOTalize:CLEar
 
 **语法**: `:COUNter:TOTalize:CLEar`
 **描述**: 清除总计数。
@@ -1588,7 +1588,7 @@ CHANnel1
 
 ---
 
-## 8 光标命令子系统
+# 8 光标命令子系统
 光标命令用于测量屏幕波形的 X 轴值（如时间）和 Y 轴值（如电压）。
 使用光标测量前，请将信号连接至示波器并获得稳定的显示。光标测量功能提供如下两种光
 标。
@@ -1618,7 +1618,7 @@ Y 光标是用于垂直调整的水平实/虚线，可以用于测量幅度（�
 • 追踪光标在追踪光标模式下，可以调节两个光标（光标 A 和光标 B）分别测量两个不同信源的 X值和 Y 值。水平/垂直移动光标时，该标记会自动在波形上定位，水平/垂直扩展或压缩波形时，该标记会跟踪最后一次调节光标时所标记的点。
 • XY 光标
 XY 光标模式在默认情况下不可选，仅在 XY 水平时基模式下可选。
-### 8.1:CURSor:MODE
+## 8.1:CURSor:MODE
 
 **语法**: `:CURSor:MODE <mode>
 :CURSor:MODE?`
@@ -1637,7 +1637,7 @@ XY 光标模式在默认情况下不可选，仅在 XY 水平时基模式下可�
 
 ---
 
-### 8.2:CURSor:MEASure:INDicator
+## 8.2:CURSor:MEASure:INDicator
 
 **语法**: `:CURSor:MEASure:INDicator <bool>
 :CURSor:MEASure:INDicator?`
@@ -1653,7 +1653,7 @@ XY 光标模式在默认情况下不可选，仅在 XY 水平时基模式下可�
 
 ---
 
-### 8.3:CURSor:MANual
+## 8.3:CURSor:MANual
 
 **语法**: `:CURSor:MANual:TYPE <type>
 :CURSor:MANual:TYPE?
@@ -1706,32 +1706,32 @@ CHANnel1
 **返回格式**: 查询返回 TIME 或 AMPL。查询返回 CHAN1、CHAN2、CHAN3、CHAN4、MATH1、MATH2、MATH3、MATH4或 NONE。查询以科学计数形式返回光标 A 的水平位置，单位为 s。查询以科学计数形式返回光标 A 的垂直位置，单位为 V。查询以科学计数形式返回光标 B 的水平位置，单位为 s。查询以科学计数形式返回光标 B 的垂直位置，单位为 V。查询以科学计数形式返回当前光标 A 处的 X 值。查询以科学计数形式返回当前光标 A 处的 Y 值。查询以科学计数形式返回当前光标 B 处的 X 值。查询以科学计数形式返回当前光标 B 处的 Y 值。查询以科学计数形式返回当前差值。查询以科学计数形式返回 1/∆X。查询以科学计数形式返回当前差值。
 **举例**: :CURSor:MANual:TYPE AMPLitude /* 设置光标类型为 AMPLitude*/
 :CURSor:MANual:TYPE? /* 查询返回 AMPL*/
-### 8.3.2:CURSor:MANual:SOURce
+## 8.3.2:CURSor:MANual:SOURce
 :CURSor:MANual:SOURce CHANnel2 /* 设置通道源为 CHANnel2*/
 :CURSor:MANual:SOURce? /* 查询返回 CHAN2*/
-### 8.3.3:CURSor:MANual:CAX
+## 8.3.3:CURSor:MANual:CAX
 :CURSor:MANual:CAX 0.00000001 /* 设置光标 A 的水平位置为 10ns*/
 :CURSor:MANual:CAX?            /* 查询返回 1.000000E-8*/
-### 8.3.4:CURSor:MANual:CAY
+## 8.3.4:CURSor:MANual:CAY
 :CURSor:MANual:CAY 0.1  /* 设置光标 A 的垂直位置为 0.1V*/
 :CURSor:MANual:CAY?     /* 查询返回 1.000000E-1*/
-### 8.3.5:CURSor:MANual:CBX
+## 8.3.5:CURSor:MANual:CBX
 :CURSor:MANual:CBX 0.00000001 /* 设置光标 B 的水平位置为 10ns*/
 :CURSor:MANual:CBX?            /* 查询返回 1.000000E-8*/
-### 8.3.6:CURSor:MANual:CBY
+## 8.3.6:CURSor:MANual:CBY
 :CURSor:MANual:CBY 0.1  /* 设置光标 B 的垂直位置为 0.1V*/
 :CURSor:MANual:CBY?  /* 查询返回 1.000000E-1*/
-### 8.3.7:CURSor:MANual:AXValue?
-### 8.3.8:CURSor:MANual:AYValue?
-### 8.3.9:CURSor:MANual:BXValue?
-### 8.3.10:CURSor:MANual:BYValue?
-### 8.3.11:CURSor:MANual:XDELta?
-### 8.3.12:CURSor:MANual:IXDelta?
-### 8.3.13:CURSor:MANual:YDELta?
+## 8.3.7:CURSor:MANual:AXValue?
+## 8.3.8:CURSor:MANual:AYValue?
+## 8.3.9:CURSor:MANual:BXValue?
+## 8.3.10:CURSor:MANual:BYValue?
+## 8.3.11:CURSor:MANual:XDELta?
+## 8.3.12:CURSor:MANual:IXDelta?
+## 8.3.13:CURSor:MANual:YDELta?
 
 ---
 
-### 8.4:CURSor:TRACk
+## 8.4:CURSor:TRACk
 
 **语法**: `:CURSor:TRACk:SOURce1 <source>
 :CURSor:TRACk:SOURce1?
@@ -1786,38 +1786,38 @@ CHANnel1
 **返回格式**: 查询返回 CHAN1、CHAN2、CHAN3、CHAN4、MATH1、MATH2、MATH3、MATH4或 NONE。查询返回 CHAN1、CHAN2、CHAN3、CHAN4、MATH1、MATH2、MATH3、MATH4或 NONE。查询以科学计数形式返回光标 A 的水平位置，单位为 s。查询以科学计数形式返回光标 B 的水平位置，单位为 s。查询以科学计数形式返回光标 A 的垂直位置，单位为 V。查询以科学计数形式返回光标 B 的垂直位置，单位为 V。查询以科学计数形式返回当前光标 A 处的 X 值。查询以科学计数形式返回当前光标 A 处的 Y 值。查询以科学计数形式返回当前光标 B 处的 X 值。查询以科学计数形式返回当前光标 B 处的 Y 值。查询以科学计数形式返回当前差值。查询以科学计数形式返回当前差值。查询以科学计数形式返回 1/∆X。查询返回 Y 或 X。
 **举例**: :CURSor:TRACk:SOURce1 CHANnel2 /* 设置通道源为 CHANnel2*/
 :CURSor:TRACk:SOURce1? /* 查询返回 CHAN2*/
-### 8.4.2:CURSor:TRACk:SOURce2
+## 8.4.2:CURSor:TRACk:SOURce2
 :CURSor:TRACk:SOURce2 CHANnel2 /* 设置通道源为 CHANnel2*/
 :CURSor:TRACk:SOURce2? /* 查询返回 CHAN2*/
 
-### 8.4.3:CURSor:TRACk:CAX
+## 8.4.3:CURSor:TRACk:CAX
 :CURSor:TRACk:CAX 1.000000E-8 /* 设置光标 A 的水平位置为 10ns*/
 :CURSor:TRACk:CAX? /* 查询返回 1.000000E-8*/
-### 8.4.4:CURSor:TRACk:CBX
+## 8.4.4:CURSor:TRACk:CBX
 :CURSor:TRACk:CBX 1.000000E-8 /* 设置光标 B 的水平位置为 10ns*/
 :CURSor:TRACk:CBX? /* 查询返回 1.000000E-8*/
-### 8.4.5:CURSor:TRACk:CAY
+## 8.4.5:CURSor:TRACk:CAY
 :CURSor:TRACk:CAY 0.1  /* 设置光标 A 的垂直位置为 0.1V*/
 :CURSor:TRACk:CAY?  /* 查询返回 1.000000E-1*/
-### 8.4.6:CURSor:TRACk:CBY
+## 8.4.6:CURSor:TRACk:CBY
 :CURSor:TRACk:CBY 0.1 /* 设置光标 B 的垂直位置为 0.1V*/
 :CURSor:TRACk:CBY? /* 查询返回 1.000000E-1*/
-### 8.4.7:CURSor:TRACk:AXValue?
-### 8.4.8:CURSor:TRACk:AYValue?
-### 8.4.9:CURSor:TRACk:BXValue?
-### 8.4.10:CURSor:TRACk:BYValue?
+## 8.4.7:CURSor:TRACk:AXValue?
+## 8.4.8:CURSor:TRACk:AYValue?
+## 8.4.9:CURSor:TRACk:BXValue?
+## 8.4.10:CURSor:TRACk:BYValue?
 
-### 8.4.11:CURSor:TRACk:XDELta?
-### 8.4.12:CURSor:TRACk:YDELta?
+## 8.4.11:CURSor:TRACk:XDELta?
+## 8.4.12:CURSor:TRACk:YDELta?
 
-### 8.4.13:CURSor:TRACk:IXDelta?
-### 8.4.14:CURSor:TRACk:MODE
+## 8.4.13:CURSor:TRACk:IXDelta?
+## 8.4.14:CURSor:TRACk:MODE
 :CURSor:TRACk:MODE X /* 设置光标追踪测量时的坐标轴为 X 轴*/
 :CURSor:TRACk:MODE? /* 查询返回 X*/
 
 ---
 
-### 8.5:CURSor:XY
+## 8.5:CURSor:XY
 
 **语法**: `:CURSor:XY:AX <x>
 :CURSor:XY:AX?
@@ -1849,28 +1849,28 @@ CHANnel1
 **返回格式**: 查询以科学计数形式返回光标 A 的水平位置，单位为 V。查询以科学计数形式返回光标 B 的水平位置。查询以科学计数形式返回光标 A 的垂直位置。查询以科学计数形式返回光标 B 的垂直位置。查询以科学计数形式返回当前光标 A 处的 X 值。查询以科学计数形式返回当前光标 A 处的 Y 值。查询以科学计数形式返回当前光标 B 处的 X 值。查询以科学计数形式返回当前光标 B 处的 Y 值。查询以科学计数形式返回当前差值。查询以科学计数形式返回当前差值。
 **举例**: :CURSor:XY:AX 0.1 /* 设置光标 A 的水平位置为 100 mV*/
 :CURSor:XY:AX? /* 查询返回 1.000000E-1*/
-### 8.5.2:CURSor:XY:BX
+## 8.5.2:CURSor:XY:BX
 :CURSor:XY:BX 0.1 /* 设置光标 B 的水平位置为 100mV*/
 :CURSor:XY:BX?    /* 查询返回 1.000000E-1*/
-### 8.5.3:CURSor:XY:AY
+## 8.5.3:CURSor:XY:AY
 :CURSor:XY:AY 0.1 /* 设置光标 A 的垂直位置为 100 mV*/
 :CURSor:XY:AY?    /* 查询返回 1.000000E-1*/
-### 8.5.4:CURSor:XY:BY
+## 8.5.4:CURSor:XY:BY
 :CURSor:XY:BY 0.1 /* 设置光标 B 的垂直位置为 100 mV*/
 :CURSor:XY:BY?    /* 查询返回 1.000000E-1*/
-### 8.5.5:CURSor:XY:AXValue?
-### 8.5.6:CURSor:XY:AYValue?
-### 8.5.7:CURSor:XY:BXValue?
-### 8.5.8:CURSor:XY:BYValue?
-### 8.5.9:CURSor:XY:XDELta?
-### 8.5.10:CURSor:XY:YDELta?
+## 8.5.5:CURSor:XY:AXValue?
+## 8.5.6:CURSor:XY:AYValue?
+## 8.5.7:CURSor:XY:BXValue?
+## 8.5.8:CURSor:XY:BYValue?
+## 8.5.9:CURSor:XY:XDELta?
+## 8.5.10:CURSor:XY:YDELta?
 
 ---
 
-## 9 显示命令子系统
+# 9 显示命令子系统
 显示命令可以设置波形显示的类型、余辉时间、波形亮度、屏幕显示的网格类型以及网格亮度
 等。
-### 9.1:DISPlay:CLEar
+## 9.1:DISPlay:CLEar
 
 **语法**: `:DISPlay:CLEar`
 **描述**: 清除屏幕上的所有波形。
@@ -1885,7 +1885,7 @@ CHANnel1
 
 ---
 
-### 9.2:DISPlay:TYPE
+## 9.2:DISPlay:TYPE
 
 **语法**: `:DISPlay:TYPE <type>
 :DISPlay:TYPE?`
@@ -1901,7 +1901,7 @@ CHANnel1
 
 ---
 
-### 9.3:DISPlay:GRADing:TIME
+## 9.3:DISPlay:GRADing:TIME
 
 **语法**: `:DISPlay:GRADing:TIME <time>
 :DISPlay:GRADing:TIME?`
@@ -1920,7 +1920,7 @@ INFinite} MIN
 
 ---
 
-### 9.4:DISPlay:WBRightness
+## 9.4:DISPlay:WBRightness
 
 **语法**: `:DISPlay:WBRightness <brightness>
 :DISPlay:WBRightness?`
@@ -1936,7 +1936,7 @@ INFinite} MIN
 
 ---
 
-### 9.5:DISPlay:GRID
+## 9.5:DISPlay:GRID
 
 **语法**: `:DISPlay:GRID <grid>
 :DISPlay:GRID?`
@@ -1954,7 +1954,7 @@ INFinite} MIN
 
 ---
 
-### 9.6:DISPlay:GBRightness
+## 9.6:DISPlay:GBRightness
 
 **语法**: `:DISPlay:GBRightness <brightness>
 :DISPlay:GBRightness?`
@@ -1970,7 +1970,7 @@ INFinite} MIN
 
 ---
 
-### 9.7:DISPlay:DATA?
+## 9.7:DISPlay:DATA?
 
 **语法**: `:DISPlay:DATA?[<type>]`
 **描述**: 查询当前显示图像的位图数据流。
@@ -1986,7 +1986,7 @@ INFinite} MIN
 
 ---
 
-### 9.8:DISPlay:RULers
+## 9.8:DISPlay:RULers
 
 **语法**: `:DISPlay:RULers <bool>
 :DISPlay:RULers?`
@@ -2002,7 +2002,7 @@ INFinite} MIN
 
 ---
 
-### 9.9:DISPlay:COLor
+## 9.9:DISPlay:COLor
 
 **语法**: `:DISPlay:COLor <bool>
 :DISPlay:COLor?`
@@ -2018,7 +2018,7 @@ INFinite} MIN
 
 ---
 
-### 9.10:DISPlay:WHOLd
+## 9.10:DISPlay:WHOLd
 
 **语法**: `:DISPlay:WHOLd <bool>
 :DISPlay:WHOLd?`
@@ -2034,11 +2034,11 @@ INFinite} MIN
 
 ---
 
-## 10 电压表命令子系统
+# 10 电压表命令子系统
 电压表命令用于设置或查询电压表测量参数。
 本系列示波器内置的数字电压表（DVM）可以在任意模拟通道上测量 4 位有效数字的电压。
 DVM 测量与示波器的采集系统异步，且始终进行采集。
-### 10.1:DVM:CURRent?
+## 10.1:DVM:CURRent?
 
 **语法**: `:DVM:CURRent?`
 **描述**: 查询当前所测电压值。
@@ -2049,7 +2049,7 @@ DVM 测量与示波器的采集系统异步，且始终进行采集。
 
 ---
 
-### 10.2:DVM:ENABle
+## 10.2:DVM:ENABle
 
 **语法**: `:DVM:ENABle <bool>
 :DVM:ENABle?`
@@ -2065,7 +2065,7 @@ DVM 测量与示波器的采集系统异步，且始终进行采集。
 
 ---
 
-### 10.3:DVM:SOURce
+## 10.3:DVM:SOURce
 
 **语法**: `:DVM:SOURce <source>
 :DVM:SOURce?`
@@ -2082,7 +2082,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 10.4:DVM:MODE
+## 10.4:DVM:MODE
 
 **语法**: `:DVM:MODE <mode>
 :DVM:MODE?`
@@ -2091,7 +2091,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-## 11 直方图命令子系统
+# 11 直方图命令子系统
 直方图分析功能可以为波形或测量结果提供统计视图，方便用户进行趋势判断，从而帮助用户
 快速发现信号中潜在的异常。
 仅 DHO900 系列示波器支持直方图分析功能。
@@ -2108,7 +2108,7 @@ CHANnel3|CHANnel4} CHANnel1
 • Bin width：直方图对应的宽度。
 • Sigma：直方图对应的标准方差。
 • XScale：直方图的水平档位，Bin width 的 100 倍。
-### 11.1:HISTogram:ENABle
+## 11.1:HISTogram:ENABle
 
 **语法**: `:HISTogram:ENABle <bool>
 :HISTogram:ENABle?`
@@ -2124,7 +2124,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 11.2:HISTogram:TYPE
+## 11.2:HISTogram:TYPE
 
 **语法**: `:HISTogram:TYPE <type>
 :HISTogram:TYPE?`
@@ -2141,7 +2141,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 11.3:HISTogram:SOURce
+## 11.3:HISTogram:SOURce
 
 **语法**: `:HISTogram:SOURce <source>
 :HISTogram:SOURce?`
@@ -2157,7 +2157,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 11.4:HISTogram:HEIGht
+## 11.4:HISTogram:HEIGht
 
 **语法**: `:HISTogram:HEIGht <height>
 :HISTogram:HEIGht?`
@@ -2173,7 +2173,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 11.5:HISTogram:RANGe:LEFT
+## 11.5:HISTogram:RANGe:LEFT
 
 **语法**: `:HISTogram:RANGe:LEFT <number>
 :HISTogram:RANGe:LEFT?`
@@ -2196,7 +2196,7 @@ Horizontal Time Base
 
 ---
 
-### 11.6:HISTogram:RANGe:RIGHt
+## 11.6:HISTogram:RANGe:RIGHt
 
 **语法**: `:HISTogram:RANGe:RIGHt <number>
 :HISTogram:RANGe:RIGHt?`
@@ -2219,7 +2219,7 @@ Horizontal Time Base
 
 ---
 
-### 11.7:HISTogram:RANGe:TOP
+## 11.7:HISTogram:RANGe:TOP
 
 **语法**: `:HISTogram:RANGe:TOP <number>
 :HISTogram:RANGe:TOP?`
@@ -2238,7 +2238,7 @@ VerticalScale-OFFSet) -
 
 ---
 
-### 11.8:HISTogram:RANGe:BOTTom
+## 11.8:HISTogram:RANGe:BOTTom
 
 **语法**: `:HISTogram:RANGe:BOTTom <number>
 :HISTogram:RANGe:BOTTom?`
@@ -2257,7 +2257,7 @@ VerticalScale-OFFSet) -
 
 ---
 
-### 11.9:HISTogram:STATistics:RESult?
+## 11.9:HISTogram:STATistics:RESult?
 
 **语法**: `:HISTogram:STATistics:RESult?`
 **描述**: 查询直方图统计结果。
@@ -2272,7 +2272,7 @@ s,Median:-20ns,Mode:-4us,Bin width:20ns,Siqma:2.303us]
 
 ---
 
-## 12 IEEE488.2 通用命令
+# 12 IEEE488.2 通用命令
 IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作。这些命令通常以“*”开
 头，命令关键字的长度为 3 个字符，并与状态寄存器相关。
 标准事件状态寄存器(SESR)和状态字节寄存器(SBR)记录了在仪器使用过程中可能发生的某类
@@ -2309,7 +2309,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 可以生成服务请求（必须启用位）
 7 操作寄存器 128 在操作状态寄存器中设置一个或多个位（必须
 启用位）
-### 12.1:*IDN?
+## 12.1:*IDN?
 
 **语法**: `*IDN?`
 **描述**: 查询仪器的 ID 字符串。
@@ -2323,7 +2323,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.2:*RST
+## 12.2:*RST
 
 **语法**: `*RST`
 **描述**: 将仪器恢复至出厂默认状态。
@@ -2334,7 +2334,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.3:*CLS
+## 12.3:*CLS
 
 **语法**: `*CLS`
 **描述**: 将所有事件寄存器的值清零，同时清除错误队列。
@@ -2345,7 +2345,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.4:*ESE
+## 12.4:*ESE
 
 **语法**: `*ESE <maskargument>
 *ESE?`
@@ -2364,7 +2364,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.5:*ESR?
+## 12.5:*ESR?
 
 **语法**: `*ESR?`
 **描述**: 查询并清除标准事件状态寄存器组的事件寄存器值。
@@ -2375,7 +2375,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.6:*OPC
+## 12.6:*OPC
 
 **语法**: `*OPC
 *OPC?`
@@ -2391,7 +2391,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.7:*RCL
+## 12.7:*RCL
 
 **语法**: `*RCL`
 **描述**: 从指定单元中恢复 *SAV 命令保存的设定值。
@@ -2402,7 +2402,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.8:*SAV
+## 12.8:*SAV
 
 **语法**: `*SAV <value>`
 **描述**: 保存当前仪器状态到所选寄存器。
@@ -2415,7 +2415,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.9:*SRE
+## 12.9:*SRE
 
 **语法**: `*SRE <maskargument>
 *SRE?`
@@ -2430,7 +2430,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.10:*STB?
+## 12.10:*STB?
 
 **语法**: `*STB?`
 **描述**: 查询状态字节寄存器的事件寄存器值。在该命令被执行完后，状态字节寄存器的值清零。
@@ -2441,7 +2441,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 12.11:*WAI
+## 12.11:*WAI
 
 **语法**: `*WAI`
 **描述**: 等待操作完成。
@@ -2452,8 +2452,8 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-## 13 数字通道命令子系统
-### 12.12:*TST?
+# 13 数字通道命令子系统
+## 12.12:*TST?
 
 **语法**: `*TST?`
 **描述**: 执行一次自检并返回自检结果。
@@ -2472,7 +2472,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 13.1:LA:ENABle
+## 13.1:LA:ENABle
 
 **语法**: `:LA:ENABle <bool>
 :LA:ENABle?`
@@ -2488,7 +2488,7 @@ IEEE488.2 通用命令用于查询仪器基本信息或执行常用基本操作�
 
 ---
 
-### 13.2:LA:ACTive
+## 13.2:LA:ACTive
 
 **语法**: `:LA:ACTive <digital>
 :LA:ACTive?`
@@ -2511,7 +2511,7 @@ D0
 
 ---
 
-### 13.3:LA:AUTosort
+## 13.3:LA:AUTosort
 
 **语法**: `:LA:AUTosort <val>
 :LA:AUTosort?`
@@ -2528,7 +2528,7 @@ D0
 
 ---
 
-### 13.4:LA:DELete
+## 13.4:LA:DELete
 
 **语法**: `:LA:DELete <group>`
 **描述**: 取消 GROup1-GROup4 中任一通道组的通道设置。
@@ -2542,7 +2542,7 @@ GROup4} -
 
 ---
 
-### 13.5:LA:DIGital:ENABle
+## 13.5:LA:DIGital:ENABle
 
 **语法**: `:LA:DIGital:ENABle <digital>,<bool>
 :LA:DIGital:ENABle? <digital>`
@@ -2560,7 +2560,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 13.6:LA:DIGital:LABel
+## 13.6:LA:DIGital:LABel
 
 **语法**: `:LA:DIGital:LABel <digital>,<label>
 :LA:DIGital:LABel? <digital>`
@@ -2579,7 +2579,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 13.7:LA:POD<n>:DISPlay
+## 13.7:LA:POD<n>:DISPlay
 
 **语法**: `:LA:POD<n>:DISPlay <bool>
 :LA:POD<n>:DISPlay?`
@@ -2596,7 +2596,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 13.8:LA:POD<n>:THReshold
+## 13.8:LA:POD<n>:THReshold
 
 **语法**: `:LA:POD<n>:THReshold <thre>
 :LA:POD<n>:THReshold?`
@@ -2613,7 +2613,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 13.9:LA:SIZE
+## 13.9:LA:SIZE
 
 **语法**: `:LA:SIZE <size>
 :LA:SIZE?`
@@ -2622,10 +2622,10 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-## 14 局域网命令子系统
+# 14 局域网命令子系统
 局域网命令用于设置和查询局域网相关的参数。
 其他:LAN 命令设置完，需要发送 :LAN:APPLy 命令使配置生效。
-### 14.1:LAN:DHCP
+## 14.1:LAN:DHCP
 
 **语法**: `:LAN:DHCP <bool>
 :LAN:DHCP?`
@@ -2643,7 +2643,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.2:LAN:AUToip
+## 14.2:LAN:AUToip
 
 **语法**: `:LAN:AUToip <bool>
 :LAN:AUToip?`
@@ -2659,7 +2659,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.3:LAN:GATeway
+## 14.3:LAN:GATeway
 
 **语法**: `:LAN:GATeway <string>
 :LAN:GATeway?`
@@ -2676,7 +2676,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.4:LAN:DNS
+## 14.4:LAN:DNS
 
 **语法**: `:LAN:DNS <string>
 :LAN:DNS?`
@@ -2693,7 +2693,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.5:LAN:MAC?
+## 14.5:LAN:MAC?
 
 **语法**: `:LAN:MAC?`
 **描述**: 查询仪器 MAC 地址。
@@ -2704,7 +2704,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.6:LAN:DSERver?
+## 14.6:LAN:DSERver?
 
 **语法**: `:LAN:DSERver?`
 **描述**: 查询 DHCP 服务器地址。
@@ -2715,7 +2715,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.7:LAN:MANual
+## 14.7:LAN:MANual
 
 **语法**: `:LAN:MANual <bool>
 :LAN:MANual?`
@@ -2731,7 +2731,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.8:LAN:IPADdress
+## 14.8:LAN:IPADdress
 
 **语法**: `:LAN:IPADdress <string>
 :LAN:IPADdress?`
@@ -2748,7 +2748,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.9:LAN:SMASk
+## 14.9:LAN:SMASk
 
 **语法**: `:LAN:SMASk <string>
 :LAN:SMASk?`
@@ -2765,7 +2765,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.10:LAN:STATus?
+## 14.10:LAN:STATus?
 
 **语法**: `:LAN:STATus?`
 **描述**: 查询当前的网络配置状态。
@@ -2785,7 +2785,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.11:LAN:VISA?
+## 14.11:LAN:VISA?
 
 **语法**: `:LAN:VISA? [<type>]`
 **描述**: 查询仪器 VISA 地址。
@@ -2798,7 +2798,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.12:LAN:MDNS
+## 14.12:LAN:MDNS
 
 **语法**: `:LAN:MDNS <bool>
 :LAN:MDNS?`
@@ -2814,7 +2814,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.13:LAN:HOST:NAME
+## 14.13:LAN:HOST:NAME
 
 **语法**: `:LAN:HOST:NAME <name>
 :LAN:HOST:NAME?`
@@ -2830,7 +2830,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.14:LAN:DESCription
+## 14.14:LAN:DESCription
 
 **语法**: `:LAN:DESCription <name>
 :LAN:DESCription?`
@@ -2846,7 +2846,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 14.15:LAN:APPLy
+## 14.15:LAN:APPLy
 
 **语法**: `:LAN:APPLy`
 **描述**: 应用网络配置。
@@ -2854,12 +2854,12 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-## 15 通过/失败测试命令子系统
+# 15 通过/失败测试命令子系统
 通过/失败测试命令用于设置和查询通过/失败测试中的相关参数。
 在产品的设计和生产过程中，经常需要监测信号的变化情况，或者判定产品是否合格。本系列
 示波器标配的通过/失败测试功能可以很好地完成此任务。使用此功能，用户可根据已知标准
 波形设定测试规则，生成波形蒙版，将被测信号和蒙版进行比较，显示测试结果的统计信息。
-### 15.1:MASK:ENABle
+## 15.1:MASK:ENABle
 
 **语法**: `:MASK:ENABle <bool>
 :MASK:ENABle?`
@@ -2878,7 +2878,7 @@ D9|D10|D11|D12|D13|D14|D15} -
 
 ---
 
-### 15.2:MASK:SOURce
+## 15.2:MASK:SOURce
 
 **语法**: `:MASK:SOURce <source>
 :MASK:SOURce?`
@@ -2895,7 +2895,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.3:MASK:OPERate
+## 15.3:MASK:OPERate
 
 **语法**: `:MASK:OPERate <oper>
 :MASK:OPERate?`
@@ -2911,7 +2911,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.4:MASK:X
+## 15.4:MASK:X
 
 **语法**: `:MASK:X <x>
 :MASK:X?`
@@ -2927,7 +2927,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.5:MASK:Y
+## 15.5:MASK:Y
 
 **语法**: `:MASK:Y <y>
 :MASK:Y?`
@@ -2943,7 +2943,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.6:MASK:CREate
+## 15.6:MASK:CREate
 
 **语法**: `:MASK:CREate`
 **描述**: 以当前设置的水平调整参数和垂直调整参数创建通过/失败测试的规则。
@@ -2955,7 +2955,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.7:MASK:RESet
+## 15.7:MASK:RESet
 
 **语法**: `:MASK:RESet`
 **描述**: 复位通过/失败测试中通过的帧数、失败的帧数和总帧数。
@@ -2966,7 +2966,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.8:MASK:FAILed?
+## 15.8:MASK:FAILed?
 
 **语法**: `:MASK:FAILed?`
 **描述**: 查询通过/失败测试时失败的帧数。
@@ -2977,7 +2977,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.9:MASK:PASSed?
+## 15.9:MASK:PASSed?
 
 **语法**: `:MASK:PASSed?`
 **描述**: 查询通过/失败测试时通过的帧数。
@@ -2988,7 +2988,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.10:MASK:TOTal?
+## 15.10:MASK:TOTal?
 
 **语法**: `:MASK:TOTal?`
 **描述**: 查询通过/失败测试的总帧数。
@@ -2999,7 +2999,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.11:MASK:OUTPut:ENABle
+## 15.11:MASK:OUTPut:ENABle
 
 **语法**: `:MASK:OUTPut:ENABle <bool>
 :MASK:OUTPut:ENABle?`
@@ -3016,7 +3016,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 15.12:MASK:OUTPut:EVENt
+## 15.12:MASK:OUTPut:EVENt
 
 **语法**: `:MASK:OUTPut:EVENt <item>
 :MASK:OUTPut:EVENt?`
@@ -3032,8 +3032,8 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-## 16 数学运算命令子系统
-### 15.13:MASK:OUTPut:TIME
+# 16 数学运算命令子系统
+## 15.13:MASK:OUTPut:TIME
 
 **语法**: `:MASK:OUTPut:TIME <time>
 :MASK:OUTPut:TIME?`
@@ -3085,7 +3085,7 @@ A B A&&B A||B A^B !A
 • 带阻： 仅允许频率低于当前频率下限的信号或高于当前频率上限的信号通过。
 ---
 
-### 16.1:MATH<n>:DISPlay
+## 16.1:MATH<n>:DISPlay
 
 **语法**: `:MATH<n>:DISPlay <bool>
 :MATH<n>:DISPlay?`
@@ -3102,7 +3102,7 @@ A B A&&B A||B A^B !A
 
 ---
 
-### 16.2:MATH<n>:OPERator
+## 16.2:MATH<n>:OPERator
 
 **语法**: `:MATH<n>:OPERator <opt>
 :MATH<n>:OPERator?`
@@ -3130,7 +3130,7 @@ ADD
 
 ---
 
-### 16.3:MATH<n>:SOURce1
+## 16.3:MATH<n>:SOURce1
 
 **语法**: `:MATH<n>:SOURce1 <source>
 :MATH<n>:SOURce1?`
@@ -3164,7 +3164,7 @@ REF3|REF4|REF5|REF6|REF7|REF8|REF9|REF10|MATH1|MATH2|MATH3}
 
 ---
 
-### 16.4:MATH<n>:SOURce2
+## 16.4:MATH<n>:SOURce2
 
 **语法**: `:MATH<n>:SOURce2 <source>
 :MATH<n>:SOURce2?`
@@ -3197,7 +3197,7 @@ REF3|REF4|REF5|REF6|REF7|REF8|REF9|REF10|MATH1|MATH2|MATH3}
 
 ---
 
-### 16.5:MATH<n>:LSOurce1
+## 16.5:MATH<n>:LSOurce1
 
 **语法**: `:MATH<n>:LSOurce1 <source>
 :MATH<n>:LSOurce1?`
@@ -3220,7 +3220,7 @@ CHANnel1
 
 ---
 
-### 16.6:MATH<n>:LSOurce2
+## 16.6:MATH<n>:LSOurce2
 
 **语法**: `:MATH<n>:LSOurce2 <source>
 :MATH<n>:LSOurce2?`
@@ -3245,7 +3245,7 @@ CHANnel1
 
 ---
 
-### 16.7:MATH<n>:SCALe
+## 16.7:MATH<n>:SCALe
 
 **语法**: `:MATH<n>:SCALe <scale>
 :MATH<n>:SCALe?`
@@ -3263,7 +3263,7 @@ CHANnel1
 
 ---
 
-### 16.8:MATH<n>:OFFSet
+## 16.8:MATH<n>:OFFSet
 
 **语法**: `:MATH<n>:OFFSet <offset>
 :MATH<n>:OFFSet?`
@@ -3280,7 +3280,7 @@ CHANnel1
 
 ---
 
-### 16.9:MATH<n>:INVert
+## 16.9:MATH<n>:INVert
 
 **语法**: `:MATH<n>:INVert <bool>
 :MATH<n>:INVert?`
@@ -3297,7 +3297,7 @@ CHANnel1
 
 ---
 
-### 16.10:MATH<n>:RESet
+## 16.10:MATH<n>:RESet
 
 **语法**: `:MATH<n>:RESet`
 **描述**: 发送该命令，仪器根据当前所选的运算符、信源的水平时基将运算结果的垂直档位调节至最佳值。
@@ -3308,7 +3308,7 @@ CHANnel1
 
 ---
 
-### 16.11:MATH<n>:GRID
+## 16.11:MATH<n>:GRID
 
 **语法**: `:MATH<n>:GRID <grid>
 :MATH<n>:GRID?`
@@ -3326,7 +3326,7 @@ CHANnel1
 
 ---
 
-### 16.12:MATH<n>:EXPand
+## 16.12:MATH<n>:EXPand
 
 **语法**: `:MATH<n>:EXPand <exp>
 :MATH<n>:EXPand?`
@@ -3344,7 +3344,7 @@ CHANnel1
 
 ---
 
-### 16.13:MATH<n>:WAVetype
+## 16.13:MATH<n>:WAVetype
 
 **语法**: `:MATH<n>:WAVetype <type>
 :MATH<n>:WAVetype?`
@@ -3362,7 +3362,7 @@ CHANnel1
 
 ---
 
-### 16.14:MATH<n>:FFT:SOURce
+## 16.14:MATH<n>:FFT:SOURce
 
 **语法**: `:MATH<n>:FFT:SOURce <source>
 :MATH<n>:FFT:SOURce?`
@@ -3380,7 +3380,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 16.15:MATH<n>:FFT:WINDow
+## 16.15:MATH<n>:FFT:WINDow
 
 **语法**: `:MATH<n>:FFT:WINDow <window>
 :MATH<n>:FFT:WINDow?`
@@ -3402,7 +3402,7 @@ HANNing
 
 ---
 
-### 16.16:MATH<n>:FFT:UNIT
+## 16.16:MATH<n>:FFT:UNIT
 
 **语法**: `:MATH<n>:FFT:UNIT <unit>
 :MATH<n>:FFT:UNIT?`
@@ -3419,7 +3419,7 @@ HANNing
 
 ---
 
-### 16.17:MATH<n>:FFT:SCALe
+## 16.17:MATH<n>:FFT:SCALe
 
 **语法**: `:MATH<n>:FFT:SCALe <scale>
 :MATH<n>:FFT:SCALe?`
@@ -3437,7 +3437,7 @@ HANNing
 
 ---
 
-### 16.18:MATH<n>:FFT:OFFSet
+## 16.18:MATH<n>:FFT:OFFSet
 
 **语法**: `:MATH<n>:FFT:OFFSet <offset>
 :MATH<n>:FFT:OFFSet?`
@@ -3455,7 +3455,7 @@ HANNing
 
 ---
 
-### 16.19:MATH<n>:FFT:HSCale
+## 16.19:MATH<n>:FFT:HSCale
 
 **语法**: `:MATH<n>:FFT:HSCale <hsc>
 :MATH<n>:FFT:HSCale?`
@@ -3472,7 +3472,7 @@ HANNing
 
 ---
 
-### 16.20:MATH<n>:FFT:HCENter
+## 16.20:MATH<n>:FFT:HCENter
 
 **语法**: `:MATH<n>:FFT:HCENter <cent>
 :MATH<n>:FFT:HCENter?`
@@ -3489,7 +3489,7 @@ HANNing
 
 ---
 
-### 16.21:MATH<n>:FFT:FREQuency:STARt
+## 16.21:MATH<n>:FFT:FREQuency:STARt
 
 **语法**: `:MATH<n>:FFT:FREQuency:STARt <value>
 :MATH<n>:FFT:FREQuency:STARt?`
@@ -3506,7 +3506,7 @@ HANNing
 
 ---
 
-### 16.22:MATH<n>:FFT:FREQuency:END
+## 16.22:MATH<n>:FFT:FREQuency:END
 
 **语法**: `:MATH<n>:FFT:FREQuency:END <value>
 :MATH<n>:FFT:FREQuency:END?`
@@ -3523,7 +3523,7 @@ HANNing
 
 ---
 
-### 16.23:MATH<n>:FFT:SEARch:ENABle
+## 16.23:MATH<n>:FFT:SEARch:ENABle
 
 **语法**: `:MATH<n>:FFT:SEARch:ENABle <bool>
 :MATH<n>:FFT:SEARch:ENABle?`
@@ -3540,7 +3540,7 @@ HANNing
 
 ---
 
-### 16.24:MATH<n>:FFT:SEARch:NUM
+## 16.24:MATH<n>:FFT:SEARch:NUM
 
 **语法**: `:MATH<n>:FFT:SEARch:NUM <num>
 :MATH<n>:FFT:SEARch:NUM?`
@@ -3557,7 +3557,7 @@ HANNing
 
 ---
 
-### 16.25:MATH<n>:FFT:SEARch:THReshold
+## 16.25:MATH<n>:FFT:SEARch:THReshold
 
 **语法**: `:MATH<n>:FFT:SEARch:THReshold <thres>
 :MATH<n>:FFT:SEARch:THReshold?`
@@ -3575,7 +3575,7 @@ HANNing
 
 ---
 
-### 16.26:MATH<n>:FFT:SEARch:EXCursion
+## 16.26:MATH<n>:FFT:SEARch:EXCursion
 
 **语法**: `:MATH<n>:FFT:SEARch:EXCursion <excur>
 :MATH<n>:FFT:SEARch:EXCursion?`
@@ -3592,7 +3592,7 @@ HANNing
 
 ---
 
-### 16.27:MATH<n>:FFT:SEARch:ORDer
+## 16.27:MATH<n>:FFT:SEARch:ORDer
 
 **语法**: `:MATH<n>:FFT:SEARch:ORDer <order>
 :MATH<n>:FFT:SEARch:ORDer?`
@@ -3609,7 +3609,7 @@ HANNing
 
 ---
 
-### 16.28:MATH<n>:FFT:SEARch:RES?
+## 16.28:MATH<n>:FFT:SEARch:RES?
 
 **语法**: `:MATH<n>:FFT:SEARch:RES?`
 **描述**: 查询 FFT 峰值搜索结果表。
@@ -3626,7 +3626,7 @@ HANNing
 
 ---
 
-### 16.29:MATH<n>:FILTer:TYPE
+## 16.29:MATH<n>:FILTer:TYPE
 
 **语法**: `:MATH<n>:FILTer:TYPE <type>
 :MATH<n>:FILTer:TYPE?`
@@ -3647,7 +3647,7 @@ HANNing
 
 ---
 
-### 16.30:MATH<n>:FILTer:W1
+## 16.30:MATH<n>:FILTer:W1
 
 **语法**: `:MATH<n>:FILTer:W1 <freq1>
 :MATH<n>:FILTer:W1?`
@@ -3674,7 +3674,7 @@ HANNing
 
 ---
 
-### 16.31:MATH<n>:FILTer:W2
+## 16.31:MATH<n>:FILTer:W2
 
 **语法**: `:MATH<n>:FILTer:W2 <freq2>
 :MATH<n>:FILTer:W2?`
@@ -3695,7 +3695,7 @@ HANNing
 
 ---
 
-### 16.32:MATH<n>:SENSitivity
+## 16.32:MATH<n>:SENSitivity
 
 **语法**: `:MATH<n>:SENSitivity <sens>
 :MATH<n>:SENSitivity?`
@@ -3714,7 +3714,7 @@ HANNing
 
 ---
 
-### 16.33:MATH<n>:DISTance
+## 16.33:MATH<n>:DISTance
 
 **语法**: `:MATH<n>:DISTance <dist>
 :MATH<n>:DISTance?`
@@ -3731,7 +3731,7 @@ HANNing
 
 ---
 
-### 16.34:MATH<n>:THReshold1
+## 16.34:MATH<n>:THReshold1
 
 **语法**: `:MATH<n>:THReshold1 <thre>
 :MATH<n>:THReshold1?`
@@ -3753,7 +3753,7 @@ HANNing
 
 ---
 
-### 16.35:MATH<n>:THReshold2
+## 16.35:MATH<n>:THReshold2
 
 **语法**: `:MATH<n>:THReshold2 <thre>
 :MATH<n>:THReshold2?`
@@ -3775,7 +3775,7 @@ HANNing
 
 ---
 
-### 16.36:MATH<n>:THReshold3
+## 16.36:MATH<n>:THReshold3
 
 **语法**: `:MATH<n>:THReshold3 <thre>
 :MATH<n>:THReshold3?`
@@ -3797,7 +3797,7 @@ HANNing
 
 ---
 
-### 16.37:MATH<n>:THReshold4
+## 16.37:MATH<n>:THReshold4
 
 **语法**: `:MATH<n>:THReshold4 <thre>
 :MATH<n>:THReshold4?`
@@ -3819,7 +3819,7 @@ HANNing
 
 ---
 
-### 16.38:MATH<n>:WINDow:TITLe?
+## 16.38:MATH<n>:WINDow:TITLe?
 
 **语法**: `:MATH<n>:WINDow:TITLe?`
 **描述**: 查询指定数学运算窗口的标题。
@@ -3828,8 +3828,8 @@ HANNing
 
 ---
 
-## 17 测量命令子系统
-### 16.39:MATH<n>:LABel:SHOW
+# 17 测量命令子系统
+## 16.39:MATH<n>:LABel:SHOW
 
 **语法**: `:MATH<n>:LABel:SHOW <bool>
 :MATH<n>:LABel:SHOW?`
@@ -3929,7 +3929,7 @@ Source B
 • CNT： 计数。
 ---
 
-### 17.1:MEASure:SOURce
+## 17.1:MEASure:SOURce
 
 **语法**: `:MEASure:SOURce <source>
 :MEASure:SOURce?`
@@ -3953,7 +3953,7 @@ MATH4。
 
 ---
 
-### 17.2:MEASure:ITEM
+## 17.2:MEASure:ITEM
 
 **语法**: `:MEASure:ITEM <item>[,<src>[,<src>]]
 :MEASure:ITEM? <item>[,<src>[,<src>]]`
@@ -4008,7 +4008,7 @@ MATH1|MATH2|MATH3|MATH4}。
 
 ---
 
-### 17.3:MEASure:CLEar
+## 17.3:MEASure:CLEar
 
 **语法**: `:MEASure:CLEar`
 **描述**: 清除所有已打开的测量项。
@@ -4019,7 +4019,7 @@ MATH1|MATH2|MATH3|MATH4}。
 
 ---
 
-### 17.4:MEASure:AMSource
+## 17.4:MEASure:AMSource
 
 **语法**: `:MEASure:AMSource <chan>
 :MEASure:AMSource?`
@@ -4036,7 +4036,7 @@ CHANnel3|CHANnel4|OFF} OFF
 
 ---
 
-### 17.5:MEASure:STATistic:COUNt
+## 17.5:MEASure:STATistic:COUNt
 
 **语法**: `:MEASure:STATistic:COUNt <val>
 :MEASure:STATistic:COUNt?`
@@ -4052,7 +4052,7 @@ CHANnel3|CHANnel4|OFF} OFF
 
 ---
 
-### 17.6:MEASure:STATistic:DISPlay
+## 17.6:MEASure:STATistic:DISPlay
 
 **语法**: `:MEASure:STATistic:DISPlay <bool>
 :MEASure:STATistic:DISPlay?`
@@ -4068,7 +4068,7 @@ CHANnel3|CHANnel4|OFF} OFF
 
 ---
 
-### 17.7:MEASure:STATistic:RESet
+## 17.7:MEASure:STATistic:RESet
 
 **语法**: `:MEASure:STATistic:RESet`
 **描述**: 清除历史统计数据并重新统计。
@@ -4079,7 +4079,7 @@ CHANnel3|CHANnel4|OFF} OFF
 
 ---
 
-### 17.8:MEASure:STATistic:ITEM
+## 17.8:MEASure:STATistic:ITEM
 
 **语法**: `:MEASure:STATistic:ITEM <item>[,<src>[,<src>]]
 :MEASure:STATistic:ITEM?<type>,<item>[,<src>[,<src>]]`
@@ -4137,7 +4137,7 @@ MATH1|MATH2|MATH3|MATH4}。
 
 ---
 
-### 17.9:MEASure:SETup:MAX
+## 17.9:MEASure:SETup:MAX
 
 **语法**: `:MEASure:SETup:MAX <value>
 :MEASure:SETup:MAX?`
@@ -4156,7 +4156,7 @@ MATH1|MATH2|MATH3|MATH4}。
 
 ---
 
-### 17.10:MEASure:SETup:MID
+## 17.10:MEASure:SETup:MID
 
 **语法**: `:MEASure:SETup:MID <value>
 :MEASure:SETup:MID?`
@@ -4172,7 +4172,7 @@ MATH1|MATH2|MATH3|MATH4}。
 
 ---
 
-### 17.11:MEASure:SETup:MIN
+## 17.11:MEASure:SETup:MIN
 
 **语法**: `:MEASure:SETup:MIN <value>
 :MEASure:SETup:MIN?`
@@ -4191,7 +4191,7 @@ MATH1|MATH2|MATH3|MATH4}。
 
 ---
 
-### 17.12:MEASure:SETup:PSA
+## 17.12:MEASure:SETup:PSA
 
 **语法**: `:MEASure:SETup:PSA <source>
 :MEASure:SETup:PSA?`
@@ -4215,7 +4215,7 @@ MATH4。
 
 ---
 
-### 17.13:MEASure:SETup:PSB
+## 17.13:MEASure:SETup:PSB
 
 **语法**: `:MEASure:SETup:PSB <source>
 :MEASure:SETup:PSB?`
@@ -4239,7 +4239,7 @@ MATH4。
 
 ---
 
-### 17.14:MEASure:SETup:DSA
+## 17.14:MEASure:SETup:DSA
 
 **语法**: `:MEASure:SETup:DSA <source>
 :MEASure:SETup:DSA?`
@@ -4263,7 +4263,7 @@ MATH4。
 
 ---
 
-### 17.15:MEASure:SETup:DSB
+## 17.15:MEASure:SETup:DSB
 
 **语法**: `:MEASure:SETup:DSB <source>
 :MEASure:SETup:DSB`
@@ -4287,7 +4287,7 @@ MATH4。
 
 ---
 
-### 17.16:MEASure:THReshold:SOURce
+## 17.16:MEASure:THReshold:SOURce
 
 **语法**: `:MEASure:THReshold:SOURce <source>
 :MEASure:THReshold:SOURce?`
@@ -4307,7 +4307,7 @@ CHANnel1
 
 ---
 
-### 17.17:MEASure:THReshold:TYPE
+## 17.17:MEASure:THReshold:TYPE
 
 **语法**: `:MEASure:THReshold:TYPE <type>
 :MEASure:THReshold:TYPE?`
@@ -4323,7 +4323,7 @@ CHANnel1
 
 ---
 
-### 17.18:MEASure:THReshold:DEFault
+## 17.18:MEASure:THReshold:DEFault
 
 **语法**: `:MEASure:THReshold:DEFault`
 **描述**: 设置模拟通道自动测量时门限电平为默认值。
@@ -4334,7 +4334,7 @@ CHANnel1
 
 ---
 
-### 17.19:MEASure:AREA
+## 17.19:MEASure:AREA
 
 **语法**: `:MEASure:AREA <area>
 :MEASure:AREA?`
@@ -4351,7 +4351,7 @@ CHANnel1
 
 ---
 
-### 17.20:MEASure:INDicator
+## 17.20:MEASure:INDicator
 
 **语法**: `:MEASure:INDicator <bool>
 :MEASure:INDicator?`
@@ -4367,7 +4367,7 @@ CHANnel1
 
 ---
 
-### 17.21:MEASure:COUNter:ENABle
+## 17.21:MEASure:COUNter:ENABle
 
 **语法**: `:MEASure:COUNter:ENABle <bool>
 :MEASure:COUNter:ENABle?`
@@ -4383,7 +4383,7 @@ CHANnel1
 
 ---
 
-### 17.22:MEASure:COUNter:SOURce
+## 17.22:MEASure:COUNter:SOURce
 
 **语法**: `:MEASure:COUNter:SOURce <source>
 :MEASure:COUNter:SOURce?`
@@ -4405,7 +4405,7 @@ CHANnel1
 
 ---
 
-### 17.23:MEASure:COUNter:VALue?
+## 17.23:MEASure:COUNter:VALue?
 
 **语法**: `:MEASure:COUNter:VALue?`
 **描述**: 查询频率计的测量结果。
@@ -4416,7 +4416,7 @@ CHANnel1
 
 ---
 
-### 17.24:MEASure:AMP:TYPE
+## 17.24:MEASure:AMP:TYPE
 
 **语法**: `:MEASure:AMP:TYPE <val>
 :MEASure:AMP:TYPE?`
@@ -4433,7 +4433,7 @@ CHANnel1
 
 ---
 
-### 17.25:MEASure:AMP:MANual:TOP
+## 17.25:MEASure:AMP:MANual:TOP
 
 **语法**: `:MEASure:AMP:MANual:TOP <val>
 :MEASure:AMP:MANual:TOP?`
@@ -4450,7 +4450,7 @@ CHANnel1
 
 ---
 
-### 17.26:MEASure:AMP:MANual:BASE
+## 17.26:MEASure:AMP:MANual:BASE
 
 **语法**: `:MEASure:AMP:MANual:BASE <val>
 :MEASure:AMP:MANual:BASE?`
@@ -4461,8 +4461,8 @@ CHANnel1
 
 ---
 
-## 18 快捷操作命令子系统
-### 17.27:MEASure:CATegory
+# 18 快捷操作命令子系统
+## 17.27:MEASure:CATegory
 
 **语法**: `:MEASure:CATegory <val>
 :MEASure:CATegory?`
@@ -4480,16 +4480,16 @@ CHANnel1
 
 ---
 
-### 18.1:QUICk:OPERation
+## 18.1:QUICk:OPERation
 
 **语法**: `:QUICk:OPERation <type>`
 
 ---
 
-## 19 波形录制命令子系统
+# 19 波形录制命令子系统
 波形录制命令用于设置和查询波形录制模式、帧相关的参数。
 波形录制与播放功能可以将录制的波形进行播放，从而方便用户对波形进行分析。
-### 19.1:RECord:WRECord:ENABle
+## 19.1:RECord:WRECord:ENABle
 
 **语法**: `:RECord:WRECord:ENABle <bool>
 :RECord:WRECord:ENABle?`
@@ -4505,7 +4505,7 @@ CHANnel1
 
 ---
 
-### 19.2:RECord:ENABle
+## 19.2:RECord:ENABle
 
 **语法**: `:RECord:ENABle <bool>
 :RECord:ENABle?`
@@ -4521,7 +4521,7 @@ CHANnel1
 
 ---
 
-### 19.3:RECord:WRECord:OPERate
+## 19.3:RECord:WRECord:OPERate
 
 **语法**: `:RECord:WRECord:OPERate <operate>
 :RECord:WRECord:OPERate?`
@@ -4537,7 +4537,7 @@ CHANnel1
 
 ---
 
-### 19.4:RECord:STARt
+## 19.4:RECord:STARt
 
 **语法**: `:RECord:STARt <bool>
 :RECord:STARt?`
@@ -4553,7 +4553,7 @@ CHANnel1
 
 ---
 
-### 19.5:RECord:WRECord:FRAMes
+## 19.5:RECord:WRECord:FRAMes
 
 **语法**: `:RECord:WRECord:FRAMes <value>
 :RECord:WRECord:FRAMes?`
@@ -4569,7 +4569,7 @@ CHANnel1
 
 ---
 
-### 19.6:RECord:FRAMes
+## 19.6:RECord:FRAMes
 
 **语法**: `:RECord:FRAMes <value>
 :RECord:FRAMes?`
@@ -4585,7 +4585,7 @@ CHANnel1
 
 ---
 
-### 19.7:RECord:WRECord:FRAMes:MAX
+## 19.7:RECord:WRECord:FRAMes:MAX
 
 **语法**: `:RECord:WRECord:FRAMes:MAX`
 **描述**: 设置波形录制录制帧数为最大帧数。
@@ -4596,7 +4596,7 @@ CHANnel1
 
 ---
 
-### 19.8:RECord:WRECord:FMAX?
+## 19.8:RECord:WRECord:FMAX?
 
 **语法**: `:RECord:WRECord:FMAX?`
 **描述**: 查询当前可录制的最大帧数。
@@ -4607,7 +4607,7 @@ CHANnel1
 
 ---
 
-### 19.9:RECord:WRECord:FINTerval
+## 19.9:RECord:WRECord:FINTerval
 
 **语法**: `:RECord:WRECord:FINTerval <interval>
 :RECord:WRECord:FINTerval?`
@@ -4623,7 +4623,7 @@ CHANnel1
 
 ---
 
-### 19.10:RECord:WRECord:PROMpt
+## 19.10:RECord:WRECord:PROMpt
 
 **语法**: `:RECord:WRECord:PROMpt <bool>
 :RECord:WRECord:PROMpt?`
@@ -4639,7 +4639,7 @@ CHANnel1
 
 ---
 
-### 19.11:RECord:WREPlay:FCURrent
+## 19.11:RECord:WREPlay:FCURrent
 
 **语法**: `:RECord:WREPlay:FCURrent <value>
 :RECord:WREPlay:FCURrent?`
@@ -4656,7 +4656,7 @@ CHANnel1
 
 ---
 
-### 19.12:RECord:CURRent
+## 19.12:RECord:CURRent
 
 **语法**: `:RECord:CURRent <value>
 :RECord:CURRent?`
@@ -4673,7 +4673,7 @@ CHANnel1
 
 ---
 
-### 19.13:RECord:WREPlay:FCURrent:TIME?
+## 19.13:RECord:WREPlay:FCURrent:TIME?
 
 **语法**: `:RECord:WREPlay:FCURrent:TIME?`
 **描述**: 查询波形播放时当前帧的时间戳。
@@ -4684,7 +4684,7 @@ CHANnel1
 
 ---
 
-### 19.14:RECord:WREPlay:FSTart
+## 19.14:RECord:WREPlay:FSTart
 
 **语法**: `:RECord:WREPlay:FSTart <start>
 :RECord:WREPlay:FSTart?`
@@ -4700,7 +4700,7 @@ CHANnel1
 
 ---
 
-### 19.15:RECord:WREPlay:FEND
+## 19.15:RECord:WREPlay:FEND
 
 **语法**: `:RECord:WREPlay:FEND <end>
 :RECord:WREPlay:FEND?`
@@ -4716,7 +4716,7 @@ CHANnel1
 
 ---
 
-### 19.16:RECord:WREPlay:FMAX?
+## 19.16:RECord:WREPlay:FMAX?
 
 **语法**: `:RECord:WREPlay:FMAX?`
 **描述**: 查询当前最大可播放的帧数。
@@ -4727,7 +4727,7 @@ CHANnel1
 
 ---
 
-### 19.17:RECord:WREPlay:FINTerval
+## 19.17:RECord:WREPlay:FINTerval
 
 **语法**: `:RECord:WREPlay:FINTerval <interval>
 :RECord:WREPlay:FINTerval?`
@@ -4743,7 +4743,7 @@ CHANnel1
 
 ---
 
-### 19.18:RECord:WREPlay:MODE
+## 19.18:RECord:WREPlay:MODE
 
 **语法**: `:RECord:WREPlay:MODE <mode>
 :RECord:WREPlay:MODE?`
@@ -4759,7 +4759,7 @@ CHANnel1
 
 ---
 
-### 19.19:RECord:WREPlay:DIRection
+## 19.19:RECord:WREPlay:DIRection
 
 **语法**: `:RECord:WREPlay:DIRection <direction>
 :RECord:WREPlay:DIRection?`
@@ -4775,7 +4775,7 @@ CHANnel1
 
 ---
 
-### 19.20:RECord:WREPlay:OPERate
+## 19.20:RECord:WREPlay:OPERate
 
 **语法**: `:RECord:WREPlay:OPERate <operate>
 :RECord:WREPlay:OPERate?`
@@ -4791,7 +4791,7 @@ CHANnel1
 
 ---
 
-### 19.21:RECord:PLAY
+## 19.21:RECord:PLAY
 
 **语法**: `:RECord:PLAY <bool>
 :RECord:PLAY?`
@@ -4807,7 +4807,7 @@ CHANnel1
 
 ---
 
-### 19.22:RECord:WREPlay:BACK
+## 19.22:RECord:WREPlay:BACK
 
 **语法**: `:RECord:WREPlay:BACK`
 **描述**: 手动播放上一帧波形。
@@ -4818,7 +4818,7 @@ CHANnel1
 
 ---
 
-### 19.23:RECord:WREPlay:NEXT
+## 19.23:RECord:WREPlay:NEXT
 
 **语法**: `:RECord:WREPlay:NEXT`
 **描述**: 手动播放下一帧波形。
@@ -4829,8 +4829,8 @@ CHANnel1
 
 ---
 
-## 20 参考波形命令子系统
-### 19.24:RECord:WREPlay:PLAY
+# 20 参考波形命令子系统
+## 19.24:RECord:WREPlay:PLAY
 
 **语法**: `:RECord:WREPlay:PLAY <val>`
 **描述**: 设置手动播放到起始帧或者结束帧。
@@ -4847,7 +4847,7 @@ CHANnel1
 
 ---
 
-### 20.1:REFerence:SOURce
+## 20.1:REFerence:SOURce
 
 **语法**: `:REFerence:SOURce <ref>,<chan>
 :REFerence:SOURce? <ref>`
@@ -4874,7 +4874,7 @@ MATH4。
 
 ---
 
-### 20.2:REFerence:VSCale
+## 20.2:REFerence:VSCale
 
 **语法**: `:REFerence:VSCale <ref>,<scale>
 :REFerence:VSCale? <ref>`
@@ -4891,7 +4891,7 @@ MATH4。
 
 ---
 
-### 20.3:REFerence:VOFFset
+## 20.3:REFerence:VOFFset
 
 **语法**: `:REFerence:VOFFset <ref>,<offset>
 :REFerence:VOFFset? <ref>`
@@ -4909,7 +4909,7 @@ RefVerticalScale) 0V
 
 ---
 
-### 20.4:REFerence:RESet
+## 20.4:REFerence:RESet
 
 **语法**: `:REFerence:RESet <ref>`
 **描述**: 复位指定参考通道。
@@ -4922,7 +4922,7 @@ RefVerticalScale) 0V
 
 ---
 
-### 20.5:REFerence:CURRent
+## 20.5:REFerence:CURRent
 
 **语法**: `:REFerence:CURRent <ref>`
 **描述**: 设置当前参考通道。
@@ -4935,7 +4935,7 @@ RefVerticalScale) 0V
 
 ---
 
-### 20.6:REFerence:SAVE
+## 20.6:REFerence:SAVE
 
 **语法**: `:REFerence:SAVE <ref>`
 **描述**: 将指定参考通道的波形保存到内存，作为参考波形。
@@ -4948,7 +4948,7 @@ RefVerticalScale) 0V
 
 ---
 
-### 20.7:REFerence:COLor
+## 20.7:REFerence:COLor
 
 **语法**: `:REFerence:COLor <ref>, <color>
 :REFerence:COLor? <ref>`
@@ -4966,7 +4966,7 @@ ORANge} -
 
 ---
 
-### 20.8:REFerence:LABel:ENABle
+## 20.8:REFerence:LABel:ENABle
 
 **语法**: `:REFerence:LABel:ENABle <bool>
 :REFerence:LABel:ENABle?`
@@ -4982,7 +4982,7 @@ ORANge} -
 
 ---
 
-### 20.9:REFerence:LABel:CONTent
+## 20.9:REFerence:LABel:CONTent
 
 **语法**: `:REFerence:LABel:CONTent <ref>,<str>
 :REFerence:LABel:CONTent? <ref>`
@@ -5000,10 +5000,10 @@ ORANge} -
 
 ---
 
-## 21 存储功能命令子系统
+# 21 存储功能命令子系统
 用户可将当前示波器的设置、波形、屏幕图像和参数等以多种格式保存到内部存储器或外部
 USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存的文件。
-### 21.1:SAVE:IMAGe:INVert
+## 21.1:SAVE:IMAGe:INVert
 
 **语法**: `:SAVE:IMAGe:INVert <bool>
 :SAVE:IMAGe:INVert?`
@@ -5019,7 +5019,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.2:SAVE:IMAGe:COLor
+## 21.2:SAVE:IMAGe:COLor
 
 **语法**: `:SAVE:IMAGe:COLor <color>
 :SAVE:IMAGe:COLor?`
@@ -5035,7 +5035,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.3:SAVE:IMAGe:FORMat
+## 21.3:SAVE:IMAGe:FORMat
 
 **语法**: `:SAVE:IMAGe:FORMat <format>
 :SAVE:IMAGe:FORMat?`
@@ -5051,7 +5051,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.4:SAVE:IMAGe:HEADer
+## 21.4:SAVE:IMAGe:HEADer
 
 **语法**: `:SAVE:IMAGe:HEADer <bool>
 :SAVE:IMAGe:HEADer?`
@@ -5068,7 +5068,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.5:SAVE:IMAGe:DATA?
+## 21.5:SAVE:IMAGe:DATA?
 
 **语法**: `:SAVE:IMAGe:DATA?`
 **描述**: 查询返回当前显示图像的位图数据流。
@@ -5082,7 +5082,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.6:SAVE:IMAGe
+## 21.6:SAVE:IMAGe
 
 **语法**: `:SAVE:IMAGe <path>`
 **描述**: 将示波器截图以文件形式存储到 path 指定的位置。
@@ -5099,7 +5099,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.7:SAVE:SETup
+## 21.7:SAVE:SETup
 
 **语法**: `:SAVE:SETup <path>`
 **描述**: 将示波器当前设置以文件形式存储到 path 指定的位置。
@@ -5116,7 +5116,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.8:SAVE:WAVeform
+## 21.8:SAVE:WAVeform
 
 **语法**: `:SAVE:WAVeform <path>`
 **描述**: 将示波器屏幕波形数据以文件形式存储到 path 指定的位置。
@@ -5133,7 +5133,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.9:SAVE:MEMory:WAVeform
+## 21.9:SAVE:MEMory:WAVeform
 
 **语法**: `:SAVE:MEMory:WAVeform <path>`
 **描述**: 将示波器内存波形数据以文件形式存储到 path 指定的位置。
@@ -5150,7 +5150,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.10:SAVE:STATus?
+## 21.10:SAVE:STATus?
 
 **语法**: `:SAVE:STATus?`
 **描述**: 查询存储状态。
@@ -5161,7 +5161,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.11:SAVE:OVERlap
+## 21.11:SAVE:OVERlap
 
 **语法**: `:SAVE:OVERlap <bool>
 :SAVE:OVERlap?`
@@ -5178,7 +5178,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.12:SAVE:PREFix
+## 21.12:SAVE:PREFix
 
 **语法**: `:SAVE:PREFix <name>
 :SAVE:PREFix?`
@@ -5194,7 +5194,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.13:SAVe:SMB:SERVerpath
+## 21.13:SAVe:SMB:SERVerpath
 
 **语法**: `:SAVe:SMB:SERVerpath <path>
 :SAVe:SMB:SERVerpath?`
@@ -5210,7 +5210,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.14:SAVe:SMB:USERname
+## 21.14:SAVe:SMB:USERname
 
 **语法**: `:SAVe:SMB:USERname <name>
 :SAVe:SMB:USERname?`
@@ -5226,7 +5226,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.15:SAVe:SMB:PASSword
+## 21.15:SAVe:SMB:PASSword
 
 **语法**: `:SAVe:SMB:PASSword <password>
 :SAVe:SMB:PASSword?`
@@ -5242,7 +5242,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.16:SAVe:SMB:AUToconnect
+## 21.16:SAVe:SMB:AUToconnect
 
 **语法**: `:SAVe:SMB:AUToconnect <bool>
 :SAVe:SMB:AUToconnect?`
@@ -5258,7 +5258,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.17:SAVe:SMB:CONNect
+## 21.17:SAVe:SMB:CONNect
 
 **语法**: `:SAVe:SMB:CONNect`
 **描述**: 配置 SMB 文件共享连接。
@@ -5269,7 +5269,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.18:SAVe:SMB:DISConnect
+## 21.18:SAVe:SMB:DISConnect
 
 **语法**: `:SAVe:SMB:DISConnect`
 **描述**: 配置 SMB 文件共享断开。
@@ -5280,7 +5280,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 21.19:SAVe:SMB:CONState?
+## 21.19:SAVe:SMB:CONState?
 
 **语法**: `:SAVe:SMB:CONState?`
 **描述**: 查询 SMB 文件共享连接状态。
@@ -5289,8 +5289,8 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-## 22 搜索命令子系统
-### 21.20:LOAD:SETup
+# 22 搜索命令子系统
+## 21.20:LOAD:SETup
 
 **语法**: `:LOAD:SETup <path>`
 **描述**: 从 path 指定的位置加载示波器的设置文件。
@@ -5305,7 +5305,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 22.1:SEARch:COUNt?
+## 22.1:SEARch:COUNt?
 
 **语法**: `:SEARch:COUNt?`
 **描述**: 查询搜索事件总数。
@@ -5316,7 +5316,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 22.2:SEARch:STATe
+## 22.2:SEARch:STATe
 
 **语法**: `:SEARch:STATe <bool>
 :SEARch:STATe?`
@@ -5331,7 +5331,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 22.3:SEARch:MODE
+## 22.3:SEARch:MODE
 
 **语法**: `:SEARch:MODE <value>
 :SEARch:MODE?`
@@ -5348,7 +5348,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 22.4:SEARch:EVENt
+## 22.4:SEARch:EVENt
 
 **语法**: `:SEARch:EVENt <value>
 :SEARch:EVENt?`
@@ -5364,7 +5364,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 22.5:SEARch:VALue?
+## 22.5:SEARch:VALue?
 
 **语法**: `:SEARch:VALue? <x>`
 **描述**: 查询标记号为 x 处的时间位置。
@@ -5377,7 +5377,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 22.6:SEARch:EDGE:SLOPe
+## 22.6:SEARch:EDGE:SLOPe
 
 **语法**: `:SEARch:EDGE:SLOPe <slope>
 :SEARch:EDGE:SLOPe?`
@@ -5395,7 +5395,7 @@ USB 存储设备（如 U 盘）中，并可以在需要时重新加载已保存�
 
 ---
 
-### 22.7:SEARch:EDGE:SOURce
+## 22.7:SEARch:EDGE:SOURce
 
 **语法**: `:SEARch:EDGE:SOURce <source>
 :SEARch:EDGE:SOURce?`
@@ -5412,7 +5412,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 22.8:SEARch:EDGE:THReshold
+## 22.8:SEARch:EDGE:THReshold
 
 **语法**: `:SEARch:EDGE:THReshold <thre>
 :SEARch:EDGE:THReshold?`
@@ -5429,7 +5429,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 22.9:SEARch:PULSe:POLarity
+## 22.9:SEARch:PULSe:POLarity
 
 **语法**: `:SEARch:PULSe:POLarity <polarity>
 :SEARch:PULSe:POLarity?`
@@ -5445,7 +5445,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 22.10:SEARch:PULSe:QUALifier
+## 22.10:SEARch:PULSe:QUALifier
 
 **语法**: `:SEARch:PULSe:QUALifier <qualifier>
 :SEARch:PULSe:QUALifier?`
@@ -5463,7 +5463,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 22.11:SEARch:PULSe:SOURce
+## 22.11:SEARch:PULSe:SOURce
 
 **语法**: `:SEARch:PULSe:SOURce <source>
 :SEARch:PULSe:SOURce?`
@@ -5480,7 +5480,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 22.12:SEARch:PULSe:UWIDth
+## 22.12:SEARch:PULSe:UWIDth
 
 **语法**: `:SEARch:PULSe:UWIDth <width>
 :SEARch:PULSe:UWIDth?`
@@ -5496,7 +5496,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 22.13:SEARch:PULSe:LWIDth
+## 22.13:SEARch:PULSe:LWIDth
 
 **语法**: `:SEARch:PULSe:LWIDth <width>
 :SEARch:PULSe:LWIDth?`
@@ -5512,8 +5512,8 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-## 23 导航命令子系统
-### 22.14:SEARch:PULSe:THReshold
+# 23 导航命令子系统
+## 22.14:SEARch:PULSe:THReshold
 
 **语法**: `:SEARch:PULSe:THReshold <thre>
 :SEARch:PULSe:THReshold?`
@@ -5531,7 +5531,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.1:NAVigate:ENABle
+## 23.1:NAVigate:ENABle
 
 **语法**: `:NAVigate:ENABle <bool>
 :NAVigate:ENABle?`
@@ -5547,7 +5547,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.2:NAVigate:MODE
+## 23.2:NAVigate:MODE
 
 **语法**: `:NAVigate:MODE <mode>
 :NAVigate:MODE?`
@@ -5565,7 +5565,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.3:NAVigate:TIME:SPEed
+## 23.3:NAVigate:TIME:SPEed
 
 **语法**: `:NAVigate:TIME:SPEed <speed>
 :NAVigate:TIME:SPEed?`
@@ -5583,7 +5583,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.4:NAVigate:TIME:PLAY
+## 23.4:NAVigate:TIME:PLAY
 
 **语法**: `:NAVigate:TIME:PLAY <bool>
 :NAVigate:TIME:PLAY?`
@@ -5600,7 +5600,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.5:NAVigate:TIME:END
+## 23.5:NAVigate:TIME:END
 
 **语法**: `:NAVigate:TIME:END`
 **描述**: 设置时间导航模式波形播放到最右端（末尾）。
@@ -5611,7 +5611,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.6:NAVigate:TIME:STARt
+## 23.6:NAVigate:TIME:STARt
 
 **语法**: `:NAVigate:TIME:STARt`
 **描述**: 设置时间导航模式波形播放到最左端（起始）。
@@ -5622,7 +5622,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.7:NAVigate:TIME:NEXT
+## 23.7:NAVigate:TIME:NEXT
 
 **语法**: `:NAVigate:TIME:NEXT`
 **描述**: 设置时间导航模式波形向右偏移。
@@ -5633,7 +5633,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.8:NAVigate:TIME:BACK
+## 23.8:NAVigate:TIME:BACK
 
 **语法**: `:NAVigate:TIME:BACK`
 **描述**: 设置时间导航模式波形向左偏移。
@@ -5644,7 +5644,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.9:NAVigate:SEARch:END
+## 23.9:NAVigate:SEARch:END
 
 **语法**: `:NAVigate:SEARch:END`
 **描述**: 设置事件导航指向最后一个事件。
@@ -5655,7 +5655,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.10:NAVigate:SEARch:STARt
+## 23.10:NAVigate:SEARch:STARt
 
 **语法**: `:NAVigate:SEARch:STARt`
 **描述**: 设置事件导航指向第一个事件。
@@ -5666,7 +5666,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.11:NAVigate:SEARch:NEXT
+## 23.11:NAVigate:SEARch:NEXT
 
 **语法**: `:NAVigate:SEARch:NEXT`
 **描述**: 设置事件导航指向下一个事件。
@@ -5677,7 +5677,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.12:NAVigate:SEARch:BACK
+## 23.12:NAVigate:SEARch:BACK
 
 **语法**: `:NAVigate:SEARch:BACK`
 **描述**: 设置事件导航指向上一个事件。
@@ -5688,7 +5688,7 @@ VerticalScale-OFFSet) 0.000V
 
 ---
 
-### 23.13:NAVigate:FRAMe:DISPlay:MODE
+## 23.13:NAVigate:FRAMe:DISPlay:MODE
 
 **语法**: `:NAVigate:FRAMe:DISPlay:MODE <mode>
 :NAVigate:FRAMe:DISPlay:MODE?`
@@ -5709,7 +5709,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 23.14:NAVigate:FRAMe:END:FRAMe
+## 23.14:NAVigate:FRAMe:END:FRAMe
 
 **语法**: `:NAVigate:FRAMe:END:FRAMe <frame>
 :NAVigate:FRAMe:END:FRAMe?`
@@ -5728,7 +5728,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 23.15:NAVigate:FRAMe:STARt:FRAMe
+## 23.15:NAVigate:FRAMe:STARt:FRAMe
 
 **语法**: `:NAVigate:FRAMe:STARt:FRAMe <frame>
 :NAVigate:FRAMe:STARt:FRAMe?`
@@ -5747,7 +5747,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 23.16:NAVigate:FRAMe:END
+## 23.16:NAVigate:FRAMe:END
 
 **语法**: `:NAVigate:FRAMe:END`
 **描述**: 设置帧段导航播放到最后一页。
@@ -5758,7 +5758,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 23.17:NAVigate:FRAMe:STARt
+## 23.17:NAVigate:FRAMe:STARt
 
 **语法**: `:NAVigate:FRAMe:STARt`
 **描述**: 设置帧段导航播放到第一页。
@@ -5769,7 +5769,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 23.18:NAVigate:FRAMe:NEXT
+## 23.18:NAVigate:FRAMe:NEXT
 
 **语法**: `:NAVigate:FRAMe:NEXT`
 **描述**: 设置帧段导航播放到下一页。
@@ -5780,7 +5780,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 23.19:NAVigate:FRAMe:BACK
+## 23.19:NAVigate:FRAMe:BACK
 
 **语法**: `:NAVigate:FRAMe:BACK`
 **描述**: 设置帧段导航播放到上一页。
@@ -5791,7 +5791,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 23.20:NAVigate:FRAMe:PLAY
+## 23.20:NAVigate:FRAMe:PLAY
 
 **语法**: `:NAVigate:FRAMe:PLAY <bool>
 :NAVigate:FRAMe:PLAY?`
@@ -5800,9 +5800,9 @@ PERSpective|MOSaic} -
 
 ---
 
-## 24 辅助命令子系统
+# 24 辅助命令子系统
 辅助命令用于设置声音、语言等系统相关的功能。
-### 24.1:SYSTem:AOUTput
+## 24.1:SYSTem:AOUTput
 
 **语法**: `:SYSTem:AOUTput <auxoutput>
 :SYSTem:AOUTput?`
@@ -5819,7 +5819,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.2:SYSTem:BEEPer
+## 24.2:SYSTem:BEEPer
 
 **语法**: `:SYSTem:BEEPer <bool>
 :SYSTem:BEEPer?`
@@ -5835,7 +5835,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.3:SYSTem:ERRor[:NEXT]?
+## 24.3:SYSTem:ERRor[:NEXT]?
 
 **语法**: `:SYSTem:ERRor[:NEXT]?`
 **描述**: 查询并删除系统的错误队列消息。
@@ -5846,7 +5846,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.4:SYSTem:PON
+## 24.4:SYSTem:PON
 
 **语法**: `:SYSTem:PON <power_on>
 :SYSTem:PON?`
@@ -5862,7 +5862,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.5:SYSTem:PSTatus
+## 24.5:SYSTem:PSTatus
 
 **语法**: `:SYSTem:PSTatus <sat>
 :SYSTem:PSTatus?`
@@ -5879,7 +5879,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.6:SYSTem:RAMount?
+## 24.6:SYSTem:RAMount?
 
 **语法**: `:SYSTem:RAMount?`
 **描述**: 查询当前仪器的模拟通道数。
@@ -5890,7 +5890,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.7:SYSTem:RESet
+## 24.7:SYSTem:RESet
 
 **语法**: `:SYSTem:RESet`
 **描述**: 使系统重新上电。
@@ -5901,7 +5901,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.8:SYSTem:SETup
+## 24.8:SYSTem:SETup
 
 **语法**: `:SYSTem:SETup <setup_data>
 :SYSTem:SETup?`
@@ -5922,7 +5922,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.9:SYSTem:LOCKed
+## 24.9:SYSTem:LOCKed
 
 **语法**: `:SYSTem:LOCKed <bool>
 :SYSTem:LOCKed?`
@@ -5938,7 +5938,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.10:SYSTem:MODules?
+## 24.10:SYSTem:MODules?
 
 **语法**: `:SYSTem:MODules?`
 **描述**: 查询硬件模块。
@@ -5949,7 +5949,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.11:SYSTem:AUToscale
+## 24.11:SYSTem:AUToscale
 
 **语法**: `:SYSTem:AUToscale <bool>
 :SYSTem:AUToscale?`
@@ -5966,7 +5966,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.12:SYSTem:GAMount?
+## 24.12:SYSTem:GAMount?
 
 **语法**: `:SYSTem:GAMount?`
 **描述**: 查询仪器屏幕水平方向的网格数。
@@ -5977,7 +5977,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.13:SYSTem:VERSion?
+## 24.13:SYSTem:VERSion?
 
 **语法**: `:SYSTem:VERSion?`
 **描述**: 查询系统使用的 SCPI 版本号。
@@ -5988,7 +5988,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.14:SYSTem:DGSTatus?
+## 24.14:SYSTem:DGSTatus?
 
 **语法**: `:SYSTem:DGSTatus?`
 **描述**: 查询是否有 DG 模块。
@@ -5999,18 +5999,18 @@ PERSpective|MOSaic} -
 
 ---
 
-### 24.15:SYSTem:KEYBOARDCheck?
+## 24.15:SYSTem:KEYBOARDCheck?
 
 **语法**: `:SYSTem:KEYBOARDCheck?`
 
 ---
 
-## 25 函数/任意波形发生器命令子系统
+# 25 函数/任意波形发生器命令子系统
 :SOURce 命令系统用于 AFG 功能的相关设置。
 示波器标配内置 25 MHz 的函数/任意波形发生器（AFG），将函数/任意波形发生器与示波器
 合二为一。
 仅 DHO914S 和 DHO924S 型号支持此命令。
-### 25.1:SOURce:OUTPut:STATe
+## 25.1:SOURce:OUTPut:STATe
 
 **语法**: `:SOURce:OUTPut:STATe <bool>
 :SOURce:OUTPut:STATe?`
@@ -6026,7 +6026,7 @@ PERSpective|MOSaic} -
 
 ---
 
-### 25.2:SOURce:FUNCtion
+## 25.2:SOURce:FUNCtion
 
 **语法**: `:SOURce:FUNCtion <wave>
 :SOURce:FUNCtion?`
@@ -6045,7 +6045,7 @@ NOISe|ARB} SINusoid
 
 ---
 
-### 25.3:SOURce:FREQuency
+## 25.3:SOURce:FREQuency
 
 **语法**: `:SOURce:FREQuency <freq>
 :SOURce:FREQuency?`
@@ -6065,7 +6065,7 @@ NOISe|ARB} SINusoid
 
 ---
 
-### 25.4:SOURce:PHASe
+## 25.4:SOURce:PHASe
 
 **语法**: `:SOURce:PHASe <phase>
 :SOURce:PHASe?`
@@ -6081,7 +6081,7 @@ NOISe|ARB} SINusoid
 
 ---
 
-### 25.5:SOURce:FUNCtion:RAMP:SYMMetry
+## 25.5:SOURce:FUNCtion:RAMP:SYMMetry
 
 **语法**: `:SOURce:FUNCtion:RAMP:SYMMetry <symm>
 :SOURce:FUNCtion:RAMP:SYMMetry?`
@@ -6100,7 +6100,7 @@ t 对称性=t/T*100%
 
 ---
 
-### 25.6:SOURce:FUNCtion:SQUare:DUTY
+## 25.6:SOURce:FUNCtion:SQUare:DUTY
 
 **语法**: `:SOURce:FUNCtion:SQUare:DUTY <percent>
 :SOURce:FUNCtion:SQUare:DUTY?`
@@ -6116,7 +6116,7 @@ t 对称性=t/T*100%
 
 ---
 
-### 25.7:SOURce:VOLTage:AMPLitude
+## 25.7:SOURce:VOLTage:AMPLitude
 
 **语法**: `:SOURce:VOLTage:AMPLitude <amp>
 :SOURce:VOLTage:AMPLitude`
@@ -6134,7 +6134,7 @@ t 对称性=t/T*100%
 
 ---
 
-### 25.8:SOURce:VOLTage:OFFSet
+## 25.8:SOURce:VOLTage:OFFSet
 
 **语法**: `:SOURce:VOLTage:OFFSet <offset>
 :SOURce:VOLTage:OFFSet?`
@@ -6152,7 +6152,7 @@ t 对称性=t/T*100%
 
 ---
 
-### 25.9:SOURce:MOD:STATe
+## 25.9:SOURce:MOD:STATe
 
 **语法**: `:SOURce:MOD:STATe <bool>
 :SOURce:MOD:STATe?`
@@ -6168,7 +6168,7 @@ t 对称性=t/T*100%
 
 ---
 
-### 25.10:SOURce:MOD:TYPe
+## 25.10:SOURce:MOD:TYPe
 
 **语法**: `:SOURce:MOD:TYPe <type>
 :SOURce:MOD:TYPe?`
@@ -6186,7 +6186,7 @@ t 对称性=t/T*100%
 
 ---
 
-### 25.11:SOURce:MOD:AM:DEPTh
+## 25.11:SOURce:MOD:AM:DEPTh
 
 **语法**: `:SOURce:MOD:AM:DEPTh <depth>
 :SOURce:MOD:AM:DEPTh?`
@@ -6205,7 +6205,7 @@ t 对称性=t/T*100%
 
 ---
 
-### 25.12:SOURce:MOD:AM:INTernal:FREQuency
+## 25.12:SOURce:MOD:AM:INTernal:FREQuency
 
 **语法**: `:SOURce:MOD:AM:INTernal:FREQuency <freq>
 :SOURce:MOD:AM:INTernal:FREQuency?`
@@ -6222,7 +6222,7 @@ t 对称性=t/T*100%
 
 ---
 
-### 25.13:SOURce:MOD:AM:INTernal:FUNCtion
+## 25.13:SOURce:MOD:AM:INTernal:FUNCtion
 
 **语法**: `:SOURce:MOD:AM:INTernal:FUNCtion <function>
 :SOURce:MOD:AM:INTernal:FUNCtion?`
@@ -6244,7 +6244,7 @@ UPRamp|DNRamp|NOISe} SINusoid
 
 ---
 
-### 25.14:SOURce:MOD:FM:DEViation
+## 25.14:SOURce:MOD:FM:DEViation
 
 **语法**: `:SOURce:MOD:FM:DEViation <deviation>
 :SOURce:MOD:FM:DEViation?`
@@ -6262,7 +6262,7 @@ UPRamp|DNRamp|NOISe} SINusoid
 
 ---
 
-### 25.15:SOURce:MOD:FM:INTernal:FREQuency
+## 25.15:SOURce:MOD:FM:INTernal:FREQuency
 
 **语法**: `:SOURce:MOD:FM:INTernal:FREQuency <freq>
 :SOURce:MOD:FM:INTernal:FREQuency?`
@@ -6279,7 +6279,7 @@ UPRamp|DNRamp|NOISe} SINusoid
 
 ---
 
-### 25.16:SOURce:MOD:FM:INTernal:FUNCtion
+## 25.16:SOURce:MOD:FM:INTernal:FUNCtion
 
 **语法**: `:SOURce:MOD:FM:INTernal:FUNCtion <function>
 :SOURce:MOD:FM:INTernal:FUNCtion?`
@@ -6301,7 +6301,7 @@ UPRamp|DNRamp|NOISe} SINusoid
 
 ---
 
-### 25.17:SOURce:MOD:PM:DEViation
+## 25.17:SOURce:MOD:PM:DEViation
 
 **语法**: `:SOURce:MOD:PM:DEViation <deviation>
 :SOURce:MOD:PM:DEViation?`
@@ -6317,7 +6317,7 @@ UPRamp|DNRamp|NOISe} SINusoid
 
 ---
 
-### 25.18:SOURce:MOD:PM:INTernal:FREQuency
+## 25.18:SOURce:MOD:PM:INTernal:FREQuency
 
 **语法**: `:SOURce:MOD:PM:INTernal:FREQuency <freq>
 :SOURce:MOD:PM:INTernal:FREQuency?`
@@ -6331,8 +6331,8 @@ UPRamp|DNRamp|NOISe} SINusoid
 
 ---
 
-## 26 时基命令子系统
-### 25.19:SOURce:MOD:PM:INTernal:FUNCtion
+# 26 时基命令子系统
+## 25.19:SOURce:MOD:PM:INTernal:FUNCtion
 
 **语法**: `:SOURce:MOD:PM:INTernal:FUNCtion <function>
 :SOURce:MOD:PM:INTernal:FUNCtion?`
@@ -6365,7 +6365,7 @@ XY 模式、平均（Avg）。
 
 ---
 
-### 26.1:TIMebase:DELay:ENABle
+## 26.1:TIMebase:DELay:ENABle
 
 **语法**: `:TIMebase:DELay:ENABle <bool>
 :TIMebase:DELay:ENABle?`
@@ -6381,7 +6381,7 @@ XY 模式、平均（Avg）。
 
 ---
 
-### 26.2:TIMebase:DELay:OFFSet
+## 26.2:TIMebase:DELay:OFFSet
 
 **语法**: `:TIMebase:DELay:OFFSet <offset>
 :TIMebase:DELay:OFFSet?`
@@ -6400,7 +6400,7 @@ DelayScale 为示波器当前的延迟时基档位。
 
 ---
 
-### 26.3:TIMebase:DELay:SCALe
+## 26.3:TIMebase:DELay:SCALe
 
 **语法**: `:TIMebase:DELay:SCALe <scale>
 :TIMebase:DELay:SCALe?`
@@ -6418,7 +6418,7 @@ DelayScale 为示波器当前的延迟时基档位。
 
 ---
 
-### 26.4:TIMebase[:MAIN][:OFFSet]
+## 26.4:TIMebase[:MAIN][:OFFSet]
 
 **语法**: `:TIMebase[:MAIN][:OFFSet] <offset>
 :TIMebase[:MAIN][:OFFSet]?`
@@ -6442,7 +6442,7 @@ MainScale 为示波器当前的主时基档位。
 
 ---
 
-### 26.5:TIMebase[:MAIN]:SCALe
+## 26.5:TIMebase[:MAIN]:SCALe
 
 **语法**: `:TIMebase[:MAIN]:SCALe <scale>
 :TIMebase[:MAIN]:SCALe?`
@@ -6458,7 +6458,7 @@ MainScale 为示波器当前的主时基档位。
 
 ---
 
-### 26.6:TIMebase:MODE
+## 26.6:TIMebase:MODE
 
 **语法**: `:TIMebase:MODE <mode>
 :TIMebase:MODE?`
@@ -6476,7 +6476,7 @@ MainScale 为示波器当前的主时基档位。
 
 ---
 
-### 26.7:TIMebase:HREFerence:MODE
+## 26.7:TIMebase:HREFerence:MODE
 
 **语法**: `:TIMebase:HREFerence:MODE <href>
 :TIMebase:HREFerence:MODE?`
@@ -6496,7 +6496,7 @@ MainScale 为示波器当前的主时基档位。
 
 ---
 
-### 26.8:TIMebase:HREFerence:POSition
+## 26.8:TIMebase:HREFerence:POSition
 
 **语法**: `:TIMebase:HREFerence:POSition <pos>
 :TIMebase:HREFerence:POSition?`
@@ -6512,7 +6512,7 @@ MainScale 为示波器当前的主时基档位。
 
 ---
 
-### 26.9:TIMebase:VERNier
+## 26.9:TIMebase:VERNier
 
 **语法**: `:TIMebase:VERNier <bool>
 :TIMebase:VERNier?`
@@ -6528,7 +6528,7 @@ MainScale 为示波器当前的主时基档位。
 
 ---
 
-### 26.10:TIMebase:HOTKeys
+## 26.10:TIMebase:HOTKeys
 
 **语法**: `:TIMebase:HOTKeys <action>`
 **描述**: 设置运行状态。
@@ -6543,7 +6543,7 @@ MainScale 为示波器当前的主时基档位。
 
 ---
 
-### 26.11:TIMebase:ROLL
+## 26.11:TIMebase:ROLL
 
 **语法**: `:TIMebase:ROLL <value>
 :TIMebase:ROLL?`
@@ -6560,7 +6560,7 @@ MainScale 为示波器当前的主时基档位。
 
 ---
 
-### 26.12:TIMebase:XY:ENABle
+## 26.12:TIMebase:XY:ENABle
 
 **语法**: `:TIMebase:XY:ENABle <bool>
 :TIMebase:XY:ENABle?`
@@ -6576,7 +6576,7 @@ MainScale 为示波器当前的主时基档位。
 
 ---
 
-### 26.13:TIMebase:XY:X
+## 26.13:TIMebase:XY:X
 
 **语法**: `:TIMebase:XY:X <s>
 :TIMebase:XY:X?`
@@ -6593,7 +6593,7 @@ CHANnel3|CHANnel4} CHANnel1
 
 ---
 
-### 26.14:TIMebase:XY:Y
+## 26.14:TIMebase:XY:Y
 
 **语法**: `:TIMebase:XY:Y <s>
 :TIMebase:XY:Y?`
@@ -6610,7 +6610,7 @@ CHANnel3|CHANnel4} CHANnel2
 
 ---
 
-### 26.15:TIMebase:XY:Z
+## 26.15:TIMebase:XY:Z
 
 **语法**: `:TIMebase:XY:Z <s>
 :TIMebase:XY:Z?`
@@ -6627,7 +6627,7 @@ CHANnel3|CHANnel4|NONE} -
 
 ---
 
-### 26.16:TIMebase:XY:GRID
+## 26.16:TIMebase:XY:GRID
 
 **语法**: `:TIMebase:XY:GRID <grid>
 :TIMebase:XY:GRID?`
@@ -6636,9 +6636,9 @@ CHANnel3|CHANnel4|NONE} -
 
 ---
 
-## 27 触发命令子系统
+# 27 触发命令子系统
 触发命令用于设置触发源类型、触发输入边沿类型和触发延时以及产生一次触发事件。
-### 27.1:TRIGger:MODE
+## 27.1:TRIGger:MODE
 
 **语法**: `:TRIGger:MODE <mode>
 :TRIGger:MODE?`
@@ -6660,7 +6660,7 @@ EDGE
 
 ---
 
-### 27.2:TRIGger:COUPling
+## 27.2:TRIGger:COUPling
 
 **语法**: `:TRIGger:COUPling <couple>
 :TRIGger:COUPling?`
@@ -6680,7 +6680,7 @@ EDGE
 
 ---
 
-### 27.3:TRIGger:STATus?
+## 27.3:TRIGger:STATus?
 
 **语法**: `:TRIGger:STATus?`
 **描述**: 查询当前的触发状态。
@@ -6691,7 +6691,7 @@ EDGE
 
 ---
 
-### 27.4:TRIGger:SWEep
+## 27.4:TRIGger:SWEep
 
 **语法**: `:TRIGger:SWEep <sweep>
 :TRIGger:SWEep?`
@@ -6709,7 +6709,7 @@ EDGE
 
 ---
 
-### 27.5:TRIGger:HOLDoff
+## 27.5:TRIGger:HOLDoff
 
 **语法**: `:TRIGger:HOLDoff <value>
 :TRIGger:HOLDoff?`
@@ -6728,7 +6728,7 @@ LIN 时，无此项设置。
 
 ---
 
-### 27.6:TRIGger:NREJect
+## 27.6:TRIGger:NREJect
 
 **语法**: `:TRIGger:NREJect <bool>
 :TRIGger:NREJect?`
@@ -6745,7 +6745,7 @@ LIN 时，无此项设置。
 
 ---
 
-### 27.7:TRIGger:POSition?
+## 27.7:TRIGger:POSition?
 
 **语法**: `:TRIGger:POSition?`
 **描述**: 查询波形触发位置在内存中的对应位置。
@@ -6756,7 +6756,7 @@ LIN 时，无此项设置。
 
 ---
 
-### 27.8:TRIGger:EDGE
+## 27.8:TRIGger:EDGE
 
 **语法**: `:TRIGger:EDGE:SOURce <source>
 :TRIGger:EDGE:SOURce?
@@ -6794,16 +6794,16 @@ OFFSet)
 
 **举例**: :TRIGger:EDGE:SOURce CHANnel1 /* 设置触发源为 CHANnel1*/
 :TRIGger:EDGE:SOURce? /* 查询返回 CHAN1*/
-### 27.8.2:TRIGger:EDGE:SLOPe
+## 27.8.2:TRIGger:EDGE:SLOPe
 :TRIGger:EDGE:SLOPe NEGative /* 设置边沿类型为下降沿*/
 :TRIGger:EDGE:SLOPe? /* 查询返回 NEG*/
-### 27.8.3:TRIGger:EDGE:LEVel
+## 27.8.3:TRIGger:EDGE:LEVel
 :TRIGger:EDGE:LEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:EDGE:LEVel? /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.9:TRIGger:PULSe
+## 27.9:TRIGger:PULSe
 
 **语法**: `:TRIGger:PULSe:SOURce <source>
 :TRIGger:PULSe:SOURce?
@@ -6858,25 +6858,25 @@ OFFSet)
 
 **举例**: :TRIGger:PULSe:SOURce CHANnel1 /* 将触发源设置为 CHANnel1*/
 :TRIGger:PULSe:SOURce? /* 查询返回 CHAN1*/
-### 27.9.2:TRIGger:PULSe:POLarity
+## 27.9.2:TRIGger:PULSe:POLarity
 :TRIGger:PULSe:POLarity NEGative /* 设置脉宽触发的极性为 NEGative*/
 :TRIGger:PULSe:POLarity? /* 查询返回 NEG*/
-### 27.9.3:TRIGger:PULSe:WHEN
+## 27.9.3:TRIGger:PULSe:WHEN
 :TRIGger:PULSe:WHEN LESS /* 设置触发条件为 LESS*/
 :TRIGger:PULSe:WHEN? /* 查询返回 LESS*/
-### 27.9.4:TRIGger:PULSe:UWIDth
+## 27.9.4:TRIGger:PULSe:UWIDth
 :TRIGger:PULSe:UWIDth 0.000003 /* 设置脉宽上限值为 3μs*/
 :TRIGger:PULSe:UWIDth? /* 查询返回 3.000000E-6*/
-### 27.9.5:TRIGger:PULSe:LWIDth
+## 27.9.5:TRIGger:PULSe:LWIDth
 :TRIGger:PULSe:LWIDth 0.000003 /* 设置脉宽下限值为 3μs*/
 :TRIGger:PULSe:LWIDth? /* 查询返回 3.000000E-6*/
-### 27.9.6:TRIGger:PULSe:LEVel
+## 27.9.6:TRIGger:PULSe:LEVel
 :TRIGger:PULSe:LEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:PULSe:LEVel? /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.10:TRIGger:SLOPe
+## 27.10:TRIGger:SLOPe
 
 **语法**: `:TRIGger:SLOPe:SOURce <channel>
 :TRIGger:SLOPe:SOURce?
@@ -6929,33 +6929,33 @@ VerticalScale-OFFSet) 0V
 **返回格式**: 查询返回 CHAN1、CHAN2、CHAN3 或 CHAN4。查询返回 POS 或 NEG。查询返回 GRE、LESS 或 GLES。查询以科学计数形式返回时间上限值。查询以科学计数形式返回时间下限值。查询返回 TA、TB 或 TAB。查询以科学计数形式返回触发电平上限。查询以科学计数形式返回触发电平下限。
 **举例**: :TRIGger:SLOPe:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:SLOPe:SOURce? /* 查询返回 CHAN2*/
-### 27.10.2:TRIGger:SLOPe:POLarity
+## 27.10.2:TRIGger:SLOPe:POLarity
 :TRIGger:SLOPe:POLarity POSitive   /* 设置斜率触发的极性为 POSitive*/
 :TRIGger:SLOPe:POLarity?  /* 查询返回 POS*/
-### 27.10.3:TRIGger:SLOPe:WHEN
+## 27.10.3:TRIGger:SLOPe:WHEN
 :TRIGger:SLOPe:WHEN LESS /* 将触发条件设置为 LESS*/
 :TRIGger:SLOPe:WHEN?  /* 查询返回 LESS*/
 
-### 27.10.4:TRIGger:SLOPe:TUPPer
+## 27.10.4:TRIGger:SLOPe:TUPPer
 :TRIGger:SLOPe:TUPPer 0.000003  /* 设置时间上限值为 3μs*/
 :TRIGger:SLOPe:TUPPer?  /* 查询返回 3.000000E-6*/
-### 27.10.5:TRIGger:SLOPe:TLOWer
+## 27.10.5:TRIGger:SLOPe:TLOWer
 :TRIGger:SLOPe:TLOWer 0.000000020 /* 设置时间下限值为 20ns*/
 :TRIGger:SLOPe:TLOWer?  /* 查询返回 2.000000E-8*/
-### 27.10.6:TRIGger:SLOPe:WINDow
+## 27.10.6:TRIGger:SLOPe:WINDow
 :TRIGger:SLOPe:WINDow TB /* 将垂直窗类型设置为 TB*/
 :TRIGger:SLOPe:WINDow? /* 查询返回 TB*/
 
-### 27.10.7:TRIGger:SLOPe:ALEVel
+## 27.10.7:TRIGger:SLOPe:ALEVel
 :TRIGger:SLOPe:ALEVel 0.16  /* 设置触发电平上限为 160mV*/
 :TRIGger:SLOPe:ALEVel?  /* 查询返回 1.600000E-1*/
-### 27.10.8:TRIGger:SLOPe:BLEVel
+## 27.10.8:TRIGger:SLOPe:BLEVel
 :TRIGger:SLOPe:BLEVel 0.16 /* 设置触发电平下限为 160mV*/
 :TRIGger:SLOPe:BLEVel?  /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.11:TRIGger:VIDeo
+## 27.11:TRIGger:VIDeo
 
 **语法**: `:TRIGger:VIDeo:SOURce <source>
 :TRIGger:VIDeo:SOURce?
@@ -7043,25 +7043,25 @@ NTSC 30 隔行扫描 525
 
 **举例**: :TRIGger:VIDeo:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:VIDeo:SOURce? /* 查询返回 CHAN2*/
-### 27.11.2:TRIGger:VIDeo:POLarity
+## 27.11.2:TRIGger:VIDeo:POLarity
 :TRIGger:VIDeo:POLarity NEGative /* 将视频极性设置为负极性*/
 :TRIGger:VIDeo:POLarity? /* 查询返回 NEG*/
-### 27.11.3:TRIGger:VIDeo:MODE
+## 27.11.3:TRIGger:VIDeo:MODE
 :TRIGger:VIDeo:MODE ODDField /* 将同步类型设置为奇数场*/
 :TRIGger:VIDeo:MODE? /* 查询返回 ODDF*/
-### 27.11.4:TRIGger:VIDeo:LINE
+## 27.11.4:TRIGger:VIDeo:LINE
 :TRIGger:VIDeo:LINE 100 /* 将行号设置为 100*/
 :TRIGger:VIDeo:LINE? /* 查询返回 100*/
-### 27.11.5:TRIGger:VIDeo:STANdard
+## 27.11.5:TRIGger:VIDeo:STANdard
 :TRIGger:VIDeo:STANdard NTSC /* 设置 NTSC 视频标准*/
 :TRIGger:VIDeo:STANdard? /* 查询返回 NTSC*/
-### 27.11.6:TRIGger:VIDeo:LEVel
+## 27.11.6:TRIGger:VIDeo:LEVel
 :TRIGger:VIDeo:LEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:VIDeo:LEVel? /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.12:TRIGger:PATTern
+## 27.12:TRIGger:PATTern
 
 **语法**: `:TRIGger:PATTern:PATTern <pch1>[,<pch2>[,<pch3>[,<pch4>]]]
 :TRIGger:PATTern:PATTern?
@@ -7105,17 +7105,17 @@ OFFSet)
 
 :TRIGger:PATTern:PATTern H,R,L,X /* 设置 CHANnel1 至 CHANnel4 的码型为H,R,L,X*/
 :TRIGger:PATTern:PATTern? /* 查询返回 H,R,L,X*/
-### 27.12.2:TRIGger:PATTern:SOURce
+## 27.12.2:TRIGger:PATTern:SOURce
 :TRIGger:PATTern:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:PATTern:SOURce?  /* 查询返回 CHAN2*/
-### 27.12.3:TRIGger:PATTern:LEVel
+## 27.12.3:TRIGger:PATTern:LEVel
 :TRIGger:PATTern:LEVel CHANnel2,0.16 /* 将 CHANnel2 的触发电平设置为
 160mV*/
 :TRIGger:PATTern:LEVel? CHANnel2 /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.13:TRIGger:DURation
+## 27.13:TRIGger:DURation
 
 **语法**: `:TRIGger:DURation:SOURce <source>
 :TRIGger:DURation:SOURce?
@@ -7179,27 +7179,27 @@ OFFSet)
 **举例**: :TRIGger:DURation:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:DURation:SOURce? /* 查询返回 CHAN2*/
 
-### 27.13.2:TRIGger:DURation:TYPE
+## 27.13.2:TRIGger:DURation:TYPE
 :TRIGger:DURation:TYPE L,X,H,L /* 设置 CHANnel1 至 CHANnel4 的码型为
 L,X,H,L*/
 :TRIGger:DURation:TYPE? /* 查询返回 L,X,H,L*/
-### 27.13.3:TRIGger:DURation:WHEN
+## 27.13.3:TRIGger:DURation:WHEN
 :TRIGger:DURation:WHEN LESS /* 将触发条件设置为 LESS*/
 :TRIGger:DURation:WHEN? /* 查询返回 LESS*/
-### 27.13.4:TRIGger:DURation:TUPPer
+## 27.13.4:TRIGger:DURation:TUPPer
 :TRIGger:DURation:TUPPer 0.000003 /* 设置持续时间上限值为 3μs*/
 :TRIGger:DURation:TUPPer? /* 查询返回 3.000000E-6*/
-### 27.13.5:TRIGger:DURation:TLOWer
+## 27.13.5:TRIGger:DURation:TLOWer
 :TRIGger:DURation:TLOWer 0.000003 /* 设置持续时间下限值为 3μs*/
 :TRIGger:DURation:TLOWer?  /* 查询返回 3.000000E-6*/
-### 27.13.6:TRIGger:DURation:LEVel
+## 27.13.6:TRIGger:DURation:LEVel
 :TRIGger:DURation:LEVel CHANnel2,0.16 /* 将 CHANnel2 的触发电平设置为
 160mV*/
 :TRIGger:DURation:LEVel? CHANnel2 /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.14:TRIGger:TIMeout
+## 27.14:TRIGger:TIMeout
 
 **语法**: `:TRIGger:TIMeout:SOURce <source>
 :TRIGger:TIMeout:SOURce?
@@ -7241,19 +7241,19 @@ OFFSet)
 
 **举例**: :TRIGger:TIMeout:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:TIMeout:SOURce? /* 查询返回 CHAN2*/
-### 27.14.2:TRIGger:TIMeout:SLOPe
+## 27.14.2:TRIGger:TIMeout:SLOPe
 :TRIGger:TIMeout:SLOPe NEGative /* 将边沿类型设置为下降沿*/
 :TRIGger:TIMeout:SLOPe? /* 查询返回 NEG*/
-### 27.14.3:TRIGger:TIMeout:TIME
+## 27.14.3:TRIGger:TIMeout:TIME
 :TRIGger:TIMeout:TIME 0.002 /* 设置超时时间为 2ms*/
 :TRIGger:TIMeout:TIME? /* 查询返回 2.000000E-3*/
-### 27.14.4:TRIGger:TIMeout:LEVel
+## 27.14.4:TRIGger:TIMeout:LEVel
 :TRIGger:TIMeout:LEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:TIMeout:LEVel? /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.15:TRIGger:RUNT
+## 27.15:TRIGger:RUNT
 
 **语法**: `:TRIGger:RUNT:SOURce <source>
 :TRIGger:RUNT:SOURce?
@@ -7301,29 +7301,29 @@ OFFSet) 0V
 **返回格式**: 查询返回 CHAN1、CHAN2、CHAN3 或 CHAN4。查询返回 POS 或 NEG。查询返回 NONE、GRE、LESS 或 GLES。查询以科学计数形式返回脉宽上限值。查询以科学计数形式返回脉宽下限值。查询以科学计数形式返回触发电平上限。查询以科学计数形式返回触发电平下限。
 **举例**: :TRIGger:RUNT:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:RUNT:SOURce? /* 查询返回 CHAN2*/
-### 27.15.2:TRIGger:RUNT:POLarity
+## 27.15.2:TRIGger:RUNT:POLarity
 :TRIGger:RUNT:POLarity NEGative /* 将脉冲极性设置为负极性*/
 :TRIGger:RUNT:POLarity? /* 查询返回 NEG*/
 
-### 27.15.3:TRIGger:RUNT:WHEN
+## 27.15.3:TRIGger:RUNT:WHEN
 :TRIGger:RUNT:WHEN LESS   /* 设置触发脉宽条件为 LESS*/
 :TRIGger:RUNT:WHEN?       /* 查询返回 LESS*/
-### 27.15.4:TRIGger:RUNT:WUPPer
+## 27.15.4:TRIGger:RUNT:WUPPer
 :TRIGger:RUNT:WUPPer 0.02 /* 设置脉宽上限值为 20ms*/
 :TRIGger:RUNT:WUPPer? /* 查询返回 2.000000E-2*/
-### 27.15.5:TRIGger:RUNT:WLOWer
+## 27.15.5:TRIGger:RUNT:WLOWer
 :TRIGger:RUNT:WLOWer 0.01 /* 设置脉宽下限值为 10ms*/
 :TRIGger:RUNT:WLOWer? /* 查询返回 1.000000E-2*/
-### 27.15.6:TRIGger:RUNT:ALEVel
+## 27.15.6:TRIGger:RUNT:ALEVel
 :TRIGger:RUNT:ALEVel 0.16 /* 设置触发电平上限为 160mV*/
 :TRIGger:RUNT:ALEVel? /* 查询返回 1.600000E-1*/
-### 27.15.7:TRIGger:RUNT:BLEVel
+## 27.15.7:TRIGger:RUNT:BLEVel
 :TRIGger:RUNT:BLEVel 0.16 /* 设置触发电平下限为 160mV*/
 :TRIGger:RUNT:BLEVel? /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.16:TRIGger:WINDows
+## 27.16:TRIGger:WINDows
 
 **语法**: `:TRIGger:WINDows:SOURce <source>
 :TRIGger:WINDows:SOURce?
@@ -7366,25 +7366,25 @@ OFFSet) 0V
 **返回格式**: 查询返回 CHAN1、CHAN2、CHAN3 或 CHAN4。查询返回 POS、NEG 或 RFAL。查询返回 EXIT、ENT 或 TIME。查询以科学计数形式返回超幅时间。查询以科学计数形式返回触发电平上限。查询以科学计数形式返回触发电平下限。
 **举例**: :TRIGger:WINDows:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:WINDows:SOURce? /* 查询返回 CHAN2*/
-### 27.16.2:TRIGger:WINDows:SLOPe
+## 27.16.2:TRIGger:WINDows:SLOPe
 :TRIGger:WINDows:SLOPe NEGative /* 设置超幅触发的边沿类型为 NEGative*/
 :TRIGger:WINDows:SLOPe? /* 查询返回 NEG*/
-### 27.16.3:TRIGger:WINDows:POSition
+## 27.16.3:TRIGger:WINDows:POSition
 :TRIGger:WINDows:POSition ENT /* 将触发位置设置为超幅进入*/
 :TRIGger:WINDows:POSition? /* 查询返回 ENT*/
-### 27.16.4:TRIGger:WINDows:TIME
+## 27.16.4:TRIGger:WINDows:TIME
 :TRIGger:WINDows:TIME 0.002 /* 设置超幅时间为 2ms*/
 :TRIGger:WINDows:TIME? /* 查询返回 2.000000E-3*/
-### 27.16.5:TRIGger:WINDows:ALEVel
+## 27.16.5:TRIGger:WINDows:ALEVel
 :TRIGger:WINDows:ALEVel 0.16 /* 设置触发电平上限为 160mV*/
 :TRIGger:WINDows:ALEVel? /* 查询返回 1.600000E-1*/
-### 27.16.6:TRIGger:WINDows:BLEVel
+## 27.16.6:TRIGger:WINDows:BLEVel
 :TRIGger:WINDows:BLEVel 0.05 /* 设置触发电平下限为 50mV*/
 :TRIGger:WINDows:BLEVel? /* 查询返回 5.000000E-2*/
 
 ---
 
-### 27.17:TRIGger:DELay
+## 27.17:TRIGger:DELay
 
 **语法**: `:TRIGger:DELay:SA <source>
 :TRIGger:DELay:SA?
@@ -7459,34 +7459,34 @@ D14、D15、CHAN1、CHAN2、CHAN3 或 CHAN4。
 
 **举例**: :TRIGger:DELay:SA CHANnel2 /* 将触发信源 A 设置为 CHANnel2*/
 :TRIGger:DELay:SA?       /* 查询返回 CHAN2*/
-### 27.17.2:TRIGger:DELay:ASLop
+## 27.17.2:TRIGger:DELay:ASLop
 :TRIGger:DELay:ASLop NEGative /* 将边沿 A 的类型设置为下降沿*/
 :TRIGger:DELay:ASLop? /* 查询返回 NEG*/
-### 27.17.3:TRIGger:DELay:SB
+## 27.17.3:TRIGger:DELay:SB
 :TRIGger:DELay:SB CHANnel4 /* 将触发信源 B 设置为 CHANnel4*/
 :TRIGger:DELay:SB? /* 查询返回 CHAN4*/
-### 27.17.4:TRIGger:DELay:BSLop
+## 27.17.4:TRIGger:DELay:BSLop
 :TRIGger:DELay:BSLop NEGative /* 将边沿 B 的类型设置为下降沿*/
 :TRIGger:DELay:BSLop? /* 查询返回 NEG*/
-### 27.17.5:TRIGger:DELay:TYPE
+## 27.17.5:TRIGger:DELay:TYPE
 :TRIGger:DELay:TYPE GOUT /* 将触发条件设置为><*/
 :TRIGger:DELay:TYPE? /* 查询返回 GOUT*/
-### 27.17.6:TRIGger:DELay:TUPPer
+## 27.17.6:TRIGger:DELay:TUPPer
 :TRIGger:DELay:TUPPer 0.002 /* 设置延迟时间上限为 2ms*/
 :TRIGger:DELay:TUPPer?  /* 查询返回 2.000000E-3*/
-### 27.17.7:TRIGger:DELay:TLOWer
+## 27.17.7:TRIGger:DELay:TLOWer
 :TRIGger:DELay:TLOWer 0.002 /* 设置延迟时间下限为 2ms*/
 :TRIGger:DELay:TLOWer? /* 查询返回 2.000000E-3*/
-### 27.17.8:TRIGger:DELay:ALEVel
+## 27.17.8:TRIGger:DELay:ALEVel
 :TRIGger:DELay:ALEVel 0.16 /* 设置信源 A 的阈值电平为 160mV*/
 :TRIGger:DELay:ALEVel? /* 查询返回 1.600000E-1*/
-### 27.17.9:TRIGger:DELay:BLEVel
+## 27.17.9:TRIGger:DELay:BLEVel
 :TRIGger:DELay:BLEVel 0.05 /* 设置信源 B 的阈值电平为 50mV*/
 :TRIGger:DELay:BLEVel? /* 查询返回 5.000000E-2*/
 
 ---
 
-### 27.18:TRIGger:SHOLd
+## 27.18:TRIGger:SHOLd
 
 **语法**: `:TRIGger:SHOLd:DSRC <source>
 :TRIGger:SHOLd:DSRC?
@@ -7573,34 +7573,34 @@ D14、D15、CHAN1、CHAN2、CHAN3 或 CHAN4。
 
 **举例**: :TRIGger:SHOLd:DSRC CHANnel1 /* 将数据源设置为 CHANnel1*/
 :TRIGger:SHOLd:DSRC? /* 查询返回 CHAN1*/
-### 27.18.2:TRIGger:SHOLd:CSRC
+## 27.18.2:TRIGger:SHOLd:CSRC
 :TRIGger:SHOLd:CSRC CHANnel2 /* 将时钟源设置为 CHANnel2*/
 :TRIGger:SHOLd:CSRC? /* 查询返回 CHAN2*/
-### 27.18.3:TRIGger:SHOLd:SLOPe
+## 27.18.3:TRIGger:SHOLd:SLOPe
 :TRIGger:SHOLd:SLOPe NEGative /* 将边沿类型设置为下降沿*/
 :TRIGger:SHOLd:SLOPe? /* 查询返回 NEG*/
-### 27.18.4:TRIGger:SHOLd:PATTern
+## 27.18.4:TRIGger:SHOLd:PATTern
 :TRIGger:SHOLd:PATTern L /* 将数据类型设置为 L*/
 :TRIGger:SHOLd:PATTern? /* 查询返回 L*/
-### 27.18.5:TRIGger:SHOLd:TYPE
+## 27.18.5:TRIGger:SHOLd:TYPE
 :TRIGger:SHOLd:TYPE SETHold /* 将触发条件设置为建立保持*/
 :TRIGger:SHOLld:TYPE? /* 查询返回 SETH*/
-### 27.18.6:TRIGger:SHOLd:STIMe
+## 27.18.6:TRIGger:SHOLd:STIMe
 :TRIGger:SHOLd:STIMe 0.002 /* 设置建立时间为 2ms*/
 :TRIGger:SHOLd:STIMe? /* 查询返回 2.000000E-3*/
-### 27.18.7:TRIGger:SHOLd:HTIMe
+## 27.18.7:TRIGger:SHOLd:HTIMe
 :TRIGger:SHOLd:HTIMe 0.002 /* 设置保持时间为 2ms*/
 :TRIGger:SHOLd:HTIMe? /* 查询返回 2.000000E-3*/
-### 27.18.8:TRIGger:SHOLd:DLEVel
+## 27.18.8:TRIGger:SHOLd:DLEVel
 :TRIGger:SHOLd:DLEVel 0.16 /* 设置数据源的触发电平为 160mV*/
 :TRIGger:SHOLd:DLEVel? /* 查询返回 1.600000E-1*/
-### 27.18.9:TRIGger:SHOLd:CLEVel
+## 27.18.9:TRIGger:SHOLd:CLEVel
 :TRIGger:SHOLd:CLEVel 0.05 /* 设置时钟源的触发电平为 50mV*/
 :TRIGger:SHOLd:CLEVel? /* 查询返回 5.000000E-2*/
 
 ---
 
-### 27.19:TRIGger:NEDGe
+## 27.19:TRIGger:NEDGe
 
 **语法**: `:TRIGger:NEDGe:SOURce <source>
 :TRIGger:NEDGe:SOURce?
@@ -7646,22 +7646,22 @@ OFFSet)
 
 **举例**: :TRIGger:NEDGe:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:NEDGe:SOURce? /* 查询返回 CHAN2*/
-### 27.19.2:TRIGger:NEDGe:SLOPe
+## 27.19.2:TRIGger:NEDGe:SLOPe
 :TRIGger:NEDGe:SLOPe NEGative /* 将边沿类型设置为下降沿*/
 :TRIGger:NEDGe:SLOPe? /* 查询返回 NEG*/
-### 27.19.3:TRIGger:NEDGe:IDLE
+## 27.19.3:TRIGger:NEDGe:IDLE
 :TRIGger:NEDGe:IDLE 0.002 /* 设置空闲时间为 2ms*/
 :TRIGger:NEDGe:IDLE? /* 查询返回 2.000000E-3*/
-### 27.19.4:TRIGger:NEDGe:EDGE
+## 27.19.4:TRIGger:NEDGe:EDGE
 :TRIGger:NEDGe:EDGE 20 /* 将边沿数设置为 20*/
 :TRIGger:NEDGe:EDGE? /* 查询返回 20*/
-### 27.19.5:TRIGger:NEDGe:LEVel
+## 27.19.5:TRIGger:NEDGe:LEVel
 :TRIGger:NEDGe:LEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:NEDGe:LEVel? /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.20:TRIGger:RS232
+## 27.20:TRIGger:RS232
 
 **语法**: `:TRIGger:RS232:SOURce <source>
 :TRIGger:RS232:SOURce?
@@ -7732,36 +7732,36 @@ OFFSet)
 
 **举例**: :TRIGger:RS232:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:RS232:SOURce? /* 查询返回 CHAN2*/
-### 27.20.2:TRIGger:RS232:LEVel
+## 27.20.2:TRIGger:RS232:LEVel
 :TRIGger:RS232:LEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:RS232:LEVel? /* 查询返回 1.600000E-1*/
-### 27.20.3:TRIGger:RS232:POLarity
+## 27.20.3:TRIGger:RS232:POLarity
 :TRIGger:RS232:POLarity POSitive  /* 设置 RS232触发的脉冲极性为
 POSitive*/
 :TRIGger:RS232:POLarity?          /* 查询返回 POS*/
-### 27.20.4:TRIGger:RS232:WHEN
+## 27.20.4:TRIGger:RS232:WHEN
 :TRIGger:RS232:WHEN ERRor /* 将触发条件设置为错误帧*/
 :TRIGger:RS232:WHEN?  /* 查询返回 ERR*/
-### 27.20.5:TRIGger:RS232:DATA
+## 27.20.5:TRIGger:RS232:DATA
 :TRIGger:RS232:DATA 10 /* 将数据值设置为 10*/
 :TRIGger:RS232:DATA? /* 查询返回 10*/
-### 27.20.6:TRIGger:RS232:BAUD
+## 27.20.6:TRIGger:RS232:BAUD
 :TRIGger:RS232:BAUD 4800 /* 将波特率设置为 4800bps*/
 :TRIGger:RS232:BAUD? /* 查询返回 4800*/
-### 27.20.7:TRIGger:RS232:WIDTh
+## 27.20.7:TRIGger:RS232:WIDTh
 :TRIGger:RS232:WIDTh 6 /* 将数据位宽设置为 6*/
 :TRIGger:RS232:WIDTh? /* 查询返回 6*/
 
-### 27.20.8:TRIGger:RS232:STOP
+## 27.20.8:TRIGger:RS232:STOP
 :TRIGger:RS232:STOP 2 /* 将停止位设置为 2*/
 :TRIGger:RS232:STOP? /* 查询返回 2*/
-### 27.20.9:TRIGger:RS232:PARity
+## 27.20.9:TRIGger:RS232:PARity
 :TRIGger:RS232:PARity EVEN /* 将校验方式设置为偶校验*/
 :TRIGger:RS232:PARity? /* 查询返回 EVEN*/
 
 ---
 
-### 27.21:TRIGger:IIC
+## 27.21:TRIGger:IIC
 
 **语法**: `:TRIGger:IIC:SCL <source>
 :TRIGger:IIC:SCL?
@@ -7873,44 +7873,44 @@ D14、D15、CHAN1、CHAN2、CHAN3 或 CHAN4。
 
 **举例**: :TRIGger:IIC:SCL CHANnel2 /* 将时钟源设置为 CHANnel2*/
 :TRIGger:IIC:SCL? /* 查询返回 CHAN2*/
-### 27.21.2:TRIGger:IIC:CLEVel
+## 27.21.2:TRIGger:IIC:CLEVel
 :TRIGger:IIC:CLEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:IIC:CLEVel? /* 查询返回 1.600000E-1*/
-### 27.21.3:TRIGger:IIC:SDA
+## 27.21.3:TRIGger:IIC:SDA
 :TRIGger:IIC:SDA CHANnel2 /* 将数据源设置为 CHANnel2*/
 :TRIGger:IIC:SDA? /* 查询返回 CHAN2*/
-### 27.21.4:TRIGger:IIC:DLEVel
+## 27.21.4:TRIGger:IIC:DLEVel
 :TRIGger:IIC:DLEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:IIC:DLEVel? /* 查询返回 1.600000E-1*/
-### 27.21.5:TRIGger:IIC:WHEN
+## 27.21.5:TRIGger:IIC:WHEN
 :TRIGger:IIC:WHEN RESTart /* 将触发条件设置为重启*/
 :TRIGger:IIC:WHEN? /* 查询返回 REST*/
 
-### 27.21.6:TRIGger:IIC:AWIDth
+## 27.21.6:TRIGger:IIC:AWIDth
 :TRIGger:IIC:AWIDth 10 /* 将地址位宽设置为 10*/
 :TRIGger:IIC:AWIDth? /* 查询返回 10*/
-### 27.21.7:TRIGger:IIC:ADDRess
+## 27.21.7:TRIGger:IIC:ADDRess
 :TRIGger:IIC:ADDRess 100 /* 将地址值设置为 100*/
 :TRIGger:IIC:ADDRess? /* 查询返回 100*/
-### 27.21.8:TRIGger:IIC:DIRection
+## 27.21.8:TRIGger:IIC:DIRection
 :TRIGger:IIC:DIRection RWRite /* 将数据方向设置为读/写*/
 :TRIGger:IIC:DIRection? /* 查询返回 RWR*/
-### 27.21.9:TRIGger:IIC:DBYTes
+## 27.21.9:TRIGger:IIC:DBYTes
 :TRIGger:IIC:DBYTes 3 /* 设置触发位组长度为 3*/
 :TRIGger:IIC:DBYTes?    /* 查询返回 3*/
-### 27.21.10:TRIGger:IIC:DATA
+## 27.21.10:TRIGger:IIC:DATA
 :TRIGger:IIC:DATA 64 /* 将数据值设置为 64*/
 :TRIGger:IIC:DATA? /* 查询返回 64*/
-### 27.21.11:TRIGger:IIC:CURRbit
+## 27.21.11:TRIGger:IIC:CURRbit
 :TRIGger:IIC:CURRbit 8  /* 设置 I2C 触发数据的第 9 位*/
 :TRIGger:IIC:CURRbit?   /* 查询返回 8*/
-### 27.21.12:TRIGger:IIC:CODE
+## 27.21.12:TRIGger:IIC:CODE
 :TRIGger:IIC:CODE 0 /* 将数据值设置为 0*/
 :TRIGger:IIC:CODE? /* 查询返回 0*/
 
 ---
 
-### 27.22:TRIGger:SPI
+## 27.22:TRIGger:SPI
 
 **语法**: `:TRIGger:SPI:CLK <source>
 :TRIGger:SPI:CLK?
@@ -8063,57 +8063,57 @@ D14、D15、CHAN1、CHAN2、CHAN3 或 CHAN4。
 
 **举例**: :TRIGger:SPI:CLK CHANnel3  /* 设置 SPI 触发中数据线的通道源为 CHANnel3 */
 :TRIGger:SPI:CLK? /* 查询返回 CHAN3*/
-### 27.22.2:TRIGger:SPI:SCL
+## 27.22.2:TRIGger:SPI:SCL
 :TRIGger:SPI:SCL CHANnel1 /* 设置时钟线的通道源为 CHANnel1*/
 :TRIGger:SPI:SCL? /* 查询返回 CHAN1*/
-### 27.22.3:TRIGger:SPI:CLEVel
+## 27.22.3:TRIGger:SPI:CLEVel
 :TRIGger:SPI:CLEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:SPI:CLEVel? /* 查询返回 1.600000E-1*/
-### 27.22.4:TRIGger:SPI:SLOPe
+## 27.22.4:TRIGger:SPI:SLOPe
 :TRIGger:SPI:SLOPe POSitive /* 设置时钟边沿为上升沿*/
 :TRIGger:SPI:SLOPe? /* 查询返回 POS*/
-### 27.22.5:TRIGger:SPI:MISO
+## 27.22.5:TRIGger:SPI:MISO
 :TRIGger:SPI:MISO CHANnel3 /* 设置 SPI 触发中数据线的通道源为 CHANnel3*/
 :TRIGger:SPI:MISO? /* 查询返回 CHAN3*/
-### 27.22.6:TRIGger:SPI:SDA
+## 27.22.6:TRIGger:SPI:SDA
 :TRIGger:SPI:SDA CHANnel2 /* 设置数据线的通道源为 CHANnel2*/
 :TRIGger:SPI:SDA? /* 查询返回 CHAN2*/
-### 27.22.7:TRIGger:SPI:DLEVel
+## 27.22.7:TRIGger:SPI:DLEVel
 :TRIGger:SPI:DLEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:SPI:DLEVel? /* 查询返回 1.600000E-1*/
-### 27.22.8:TRIGger:SPI:WHEN
+## 27.22.8:TRIGger:SPI:WHEN
 :TRIGger:SPI:WHEN TIMeout /* 设置触发条件为超时*/
 :TRIGger:SPI:WHEN? /* 查询返回 TIM*/
-### 27.22.9:TRIGger:SPI:CS
+## 27.22.9:TRIGger:SPI:CS
 :TRIGger:SPI:CS CHANnel2 /* 设置 SPI 触发中触发条件为 CS 时片选线的通道源为
 CHANnel2*/
 :TRIGger:SPI:CS? /* 查询返回 CHAN2*/
-### 27.22.10:TRIGger:SPI:SLEVel
+## 27.22.10:TRIGger:SPI:SLEVel
 :TRIGger:SPI:SLEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:SPI:SLEVel? /* 查询返回 1.600000E-1*/
 
-### 27.22.11:TRIGger:SPI:MODE
+## 27.22.11:TRIGger:SPI:MODE
 :TRIGger:SPI:MODE LOW  /* 设置片选模式为低电平有效*/
 :TRIGger:SPI:MODE? /* 查询返回 LOW*/
-### 27.22.12:TRIGger:SPI:TIMeout
+## 27.22.12:TRIGger:SPI:TIMeout
 :TRIGger:SPI:TIMeout 0.001 /* 设置超时时间为 1ms*/
 :TRIGger:SPI:TIMeout? /* 查询返回 1.000000E-3*/
-### 27.22.13:TRIGger:SPI:WIDTh
+## 27.22.13:TRIGger:SPI:WIDTh
 :TRIGger:SPI:WIDTh 10 /* 设置数据位宽为 10*/
 :TRIGger:SPI:WIDTh? /* 查询返回 10*/
-### 27.22.14:TRIGger:SPI:DATA
+## 27.22.14:TRIGger:SPI:DATA
 :TRIGger:SPI:DATA 5 /* 设置数据值为 5*/
 :TRIGger:SPI:DATA? /* 查询返回 5*/
-### 27.22.15:TRIGger:SPI:CURRbit
+## 27.22.15:TRIGger:SPI:CURRbit
 :TRIGger:SPI:CURRbit 8  /* 设置 SPI 触发数据的第 9 位*/
 :TRIGger:SPI:CURRbit? /* 查询返回 8*/
-### 27.22.16:TRIGger:SPI:CODE
+## 27.22.16:TRIGger:SPI:CODE
 :TRIGger:SPI:CODE 0 /* 将数据值设置为 0*/
 :TRIGger:SPI:CODE? /* 查询返回 0*/
 
 ---
 
-### 27.23:TRIGger:CAN
+## 27.23:TRIGger:CAN
 
 **语法**: `:TRIGger:CAN:BAUD <baud>
 :TRIGger:CAN:BAUD?
@@ -8238,45 +8238,45 @@ ERB 或 ERR。
 
 **举例**: :TRIGger:CAN:BAUD 125000 /* 将信号速率设置为 125000bps*/
 :TRIGger:CAN:BAUD? /* 查询返回 125000*/
-### 27.23.2:TRIGger:CAN:SOURce
+## 27.23.2:TRIGger:CAN:SOURce
 :TRIGger:CAN:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:CAN:SOURce? /* 查询返回 CHAN2*/
 
-### 27.23.3:TRIGger:CAN:STYPe
+## 27.23.3:TRIGger:CAN:STYPe
 :TRIGger:CAN:STYPe L /* 将信号类型设置为 CAN_L 总线信号*/
 :TRIGger:CAN:STYPe? /* 查询返回 L*/
-### 27.23.4:TRIGger:CAN:WHEN
+## 27.23.4:TRIGger:CAN:WHEN
 :TRIGger:CAN:WHEN EOF /* 将触发条件设置为帧结束*/
 :TRIGger:CAN:WHEN? /* 查询返回 EOF*/
 
-### 27.23.5:TRIGger:CAN:SPOint
+## 27.23.5:TRIGger:CAN:SPOint
 :TRIGger:CAN:SPOint 60 /* 设置 CAN 触发的采样点位置为 60%*/
 :TRIGger:CAN:SPOint? /* 查询返回 60*/
-### 27.23.6:TRIGger:CAN:EXTended
+## 27.23.6:TRIGger:CAN:EXTended
 :TRIGger:CAN:EXTended ON    /* 设置支持扩展 ID*/
 :TRIGger:CAN:EXTended?  /* 查询返回 1*/
-### 27.23.7:TRIGger:CAN:DEFine
+## 27.23.7:TRIGger:CAN:DEFine
 :TRIGger:CAN:DEFine ID /* 设置 CAN 触发定义为 ID*/
 :TRIGger:CAN:DEFine? /* 查询返回 ID*/
-### 27.23.8:TRIGger:CAN:DWIDth
+## 27.23.8:TRIGger:CAN:DWIDth
 :TRIGger:CAN:DWIDth 5  /* 设置 CAN 触发的数据位组长度 5*/
 :TRIGger:CAN:DWIDth? /* 查询返回 5*/
-### 27.23.9:TRIGger:CAN:DATA
+## 27.23.9:TRIGger:CAN:DATA
 :TRIGger:CAN:DATA 100   /* 设置 CAN 触发时的数据值为 100*/
 :TRIGger:CAN:DATA?      /* 查询返回 100*/
-### 27.23.10:TRIGger:CAN:CURRbit
+## 27.23.10:TRIGger:CAN:CURRbit
 :TRIGger:CAN:CURRbit 8  /* 设置 CAN 触发数据的第 9 位*/
 :TRIGger:CAN:CURRbit? /* 查询返回 8*/
-### 27.23.11:TRIGger:CAN:CODE
+## 27.23.11:TRIGger:CAN:CODE
 :TRIGger:CAN:CODE 0 /* 将数据值设置为 0*/
 :TRIGger:CAN:CODE? /* 查询返回 0*/
-### 27.23.12:TRIGger:CAN:LEVel
+## 27.23.12:TRIGger:CAN:LEVel
 :TRIGger:CAN:LEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:CAN:LEVel? /* 查询返回 1.600000E-1*/
 
 ---
 
-### 27.24:TRIGger:LIN
+## 27.24:TRIGger:LIN
 
 **语法**: `:TRIGger:LIN:SOURce <source>
 :TRIGger:LIN:SOURce?
@@ -8339,7 +8339,7 @@ SLEep|WAKeup|ERRor} SYNCbreak
 <code> 离散型 {0|1|255} 255
 
 **说明**: 仅 DHO900 系列支持:TRIGger:LIN 命令。示波器可在 LIN 信号的同步场上触发，也可在指定的标识符、数据或帧上触发。
-### 27.24.1:TRIGger:LIN:SOURce
+## 27.24.1:TRIGger:LIN:SOURce
 对于 VerticalScale，请参考:CHANnel<n>:SCALe 命令。对于 OFFSet，请参
 考:CHANnel<n>:OFFSet 命令。
 若波特率设置为带兆“M”的数值，则需在数值后加上 A，如发送 5M，需发送 5MA。
@@ -8376,40 +8376,40 @@ LIN 触发的触发数据值的取值范围与位组长度的取值有关。位�
 **举例**: :TRIGger:LIN:SOURce CHANnel2 /* 将触发源设置为 CHANnel2*/
 :TRIGger:LIN:SOURce? /* 查询返回 CHAN2*/
 
-### 27.24.2:TRIGger:LIN:LEVel
+## 27.24.2:TRIGger:LIN:LEVel
 :TRIGger:LIN:LEVel 0.16 /* 设置触发电平为 160mV*/
 :TRIGger:LIN:LEVel? /* 查询返回 1.600000E-1*/
-### 27.24.3:TRIGger:LIN:STANdard
+## 27.24.3:TRIGger:LIN:STANdard
 :TRIGger:LIN:STANdard 2X /* 设置 LIN 触发的协议版本为 2X*/
 :TRIGger:LIN:STANdard?  /* 查询返回 2X*/
-### 27.24.4:TRIGger:LIN:BAUD
+## 27.24.4:TRIGger:LIN:BAUD
 :TRIGger:LIN:BAUD 19200 /* 设置 LIN 触发的波特率为 19200bps*/
 :TRIGger:LIN:BAUD? /* 查询返回 19200*/
-### 27.24.5:TRIGger:LIN:SAMPlepoint
+## 27.24.5:TRIGger:LIN:SAMPlepoint
 :TRIGger:LIN:SAMPlepoint 40 /* 设置 LIN 触发的采样位置为 40%*/
 :TRIGger:LIN:SAMPlepoint?  /* 查询返回 40*/
-### 27.24.6:TRIGger:LIN:WHEN
+## 27.24.6:TRIGger:LIN:WHEN
 :TRIGger:LIN:WHEN SYNCbreak /* 设置触发条件为 SYNCbreak*/
 :TRIGger:LIN:WHEN? /* 查询返回 SYNC*/
-### 27.24.7:TRIGger:LIN:ERRor
+## 27.24.7:TRIGger:LIN:ERRor
 :TRIGger:LIN:ERRor ID  /* 设置 LIN 触发错误类型为 ID*/
 :TRIGger:LIN:ERRor? /* 查询返回 ID*/
-### 27.24.8:TRIGger:LIN:ID
+## 27.24.8:TRIGger:LIN:ID
 :TRIGger:LIN:ID 4 /* 将 LIN 触发的 ID 值设置为 4*/
 :TRIGger:LIN:ID? /* 查询返回 4*/
-### 27.24.9:TRIGger:LIN:DATA
+## 27.24.9:TRIGger:LIN:DATA
 :TRIGger:LIN:DATA 100   /* 设置 LIN 触发的触发数据值为 100*/
 :TRIGger:LIN:DATA?      /* 查询返回 100*/
-### 27.24.10:TRIGger:LIN:CURRbit
+## 27.24.10:TRIGger:LIN:CURRbit
 :TRIGger:LIN:CURRbit 8  /* 设置 LIN 触发数据的第 9 位*/
 :TRIGger:LIN:CURRbit? /* 查询返回 8*/
-### 27.24.11:TRIGger:LIN:CODE
+## 27.24.11:TRIGger:LIN:CODE
 :TRIGger:LIN:CODE 0   /* 将数据值指定位设置为 0*/
 :TRIGger:LIN:CODE?   /* 查询返回 0*/
 
 ---
 
-## 28 波形读取命令子系统
+# 28 波形读取命令子系统
 波形读取命令用于读取波形数据及其相关设置。:WAVeform:MODE命令用于设置波形数据的
 读取模式。不同模式下，各参数的定义不同，如图 3.12 和图 3.13 所示。
 YINCrement=Verticalscale/7500
@@ -8435,7 +8435,7 @@ ASCII 字符的形式描述波形数据点的长度，结束符用于表示通�
 :WAVeform:MODE
 :WAVeform:YINCrement?
 :WAVeform:YORigin?
-### 28.1:WAVeform:SOURce
+## 28.1:WAVeform:SOURce
 
 **语法**: `:WAVeform:SOURce <source>
 :WAVeform:SOURce?`
@@ -8459,7 +8459,7 @@ MATH4。
 
 ---
 
-### 28.2:WAVeform:MODE
+## 28.2:WAVeform:MODE
 
 **语法**: `:WAVeform:MODE <mode>
 :WAVeform:MODE?`
@@ -8478,7 +8478,7 @@ MATH4。
 
 ---
 
-### 28.3:WAVeform:FORMat
+## 28.3:WAVeform:FORMat
 
 **语法**: `:WAVeform:FORMat <format>
 :WAVeform:FORMat?`
@@ -8496,7 +8496,7 @@ MATH4。
 
 ---
 
-### 28.4:WAVeform:POINts
+## 28.4:WAVeform:POINts
 
 **语法**: `:WAVeform:POINts <point>
 :WAVeform:POINts?`
@@ -8515,7 +8515,7 @@ MATH4。
 
 ---
 
-### 28.5:WAVeform:DATA?
+## 28.5:WAVeform:DATA?
 
 **语法**: `:WAVeform:DATA?`
 **描述**: 读取波形数据。
@@ -8537,7 +8537,7 @@ MATH4。
 
 ---
 
-### 28.6:WAVeform:XINCrement?
+## 28.6:WAVeform:XINCrement?
 
 **语法**: `:WAVeform:XINCrement?`
 **描述**: 查询当前选中通道源 X 方向上相邻两点之间的时间间隔。
@@ -8551,7 +8551,7 @@ MATH4。
 
 ---
 
-### 28.7:WAVeform:XORigin?
+## 28.7:WAVeform:XORigin?
 
 **语法**: `:WAVeform:XORigin?`
 **描述**: 查询当前选中通道源 X 方向上波形数据的起始时间。
@@ -8565,7 +8565,7 @@ MATH4。
 
 ---
 
-### 28.8:WAVeform:XREFerence?
+## 28.8:WAVeform:XREFerence?
 
 **语法**: `:WAVeform:XREFerence?`
 **描述**: 查询当前选中通道源 X 方向上波形点的时间参考基准。
@@ -8576,7 +8576,7 @@ MATH4。
 
 ---
 
-### 28.9:WAVeform:YINCrement?
+## 28.9:WAVeform:YINCrement?
 
 **语法**: `:WAVeform:YINCrement?`
 **描述**: 查询当前选中通道源 Y 方向上的单位电压值。
@@ -8590,7 +8590,7 @@ MATH4。
 
 ---
 
-### 28.10:WAVeform:YORigin?
+## 28.10:WAVeform:YORigin?
 
 **语法**: `:WAVeform:YORigin?`
 **描述**: 查询当前选中通道源 Y 方向上相对于垂直参考位置的垂直偏移。
@@ -8604,7 +8604,7 @@ MATH4。
 
 ---
 
-### 28.11:WAVeform:YREFerence?
+## 28.11:WAVeform:YREFerence?
 
 **语法**: `:WAVeform:YREFerence?`
 **描述**: 查询当前选中通道源 Y 方向的垂直参考位置。
@@ -8615,7 +8615,7 @@ MATH4。
 
 ---
 
-### 28.12:WAVeform:STARt
+## 28.12:WAVeform:STARt
 
 **语法**: `:WAVeform:STARt <sta>
 :WAVeform:STARt?`
@@ -8634,7 +8634,7 @@ MATH4。
 
 ---
 
-### 28.13:WAVeform:STOP
+## 28.13:WAVeform:STOP
 
 **语法**: `:WAVeform:STOP <stop>
 :WAVeform:STOP?`
@@ -8653,7 +8653,7 @@ MATH4。
 
 ---
 
-### 28.14:WAVeform:PREamble?
+## 28.14:WAVeform:PREamble?
 
 **语法**: `:WAVeform:PREamble?`
 **描述**: 查询并返回全部的波形参数。

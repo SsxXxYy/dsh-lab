@@ -25,7 +25,7 @@ import {
 // 使用 import.meta.url 定位项目根目录，避免 process.cwd() 不确定问题
 const PROJECT_ROOT = fileURLToPath(new URL('../', import.meta.url))
 const CONTENT_DIR = join(PROJECT_ROOT, 'content')
-const DOCS_DIR = join(PROJECT_ROOT, 'docs')
+export const DOCS_DIR = join(PROJECT_ROOT, 'docs')
 const WORKFLOW_DIR = join(PROJECT_ROOT, 'workflows')
 
 export class LabLocal extends LabService {
