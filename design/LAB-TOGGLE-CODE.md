@@ -106,6 +106,7 @@ class LabLocal extends LabService {
   async scanInstruments(): Promise<ScanInstrumentsResult> {
     const result = await this.ctx.shell.run(this.ctx.shell.resolve({
       command: 'python -m dsh_lab.scan',
+      input: '{}',
       timeoutMs: 30000,
     }))
     return { devices: [], text: result.stdout.text }
@@ -113,7 +114,8 @@ class LabLocal extends LabService {
 
   async sendScpi(request: SendScpiRequest): Promise<SendScpiResult> {
     const result = await this.ctx.shell.run(this.ctx.shell.resolve({
-      command: `python -m dsh_lab.send_scpi ${JSON.stringify(request)}`,
+      command: 'python -m dsh_lab.send_scpi',
+      input: JSON.stringify(request),
       timeoutMs: 30000,
     }))
     return { ok: true, text: result.stdout.text }

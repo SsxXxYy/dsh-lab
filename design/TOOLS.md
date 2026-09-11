@@ -225,7 +225,7 @@ Agent: 请扫描当前连接的仪器
 - ASG SDK 未安装 → 跳过 ASG 扫描，仅返回 VISA 设备
 - 超时 → 返回超时提示
 
-**Provider 实现要点**（`src/lab-local.ts`）：内部通过 `ctx.shell.run(ctx.shell.resolve({ command: 'python -m dsh_lab.scan', timeoutMs: 30000 }))` 执行，解析 stdout 为 `ScanInstrumentsResult`。
+**Provider 实现要点**（`src/lab-local.ts`）：内部通过 `ctx.shell.run(ctx.shell.resolve({ command: 'python -m py scan', stdin: JSON.stringify({ workspaceRoot: '...' }), timeoutMs: 30000 }))` 执行，解析 stdout 为 `ScanInstrumentsResult`。参数通过 stdin 传递，避免命令行引号转义问题。
 
 ---
 
@@ -485,6 +485,8 @@ Agent: 给 DG 发一条 *RST 复位命令
 → "SCPI 写入成功: *RST"
 ```
 
+**Provider 实现要点**（`src/lab-local.ts`）：内部通过 `ctx.shell.run({ command: 'python -m py scpi', stdin: JSON.stringify({ commands, continueOnError }), timeoutMs: 30000 * commands.length })` 执行。参数通过 stdin 传递，避免命令行引号转义问题。
+
 ---
 
 ### send_asg
@@ -539,6 +541,8 @@ ASG 调用成功: ASG_SetWaveform -> {"result": 1, "count": 1}
 - SDK 未初始化 → 自动调用 ASG_Init()
 - 函数不存在 → `错误：函数不存在: ASG_Foo`
 - 调用失败 → `错误：ASG error code: -1`
+
+**Provider 实现要点**（`src/lab-local.ts`）：内部通过 `ctx.shell.run({ command: 'python -m py asg', stdin: JSON.stringify({ ...request, calls }), timeoutMs: 30000 * calls.length })` 执行。参数通过 stdin 传递，避免命令行引号转义问题。
 
 ---
 

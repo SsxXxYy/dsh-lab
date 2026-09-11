@@ -198,7 +198,7 @@ export function apply(ctx: Context) {
 
 | Section | order | 内容 | 数据来源 |
 |---|---|---|---|
-| `lab:role` | 100 | 角色定位 + 工作流程 + 注意事项 | `content/role.md` |
+| `lab:role` | 100 | 角色定位 + 意图判断 + 操作流程 + 行为准则 + 工具使用 | `content/role.md` |
 | `lab:instruments` | 200 | 当前连接的仪器列表 | `devices/devices_inventory.json` |
 | `lab:documents` | 201 | 可用仪器文档索引 | `docs/*.md` frontmatter |
 | `lab:workflows` | 202 | 可用工作流列表 | `workflows/*/*.md` frontmatter |
@@ -265,7 +265,7 @@ export function apply(ctx: Context) {
 
 ---
 
-## 5. 路径解析
+## 6. 路径解析
 
 使用 `import.meta.url` 定位项目根目录：
 
@@ -284,18 +284,18 @@ const INVENTORY_PATH = join(PROJECT_ROOT, 'devices', 'devices_inventory.json')
 
 ---
 
-## 6. Python 引擎调用
+## 7. Python 引擎调用
 
 硬件操作通过 `ctx.shell.run()` 调用 Python 子进程：
 
 ```ts
 // SCPI 批次命令（一次提交整批）
-const args = JSON.stringify({
-  commands: request.commands,  // [{address, command, delay?}]
-  continueOnError: request.continueOnError ?? false,
-})
 const result = await shell.run({
-  command: `python -m py scpi '${args}'`,  // 注意：py 和 scpi 之间有空格
+  command: `python -m py scpi`,  // 注意：py 和 scpi 之间有空格
+  stdin: JSON.stringify({
+    commands: request.commands,  // [{address, command, delay?}]
+    continueOnError: request.continueOnError ?? false,
+  }),
   timeoutMs: 30000 * request.commands.length,  // 每条命令最多 30s
   workdir: PROJECT_ROOT,  // 插件根目录，确保能找到 py 模块
 })
@@ -309,15 +309,16 @@ if (parsed.status === 'ok') {
 ```
 
 **通信协议**：
-- TypeScript → Python：CLI 参数传递 JSON（含 `commands` 数组 + `continueOnError`）
+- TypeScript → Python：stdin 传递 JSON（含 `commands` 数组 + `continueOnError`）
 - Python → TypeScript：stdout 输出 `{"status":"ok","result":{"results":[...]}}` 或 `{"status":"error","error":"..."}`
 - 超时按命令数量线性计算：`30000 * commands.length`
 - 循环在 Python 里处理，TypeScript 只调一次 `shell.run()`
 - 命令格式：`python -m py <module>`（注意是空格不是点），运行 `py/__main__.py` 并传入模块名
+- 参数通过 stdin 传递，避免 Windows 命令行引号转义问题
 
 ---
 
-## 7. 调试日志
+## 8. 调试日志
 
 打开浏览器控制台，过滤 `[dsh-lab]` 查看完整链路：
 
@@ -334,7 +335,7 @@ if (parsed.status === 'ok') {
 
 ---
 
-## 8. 已知边界与踩坑
+## 9. 已知边界与踩坑
 
 | 问题 | 解决方案 |
 |---|---|
@@ -355,7 +356,7 @@ if (parsed.status === 'ok') {
 
 ---
 
-## 9. 新增 Consumer 指南
+## 10. 新增 Consumer 指南
 
 1. 创建文件 `src/xxx.ts`
 2. 导出 `name`、`inject`、`apply`
@@ -364,15 +365,15 @@ if (parsed.status === 'ok') {
 
 ---
 
-## 10. 预设同步功能（已移除，保留参考）
+## 11. 预设同步功能（已移除，保留参考）
 
 > **当前状态：已移除，未来如需实现可参考以下设计。**
 
-### 10.1 功能说明
+### 11.1 功能说明
 
 插件安装时自动将包内 `presets/lab/` 目录同步到 `~/.dsh/.agent-presets/lab/`。
 
-### 10.2 实现步骤
+### 11.2 实现步骤
 
 1. `presets/lab/preset.yml` + `agent.cordis.yml`
 2. `src/sync.ts` — `syncPresetTrees()`

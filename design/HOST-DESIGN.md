@@ -145,11 +145,12 @@ import json
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python -m dsh_lab.<module> [JSON_ARGS]", file=sys.stderr)
+        print("Usage: python -m dsh_lab.<module>  (args via stdin JSON)", file=sys.stderr)
         sys.exit(1)
 
     module = sys.argv[1]
-    args = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    raw = sys.stdin.read()
+    args = json.loads(raw) if raw.strip() else {}
 
     # 路由到对应模块（仅硬件操作）
     if module == "scan":

@@ -25,7 +25,7 @@ DSH Agent（LLM）
   │
   └── Service Provider     → lab-local.ts   → 唯一知道 Python 的模块
           │
-          ▼ python -m py <module> [JSON_ARGS]
+          ▼ python -m py <module> (stdin JSON)
 
 Python 执行引擎（py/*）
   → PyVISA 仪器通信 / asglib SDK
@@ -50,7 +50,7 @@ Consumer 与 Provider **互不依赖**。Consumer 只依赖 `LabService` 接口�
 |---|---|
 | **替换 Provider 不改工具** | 将来换成远程仪器控制（HTTP），只改 `lab-local.ts`，`tools.ts` 一行不动 |
 | **替换工具不改 Provider** | 加新工具只改 `tools.ts`，Python 代码不动 |
-| **Python 可独立测试** | 直接 `python -m py scpi '{...}'` 验证 |
+| **Python 可独立测试** | 直接 `echo '{...}' \| python -m py scpi` 验证 |
 | **沙箱友好** | Python 进程走 `ctx.shell.run()`，DSH 沙箱策略自动生效 |
 | **LLM 无感知** | DSH Agent 只看到标准工具，不知道底层是 Python 还是其他 |
 
@@ -139,7 +139,7 @@ py/
 **关键点**：
 - 文件操作在 TypeScript 中直接完成，无需跨进程通信
 - Python 只负责硬件通信，通过 `ctx.shell.run()` 走 DSH 沙箱机制
-- 硬件调用参数通过 CLI 参数传递，结果通过 stdout JSON 返回
+- 硬件调用参数通过 stdin 传递 JSON，结果通过 stdout JSON 返回
 - **内容与逻辑分离**：角色定位、提示词等静态文本存于 `content/*.md`，由 `readMarkdown` 加载
 
 ---
@@ -346,7 +346,7 @@ interface RenameDeviceResult {
 
 **Python 子进程调用**（硬件通信）：
 - 通过 `ctx.shell.run()` 执行，走 DSH 沙箱机制
-- 参数通过 CLI 参数传递：`python -m py scpi '{"address":"...","command":"..."}'`
+- 参数通过 stdin 传递 JSON：`ctx.shell.run({ command: 'python -m py scpi', stdin: JSON.stringify({...}), ... })`
 - 结果通过 stdout JSON 返回
 - 超时由 `ctx.shell.run()` 的 `timeoutMs` 控制
 
@@ -570,7 +570,7 @@ LLM → send_scpi(commands: [
   ])
   → ctx.lab.sendScpi({ commands: [...], continueOnError: false })
   → Provider: 一次 shell.run() 提交整批命令
-    → ctx.shell.run({ command: 'python -m py scpi', args: [JSON.stringify({commands, continueOnError})], timeoutMs: 30000 * commands.length })
+    → ctx.shell.run({ command: 'python -m py scpi', stdin: JSON.stringify({commands, continueOnError}), timeoutMs: 30000 * commands.length })
     → Python: 循环处理每条命令
       → PyVISA 连接 → 发送命令 → 收集结果
       → 如果失败且 continue_on_error=false，中断后续命令
@@ -699,7 +699,7 @@ Python 引擎处于整个调用链的最底层，是**唯一知道硬件的模�
   src/service.ts（Definition） ← 抽象接口
   src/lab-local.ts（Provider） ← 业务逻辑、文件 I/O、Python 调用
       │
-      ▼  ctx.shell.run("python -m py <module> [JSON]")
+      ▼  ctx.shell.run({ command: "python -m py <module>", stdin: JSON })
 第 5 节 — Python 层
   py/__main__.py          ← 入口路由
   py/scan.py              ← PyVISA + asglib 设备扫描
@@ -741,17 +741,17 @@ py/
 
 ### 5.3 通信协议
 
-#### 方向：TypeScript → Python 
+#### 方向：TypeScript → Python（stdin 传递 JSON）
 
 ```
-python -m py scpi '{"address":"USB0::...::INSTR","command":":SOUR1:APPL:DC 100,5,2,0","delay":0}'
+echo '{"commands":[...]}' | python -m py scpi
                    ↑            ↑
-                 模块名（路由）   JSON 参数（argv[1]）
+                  stdin JSON    模块名（argv[1]）
 ```
 
-- 第一个参数：模块名（`scan` / `scpi` / `asg`）
-- 第二个参数：JSON 编码的参数字符串
-- 无参数时（如 `scan`），省略第二个参数
+- 第一个命令行参数：模块名（`scan` / `scpi` / `asg`）
+- 参数通过 stdin 传入 JSON
+- 无参数时（如 `scan`），stdin 传空字符串
 
 #### 方向：Python → TypeScript
 
@@ -788,7 +788,8 @@ print(json.dumps({...}))   →    stdout 收集
 
 ```typescript
 const runResult = await shell.run({
-  command: "python -m py scpi '{\"address\":\"...\",\"command\":\"*RST\"}'",
+  command: "python -m py scpi",
+  stdin: '{"commands":[{"address":"...","command":"*RST"}]}',
   timeoutMs: 30000,
 })
 
@@ -823,17 +824,18 @@ if (parsed.status === "ok") {
 ### 5.4 入口路由（`py/__main__.py`）
 
 ```python
-"""一次性脚本入口 — 被 TypeScript 通过 python -m py <module> 调用"""
+"""一次性脚本入口 — 被 TypeScript 通过 python -m py <module> 调用，参数从 stdin 读取"""
 import sys
 import json
 
 def main():
     if len(sys.argv) < 2:
-        print(json.dumps({"status": "error", "error": "用法: python -m py <module> [JSON_ARGS]"}))
+        print(json.dumps({"status": "error", "error": "用法: python -m py <module> (参数通过 stdin JSON 传入)"}))
         sys.exit(1)
 
     module = sys.argv[1]
-    args = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    raw = sys.stdin.read()
+    args = json.loads(raw) if raw.strip() else {}
 
     try:
         if module == "scan":
@@ -1249,7 +1251,8 @@ const PYTHON = 'python'  // 或 'python3'，取决于系统
 
 async scanInstruments(): Promise<ScanInstrumentsResult> {
   const request = {
-    command: `${PYTHON} -m py.scan`,
+    command: `${PYTHON} -m py scan`,
+    stdin: '',
     timeoutMs: 30000,
   }
   const runResult = await shell.run(request)
@@ -1284,7 +1287,8 @@ async sendScpi(request: SendScpiRequest): Promise<SendScpiResult> {
     continueOnError: request.continueOnError ?? false,
   })
   const runResult = await shell.run({
-    command: `${PYTHON} -m py.scpi '${args}'`,
+    command: `${PYTHON} -m py scpi`,
+    stdin: args,
     timeoutMs: 30000 * request.commands.length,  // 每条命令最多 30s
   })
 
@@ -1330,7 +1334,8 @@ async sendAsg(request: SendAsgRequest): Promise<SendAsgResult> {
     continueOnError: request.continueOnError ?? false,
   })
   const runResult = await shell.run({
-    command: `${PYTHON} -m py.asg '${args}'`,
+    command: `${PYTHON} -m py asg`,
+    stdin: args,
     timeoutMs: 30000 * request.calls.length,  // 每条调用最多 30s
   })
 
@@ -1407,17 +1412,17 @@ pyvisa-py>=0.7.0      # 纯 Python 后端，不依赖 NI-VISA
 
 | 验证项 | 方法 | 预期 |
 |---|---|---|
-| SCPI 单条写入 | `python -m py scpi '{"commands":[{"address":"...","command":"*RST"}]}'` | 返回 `{"status":"ok","result":{"results":[{"ok":true,"written":true}]}}` |
-| SCPI 单条查询 | `python -m py scpi '{"commands":[{"address":"...","command":"*IDN?"}]}'` | 返回 `{"status":"ok","result":{"results":[{"ok":true,"response":"..."}]}}` |
-| SCPI 多条写入 | `python -m py scpi '{"commands":[{"...},{...},{...}]}'` | 返回所有命令的执行结果 |
-| SCPI 出错即停 | `python -m py scpi '{"commands":[{...},{...}],"continueOnError":false}` | 第 1 条失败则跳过后续，返回中断提示 |
-| SCPI 出错继续 | `python -m py scpi '{"commands":[{...},{...}],"continueOnError":true}` | 第 1 条失败仍继续，结果列表包含失败项 |
+| SCPI 单条写入 | `echo '{"commands":[{"address":"...","command":"*RST"}]}' \| python -m py scpi` | 返回 `{"status":"ok","result":{"results":[{"ok":true,"written":true}]}}` |
+| SCPI 单条查询 | `echo '{"commands":[{"address":"...","command":"*IDN?"}]}' \| python -m py scpi` | 返回 `{"status":"ok","result":{"results":[{"ok":true,"response":"..."}]}}` |
+| SCPI 多条写入 | `echo '{"commands":[{"...},{...},{...}]}' \| python -m py scpi` | 返回所有命令的执行结果 |
+| SCPI 出错即停 | `echo '{"commands":[{...},{...}],"continueOnError":false}' \| python -m py scpi` | 第 1 条失败则跳过后续，返回中断提示 |
+| SCPI 出错继续 | `echo '{"commands":[{...},{...}],"continueOnError":true}' \| python -m py scpi` | 第 1 条失败仍继续，结果列表包含失败项 |
 | SCPI 连接断开 | 断开仪器后发送命令 | 返回 `{"ok":false,"error":"VISA 错误: ..."}` |
-| ASG 单条调用 | `python -m py asg '{"calls":[{"func":"ASG_Init"}]}'` | 返回 `{"status":"ok","result":{"results":[{"ok":true,"result":1}]}}` |
-| ASG 多条调用 | `python -m py asg '{"calls":[{...},{...},{...}]}'` | 返回所有调用的执行结果 |
-| ASG 出错即停 | `python -m py asg '{"calls":[{...},{...}],"continueOnError":false}` | 第 1 条失败则跳过后续 |
-| ASG 出错继续 | `python -m py asg '{"calls":[{...},{...}],"continueOnError":true}` | 第 1 条失败仍继续 |
-| ASG 函数不存在 | `python -m py asg '{"calls":[{"func":"ASG_Foo"}]}'` | 返回 `{"ok":false,"error":"函数不存在: ASG_Foo"}` |
+| ASG 单条调用 | `echo '{"calls":[{"func":"ASG_Init"}]}' \| python -m py asg` | 返回 `{"status":"ok","result":{"results":[{"ok":true,"result":1}]}}` |
+| ASG 多条调用 | `echo '{"calls":[{...},{...},{...}]}' \| python -m py asg` | 返回所有调用的执行结果 |
+| ASG 出错即停 | `echo '{"calls":[{...},{...}],"continueOnError":false}' \| python -m py asg` | 第 1 条失败则跳过后续 |
+| ASG 出错继续 | `echo '{"calls":[{...},{...}],"continueOnError":true}' \| python -m py asg` | 第 1 条失败仍继续 |
+| ASG 函数不存在 | `echo '{"calls":[{"func":"ASG_Foo"}]}' \| python -m py asg` | 返回 `{"ok":false,"error":"函数不存在: ASG_Foo"}` |
 | 设备扫描 | `python -m py scan` | 返回设备列表 + 更新 JSON 文件 |
 | PyVISA 未安装 | 卸载 PyVISA 后扫描 | 跳过 VISA 扫描，仅返回 ASG 设备 |
 | 未知模块 | `python -m py foo` | 返回 `{"status":"error","error":"未知模块: foo"}` |

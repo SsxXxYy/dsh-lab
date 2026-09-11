@@ -5,16 +5,18 @@ import json
 
 def main():
     if len(sys.argv) < 2:
-        print(json.dumps({"status": "error", "error": "用法: python -m py.<module> [JSON_ARGS]"}))
+        print(json.dumps({"status": "error", "error": "用法: python -m py.<module>"}))
         sys.exit(1)
 
     module = sys.argv[1]
-    args = json.loads(sys.argv[2]) if len(sys.argv) > 2 else {}
+    # 从 stdin 读取参数 JSON，避免命令行引号转义问题
+    raw = sys.stdin.read()
+    args = json.loads(raw) if raw.strip() else {}
 
     try:
         if module == "scan":
             from py.scan import scan_instruments
-            result = scan_instruments()
+            result = scan_instruments(args.get("workspaceRoot", ""))
         elif module == "scpi":
             from py.scpi import scpi_execute_batch
             result = scpi_execute_batch(

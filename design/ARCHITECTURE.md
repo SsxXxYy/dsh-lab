@@ -330,7 +330,8 @@ class LabLocal extends LabService {
   async sendScpi(address: string, command: string) {
     // 具体实现：调 Python 子进程
     const result = await this.ctx.shell.run(this.ctx.shell.resolve({
-      command: `python -m dsh_lab.send_scpi ${address} ${command}`,
+      command: 'python -m dsh_lab.send_scpi',
+      stdin: JSON.stringify({ address, command }),
     }));
     return result.stdout.text;
   }

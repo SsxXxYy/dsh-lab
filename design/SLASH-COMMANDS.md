@@ -216,13 +216,14 @@ class LabLocal extends LabService {
   async scanInstruments(): Promise<ScanInstrumentsResult> {
     const result = await this.ctx.shell.run(this.ctx.shell.resolve({
       command: 'python -m dsh_lab.scan',
+      input: '{}',
       timeoutMs: 30000,
     }))
     return { devices: [], text: result.stdout.text }
   }
 
   async sendScpi(request): Promise<SendScpiResult> {
-    // ... Python 执行
+    // ... Python 执行（参数通过 stdin 传入）
   }
 
   async sendAsg(request): Promise<SendAsgResult> {
@@ -302,7 +303,7 @@ export function apply(ctx: Context) {
   │  Host: handler 执行
   │    ├─ 能走到这里，说明 lab 服务一定存在（否则消费者 apply 不会执行）
   │    ├─ ctx.lab.scanInstruments()        ← Consumer 调服务接口
-  │    │    └─ Provider: ctx.shell.run("python -m dsh_lab.scan")
+  │    │    └─ Provider: ctx.shell.run("python -m dsh_lab.scan", input: '{}')
   │    └─ 返回 { kind: "success", text: result.text }
   │
   └─ Client: 显示执行结果
