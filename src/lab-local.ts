@@ -468,7 +468,8 @@ export class LabLocal extends LabService {
    * 获取 workspace 根目录。优先从 ctx.sandboxPolicy.workspaceRoot 获取，未配置时回退到 process.cwd()。
    */
   private _getWorkspaceRoot(): string {
-    return this.ctx.get('sandboxPolicy')?.workspaceRoot ?? process.cwd()
+    const cwd = this.ctx.get('agents')?.currentInitiator()?.session?.header?.cwd
+    return cwd ?? process.cwd()
   }
 
   /**
